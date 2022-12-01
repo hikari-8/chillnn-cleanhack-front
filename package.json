@@ -1,0 +1,47 @@
+{
+    "name": "chillnn-cleanhack-front",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "abr": "sh node_modules/chillnn-cleanhack-abr/pull.sh",
+        "dev": "ENV=dev nuxt",
+        "deploy": "sh deployFront.sh",
+        "prd": "ENV=prd nuxt",
+        "build": "nuxt build",
+        "build:dev": "ENV=dev nuxt build",
+        "build:prd": "ENV=prd nuxt build",
+        "start": "nuxt start",
+        "generate": "nuxt generate"
+    },
+    "dependencies": {
+        "@aws-amplify/api": "^4.0.0",
+        "@aws-amplify/auth": "^4.0.0",
+        "@aws-amplify/storage": "^4.3.6",
+        "@nuxtjs/axios": "^5.13.6",
+        "@nuxtjs/dotenv": "^1.4.1",
+        "@nuxtjs/pwa": "^3.3.5",
+        "@nuxtjs/style-resources": "^1.2.1",
+        "chillnn-cleanhack-abr": "git+ssh://git@github.com:hikari-8/chillnn-cleanhack-abr.git#dev",
+        "core-js": "^3.16.3",
+        "nuxt": "^2.15.8",
+        "nuxt-property-decorator": "^2.9.1",
+        "vee-validate": "^3.4.11"
+    },
+    "devDependencies": {
+        "@babel/eslint-parser": "^7.14.7",
+        "@nuxt/types": "^2.15.7",
+        "@nuxt/typescript-build": "^2.1.0",
+        "@nuxtjs/eslint-config-typescript": "^6.0.1",
+        "@nuxtjs/eslint-module": "^3.0.2",
+        "eslint": "^7.29.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-nuxt": "^2.0.0",
+        "eslint-plugin-vue": "^7.12.1",
+        "prettier": "^2.3.2",
+        "serverless-plugin-git-variables": "^5.2.0",
+        "serverless-prune-plugin": "^2.0.1",
+        "serverless-scriptable-plugin": "^1.2.1",
+        "stylus": "^0.54.8",
+        "stylus-loader": "3.0.2"
+    }
+}

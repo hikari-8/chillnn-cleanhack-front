@@ -1,0 +1,305 @@
+service: chillnn-cleanhack-front
+
+provider:
+    name: aws
+    runtime: nodejs14.x
+    # stage: ${git:branch}
+    stage: ${opt:stage, git:branch}
+    region: ${self:custom.env.infra.${self:provider.stage}.AWS_REGION}
+    environment_variable:
+        NODE_ENV: ${self:provider.stage}
+    ## CloudFormationのLogのカスタマイズ
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action:
+                      - logs:CreateLogGroup
+                      - logs:CreateLogStream
+                      - logs:PutLogEvents
+                  Resource:
+                      - '*'
+    profile: ${self:custom.env.infra.${self:provider.stage}.AWS_CLI_PROFILE}
+    logRetentionInDays: 3
+
+plugins:
+    - serverless-prune-plugin
+    - serverless-plugin-git-variables
+    - serverless-scriptable-plugin
+
+package:
+    individually: true
+
+custom:
+    env:
+        infra:
+            dev: ${file(./env/infra/dev.yml)}
+            # stg: ${file(./env/infra/stg.yml)}
+            # prd: ${file(./env/infra/prd.yml)}
+    defaultStage: dev
+    prune:
+        automatic: true
+        number: 3
+
+resources:
+    Resources:
+        HostS3Bucket:
+            Type: AWS::S3::Bucket
+            ## 一応残す
+            DeletionPolicy: Retain
+            Properties:
+                BucketName: ${self:custom.env.infra.${self:provider.stage}.S3_BUCKET_NAME}
+                AccessControl: Private
+                CorsConfiguration:
+                    CorsRules:
+                        - AllowedOrigins:
+                              - '*'
+                          AllowedHeaders:
+                              - '*'
+                          AllowedMethods:
+                              - GET
+                              - PUT
+                              - POST
+                              - DELETE
+                              - HEAD
+                          MaxAge: 3000
+                          ExposedHeaders:
+                              - ETag
+                WebsiteConfiguration:
+                    IndexDocument: index.html
+        ## Bucket
+        HostS3BucketPolicy:
+            Type: AWS::S3::BucketPolicy
+            Properties:
+                Bucket:
+                    Ref: HostS3Bucket
+                PolicyDocument:
+                    Statement:
+                        - Sid: PublicReadGetObject
+                          Effect: Allow
+                          Principal: '*'
+                          Action:
+                              - 's3:GetObject'
+                          Resource:
+                              - 'arn:aws:s3:::${self:custom.env.infra.${self:provider.stage}.S3_BUCKET_NAME}/*'
+        #################################### CF ####################################
+        EdgeOriginAccessIdentity:
+            Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+            Properties:
+                CloudFrontOriginAccessIdentityConfig:
+                    Comment: 'CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}'
+        NuxtCachePolicy:
+            Type: AWS::CloudFront::CachePolicy
+            Properties:
+                CachePolicyConfig:
+                    Comment: 'NuxtCache'
+                    DefaultTTL: 600
+                    MinTTL: 600 # 10分
+                    MaxTTL: 1200 # 20分
+                    Name: ${self:custom.env.infra.${self:provider.stage}.CLOUDFRONT_DYNAMIC_CACHE_POLICY_NAME}
+                    ParametersInCacheKeyAndForwardedToOrigin:
+                        CookiesConfig:
+                            CookieBehavior: none
+                        EnableAcceptEncodingBrotli: true
+                        EnableAcceptEncodingGzip: true
+                        HeadersConfig:
+                            HeaderBehavior: whitelist
+                            Headers:
+                                - origin
+                                - Origin
+                                - host
+                                - Host
+                                - accept-language
+                        QueryStringsConfig:
+                            QueryStringBehavior: all
+        StaticCachePolicy:
+            Type: AWS::CloudFront::CachePolicy
+            Properties:
+                CachePolicyConfig:
+                    Comment: 'StaticCache'
+                    DefaultTTL: 3600
+                    MinTTL: 3600 # 1時間
+                    MaxTTL: 10800 # 3時間
+                    Name: ${self:custom.env.infra.${self:provider.stage}.CLOUDFRONT_STATIC_CACHE_POLICY_NAME}
+                    ParametersInCacheKeyAndForwardedToOrigin:
+                        CookiesConfig:
+                            CookieBehavior: none
+                        EnableAcceptEncodingBrotli: true
+                        EnableAcceptEncodingGzip: true
+                        HeadersConfig:
+                            HeaderBehavior: whitelist
+                            Headers:
+                                - accept-language
+                        QueryStringsConfig:
+                            QueryStringBehavior: all
+        # Nuxt CludFrontのDistribution
+        EdgeDistribution:
+            Type: 'AWS::CloudFront::Distribution'
+            Properties:
+                Tags:
+                    - Key: Name
+                      Value: CHILLNN ${self:provider.stage} Chillnn Clean Hack
+                DistributionConfig:
+                    Aliases: ${self:custom.env.infra.${self:provider.stage}.CLOUDFRONT_ALIASES}
+                    ViewerCertificate:
+                        AcmCertificateArn: ${self:custom.env.infra.${self:provider.stage}.CLOUDFRONT_ALIAS_ACM_ARN}
+                        SslSupportMethod: sni-only
+                    DefaultCacheBehavior:
+                        AllowedMethods:
+                            - GET
+                            - HEAD
+                            - OPTIONS
+                            - PUT
+                            - POST
+                            - PATCH
+                            - DELETE
+                        CachePolicyId: { 'Fn::GetAtt': [NuxtCachePolicy, Id] }
+                        Compress: true
+                        TargetOriginId: 'S3BucketOrigin'
+                        ViewerProtocolPolicy: 'redirect-to-https'
+                    DefaultRootObject: 'index.html'
+                    Enabled: true
+                    PriceClass: 'PriceClass_200'
+                    HttpVersion: 'http2'
+                    IPV6Enabled: false
+                    Origins:
+                        # Static
+                        - Id: 'S3BucketOrigin'
+                          DomainName: ${self:custom.env.infra.${self:provider.stage}.S3_BUCKET_NAME}.s3-website-${self:provider.region}.amazonaws.com
+                          CustomOriginConfig:
+                              HTTPPort: 80
+                              OriginKeepaliveTimeout: 5
+                              OriginProtocolPolicy: http-only
+                              OriginReadTimeout: 30
+                    CustomErrorResponses:
+                        - ErrorCachingMinTTL: 300
+                          ErrorCode: 403
+                          ResponseCode: 200
+                          ResponsePagePath: /index.html
+                        - ErrorCachingMinTTL: 300
+                          ErrorCode: 404
+                          ResponseCode: 200
+                          ResponsePagePath: /index.html
+                        - ErrorCachingMinTTL: 300
+                          ErrorCode: 503
+                          ResponseCode: 200
+                          ResponsePagePath: /index.html
+                        - ErrorCachingMinTTL: 300
+                          ErrorCode: 502
+                          ResponseCode: 500
+                          ResponsePagePath: /index.html
+                        - ErrorCachingMinTTL: 30
+                          ErrorCode: 500
+                          ResponseCode: 500
+                          ResponsePagePath: /index.html
+                    CacheBehaviors:
+                        - # html
+                          PathPattern: '*.html'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # 画像（jpg）
+                          PathPattern: '*.jpg'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # css
+                          PathPattern: '*.css'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # componentなど
+                          PathPattern: '*.js'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # map
+                          PathPattern: '*.map'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # favicon
+                          PathPattern: '*.ico'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # png画像
+                          PathPattern: '*.png'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # svg画像
+                          PathPattern: '*.svg'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # xml
+                          PathPattern: '*.xml'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
+                        - # json
+                          PathPattern: '*.json'
+                          AllowedMethods:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                          TargetOriginId: S3BucketOrigin
+                          ViewerProtocolPolicy: 'https-only'
+                          CachePolicyId:
+                              { 'Fn::GetAtt': [StaticCachePolicy, Id] }
+                          Compress: true
