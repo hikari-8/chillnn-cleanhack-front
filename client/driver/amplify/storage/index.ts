@@ -1,5 +1,5 @@
 import { Storage } from '@aws-amplify/storage'
-import { S3Object } from 'chillnn-training-abr'
+import { S3Object } from 'chillnn-cleanhack-abr'
 import { awsmobile } from '~/plugins/amplify'
 
 class StorageInteractor {

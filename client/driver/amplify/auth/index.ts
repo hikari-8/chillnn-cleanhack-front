@@ -1,5 +1,5 @@
 import { Auth } from '@aws-amplify/auth'
-import { Scalars } from 'chillnn-training-abr'
+import { Scalars } from 'chillnn-cleanhack-abr'
 
 class AuthInteractor {
     public async isSignIn(): Promise<boolean> {

@@ -11,7 +11,7 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel } from 'chillnn-training-abr'
+import { UserModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import UserEdit from './modules/UserEdit.vue'

@@ -26,12 +26,12 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel } from 'chillnn-training-abr'
+import { UserModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
 import AppInput from '@/components/Atom/AppInput.vue'
-import { getImage, HTMLInputEvent } from '~/util/imageUtil'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+// import { getImage, HTMLInputEvent } from '~/util/imageUtil'
+// import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
@@ -45,15 +45,11 @@ export default class UserEdit extends Vue {
         return this.userModel.name
     }
 
-    get userIconUrl() {
-        return this.userModel.userIcon
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async getImageFile(e: HTMLInputEvent) {
-        const image = await getImage(e) // resizeしている
-        await this.userModel.setIcon(image.file)
-    }
+    // @AsyncLoadingAndErrorHandle()
+    // public async getImageFile(e: HTMLInputEvent) {
+    //     const image = await getImage(e) // resizeしている
+    //     await this.userModel.setIcon(image.file)
+    // }
 }
 </script>
 <style lang="stylus" scoped>

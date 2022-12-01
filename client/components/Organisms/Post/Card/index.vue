@@ -63,15 +63,12 @@
 </template>
 /* eslint-disable no-console */
 <script lang="ts">
-import {
-    PostModel,
-    CommentModel,
-    // RepositoryContainer,
-} from 'chillnn-training-abr'
-import { Component, Prop, Vue } from 'nuxt-property-decorator'
+// RepositoryContainer,
+'chillnn-cleanhack-abr'
+import { Component, Vue } from 'nuxt-property-decorator'
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
-import { userInteractor } from '~/api'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+// import { userInteractor } from '~/api'
+// import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppButton from '@/components/Atom/AppButton.vue'
 import AppInput from '@/components/Atom/AppInput.vue'
 
@@ -83,61 +80,61 @@ import AppInput from '@/components/Atom/AppInput.vue'
     },
 })
 export default class PostCard extends Vue {
-    @Prop({ required: true }) postModel!: PostModel
-    public commentModel: CommentModel | null = null
-    public commentModels: CommentModel[] = []
+    // @Prop({ required: true }) postModel!: PostModel
+    // public commentModel: CommentModel | null = null
+    // public commentModels: CommentModel[] = []
     public isShowModal: boolean = false
 
-    public activateSubmit() {
-        if (this.commentModel!.comment === '') {
-            return true
-        } else {
-            return false
-        }
-    }
+    // public activateSubmit() {
+    //     if (this.commentModel!.comment === '') {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // }
 
     // 変更点
 
-    public async created() {
-        const user = await userInteractor.fetchMyUserModel()
-        this.commentModel = this.postModel.getCommentModel(user.userID)
-        this.commentModels = await this.postModel.fetchComments()
-        this.commentModel.comment = ''
-    }
+    // public async created() {
+    //     const user = await userInteractor.fetchMyUserModel()
+    //     this.commentModel = this.postModel.getCommentModel(user.userID)
+    //     this.commentModels = await this.postModel.fetchComments()
+    //     this.commentModel.comment = ''
+    // }
 
-    public get imgUrl() {
-        return this.postModel.imageURL
-    }
+    // public get imgUrl() {
+    //     return this.postModel.imageURL
+    // }
 
-    public get description() {
-        return this.postModel.description
-    }
+    // public get description() {
+    //     return this.postModel.description
+    // }
 
-    get comment() {
-        return this.commentModel?.comment || null
-    }
+    // get comment() {
+    //     return this.commentModel?.comment || null
+    // }
 
-    set comment(input: string | null) {
-        if (input && this.commentModel) {
-            this.commentModel.comment = input
-            input = ''
-        }
-        // console.log(this.commentModel.comment)
-    }
+    // set comment(input: string | null) {
+    //     if (input && this.commentModel) {
+    //         this.commentModel.comment = input
+    //         input = ''
+    //     }
+    //     console.log(this.commentModel.comment)
+    // }
 
-    @AsyncLoadingAndErrorHandle()
-    public async register() {
-        if (this.commentModel?.comment) {
-            await this.commentModel.register()
-            this.$emit('registered')
-            this.commentModels = await this.postModel!.fetchComments()
-            // let text = document.getElementById('#app-input') as HTMLElement
+    // @AsyncLoadingAndErrorHandle()
+    // public async register() {
+    //     if (this.commentModel?.comment) {
+    //         await this.commentModel.register()
+    //         this.$emit('registered')
+    //         this.commentModels = await this.postModel!.fetchComments()
+    // let text = document.getElementById('#app-input') as HTMLElement
 
-            // 新しいインスタンスの作成
-            const user = await userInteractor.fetchMyUserModel()
-            this.commentModel = this.postModel.getCommentModel(user.userID)
-        }
-    }
+    // 新しいインスタンスの作成
+    //         const user = await userInteractor.fetchMyUserModel()
+    //         this.commentModel = this.postModel.getCommentModel(user.userID)
+    //     }
+    // }
 
     // @AsyncLoadingAndErrorHandle()
     // public async registered() {

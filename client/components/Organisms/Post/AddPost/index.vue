@@ -25,12 +25,11 @@
 </template>
 <script lang="ts">
 /* eslint-disable no-console */
-import { PostModel } from 'chillnn-training-abr'
-import { Component, Prop, Vue } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 // component
 import AppButton from '@/components/Atom/AppButton.vue'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
-import { HTMLInputEvent, getImage } from '~/util/imageUtil'
+// import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+// import { HTMLInputEvent, getImage } from '~/util/imageUtil'
 
 @Component({
     components: {
@@ -38,7 +37,7 @@ import { HTMLInputEvent, getImage } from '~/util/imageUtil'
     },
 })
 export default class AddPost extends Vue {
-    @Prop({ required: true }) postModel!: PostModel
+    // @Prop({ required: true }) postModel!: PostModel
     public base64: string = ''
 
     // get description() {
@@ -50,18 +49,18 @@ export default class AddPost extends Vue {
     //     console.log(this.postModel.description)
     // }
 
-    @AsyncLoadingAndErrorHandle()
-    public async getImageFile(e: HTMLInputEvent) {
-        const image = await getImage(e) // resizeしている
-        this.base64 = image.base64
-        await this.postModel.setImage(image.file)
-    }
+    // @AsyncLoadingAndErrorHandle()
+    // public async getImageFile(e: HTMLInputEvent) {
+    //     const image = await getImage(e) // resizeしている
+    //     this.base64 = image.base64
+    //     await this.postModel.setImage(image.file)
+    // }
 
-    @AsyncLoadingAndErrorHandle()
-    public async register() {
-        await this.postModel.register()
-        this.$emit('registered')
-    }
+    // @AsyncLoadingAndErrorHandle()
+    // public async register() {
+    //     await this.postModel.register()
+    //     this.$emit('registered')
+    // }
 }
 </script>
 <style lang="stylus" scoped>

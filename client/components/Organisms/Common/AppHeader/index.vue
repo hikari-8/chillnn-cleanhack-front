@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { UserModel } from 'chillnn-training-abr'
+import { UserModel } from 'chillnn-cleanhack-abr'
 
 @Component({})
 export default class AppHeader extends Vue {

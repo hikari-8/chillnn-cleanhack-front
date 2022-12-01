@@ -22,7 +22,7 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel } from 'chillnn-training-abr'
+import { UserModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
@@ -49,14 +49,6 @@ export default class UserIcon extends Vue {
 
     get userName() {
         return this.userModel.name
-    }
-
-    get userIconUrl() {
-        return this.userModel.userIcon
-    }
-
-    get introduce() {
-        return this.userModel.introduce
     }
 }
 </script>

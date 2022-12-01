@@ -29,14 +29,14 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { PostModel, UserModel, CommentModel } from 'chillnn-training-abr'
+import { UserModel } from 'chillnn-cleanhack-abr'
 import { userInteractor } from '~/api'
 // component
 import UserIcon from '@/components/Organisms/User/Icon/index.vue'
 import PostCard from '@/components/Organisms/Post/Card/index.vue'
 import AppModel from '@/components/Organisms/Common/AppModal/index.vue'
 import AddPost from '@/components/Organisms/Post/AddPost/index.vue'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+// import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
@@ -49,14 +49,12 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class UserPage extends Vue {
     public myUserModel: UserModel | null = null
     public userModel: UserModel | null = null
-    public commentModel: CommentModel | null = null
-    public postModels: PostModel[] = []
+    // public postModels: PostModel[] = []
     public isShowModal: boolean = false
     public async created() {
         const userID = this.$route.params.userID
         this.myUserModel = await userInteractor.fetchMyUserModel()
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-        this.postModels = await this.userModel.fetchMyPosts()
     }
 
     public get isMyPage() {
@@ -66,20 +64,20 @@ export default class UserPage extends Vue {
         )
     }
 
-    public blancPost: PostModel | null = null
+    // public blancPost: PostModel | null = null
     public openModal() {
         if (this.userModel) {
-            this.blancPost = this.userModel.createNewPost()
+            // this.blancPost = this.userModel.createNewPost()
             this.isShowModal = true
         }
     }
 
-    @AsyncLoadingAndErrorHandle()
-    public async registered() {
-        this.blancPost = null
-        this.postModels = await this.userModel!.fetchMyPosts()
-        this.isShowModal = false
-    }
+    // @AsyncLoadingAndErrorHandle()
+    // public async registered() {
+    //     this.blancPost = null
+    //     this.postModels = await this.userModel!.fetchMyPosts()
+    //     this.isShowModal = false
+    // }
 }
 </script>
 <style lang="stylus" scoped>
