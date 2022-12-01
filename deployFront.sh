@@ -1,5 +1,5 @@
 #!/bin/sh
-s3Name="chillnn-cleanhack-hikari-front-nuxt"
+s3Name="chillnn-cleanhack-front-nuxt"
 profile="hikari_admin"
 
 branch="dev"

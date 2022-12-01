@@ -6,28 +6,24 @@ export const fetchAllUserMast = /* GraphQL */ `
   query FetchAllUserMast {
     fetchAllUserMast {
       createdAt
-      email
-      introduce
+      deletedAt
+      groupID
       name
+      records
+      role
       updatedAt
-      userIcon {
-        bucket
-        key
-        region
-        url
-      }
       userID
     }
   }
 `;
-export const fetchCommentsByPostID = /* GraphQL */ `
-  query FetchCommentsByPostID($postID: ID!) {
-    fetchCommentsByPostID(postID: $postID) {
-      comment
-      commentID
-      commentUserID
+export const fetchGroupByGroupID = /* GraphQL */ `
+  query FetchGroupByGroupID($groupID: ID!) {
+    fetchGroupByGroupID(groupID: $groupID) {
       createdAt
-      postID
+      deletedAt
+      groupID
+      groupName
+      updatedAt
     }
   }
 `;
@@ -35,51 +31,67 @@ export const fetchMyUserMast = /* GraphQL */ `
   query FetchMyUserMast {
     fetchMyUserMast {
       createdAt
-      email
-      introduce
+      deletedAt
+      groupID
       name
+      records
+      role
       updatedAt
-      userIcon {
-        bucket
-        key
-        region
-        url
-      }
       userID
     }
   }
 `;
-export const fetchPostByPostID = /* GraphQL */ `
-  query FetchPostByPostID($postID: ID!) {
-    fetchPostByPostID(postID: $postID) {
+export const fetchRaffleObject = /* GraphQL */ `
+  query FetchRaffleObject($raffleID: ID!) {
+    fetchRaffleObject(raffleID: $raffleID) {
+      activeMembers {
+        deletedAt
+        groupID
+        joinAt
+        userID
+      }
       createdAt
       deletedAt
-      description
-      image {
-        bucket
-        key
-        region
-        url
+      groupID
+      limitTime
+      raffleID
+      raffleStatus
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        raffleID
+        taskID
+        taskName
+        updatedAt
+        userID
       }
-      ownerUserID
-      postID
+      updatedAt
     }
   }
 `;
-export const fetchPostsByOwnerUserID = /* GraphQL */ `
-  query FetchPostsByOwnerUserID($userID: ID!) {
-    fetchPostsByOwnerUserID(userID: $userID) {
+export const fetchTaskMasterObject = /* GraphQL */ `
+  query FetchTaskMasterObject($groupID: ID!) {
+    fetchTaskMasterObject(groupID: $groupID) {
       createdAt
       deletedAt
-      description
-      image {
-        bucket
-        key
-        region
-        url
+      groupID
+      limitTime
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        taskID
+        taskName
+        updatedAt
       }
-      ownerUserID
-      postID
+      updatedAt
     }
   }
 `;
@@ -87,16 +99,12 @@ export const fetchUserMastByUserID = /* GraphQL */ `
   query FetchUserMastByUserID($userID: ID!) {
     fetchUserMastByUserID(userID: $userID) {
       createdAt
-      email
-      introduce
+      deletedAt
+      groupID
       name
+      records
+      role
       updatedAt
-      userIcon {
-        bucket
-        key
-        region
-        url
-      }
       userID
     }
   }

@@ -2,134 +2,242 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CommentMastInput = {
-  comment: string,
-  commentID: string,
-  commentUserID: string,
-  createdAt: number,
-  postID: string,
-};
-
-export type CommentMast = {
-  __typename: "CommentMast",
-  comment: string,
-  commentID: string,
-  commentUserID: string,
-  createdAt: number,
-  postID: string,
-};
-
-export type PostMastInput = {
+export type GroupMastInput = {
   createdAt: number,
   deletedAt?: number | null,
-  description?: string | null,
-  image: S3ObjectInput,
-  ownerUserID: string,
-  postID: string,
+  groupID: string,
+  groupName: string,
+  updatedAt: number,
 };
 
-export type S3ObjectInput = {
-  bucket: string,
-  key: string,
-  region: string,
-  url: string,
-};
-
-export type PostMast = {
-  __typename: "PostMast",
+export type GroupMast = {
+  __typename: "GroupMast",
   createdAt: number,
   deletedAt?: number | null,
-  description?: string | null,
-  image: S3Object,
-  ownerUserID: string,
-  postID: string,
+  groupID: string,
+  groupName: string,
+  updatedAt: number,
 };
 
-export type S3Object = {
-  __typename: "S3Object",
-  bucket: string,
-  key: string,
-  region: string,
-  url: string,
+export type RaffleObjectInput = {
+  activeMembers?: Array< RaffleJoinUserInput > | null,
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  limitTime: number,
+  raffleID: string,
+  raffleStatus: RaffleStatus,
+  remindSlackTime: number,
+  remindSlackWeek: string,
+  tasks: Array< RaffleMastInput >,
+  updatedAt: number,
+};
+
+export type RaffleJoinUserInput = {
+  deletedAt?: number | null,
+  groupID: string,
+  joinAt: number,
+  userID: string,
+};
+
+export enum RaffleStatus {
+  DONE = "DONE",
+  EFFECTIVE = "EFFECTIVE",
+  EFFECTIVE_AND_FIXED = "EFFECTIVE_AND_FIXED",
+}
+
+
+export type RaffleMastInput = {
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  raffleID: string,
+  taskID: string,
+  taskName: string,
+  updatedAt: number,
+  userID?: Array< string > | null,
+};
+
+export type RaffleObject = {
+  __typename: "RaffleObject",
+  activeMembers?:  Array<RaffleJoinUser > | null,
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  limitTime: number,
+  raffleID: string,
+  raffleStatus: RaffleStatus,
+  remindSlackTime: number,
+  remindSlackWeek: string,
+  tasks:  Array<RaffleMast >,
+  updatedAt: number,
+};
+
+export type RaffleJoinUser = {
+  __typename: "RaffleJoinUser",
+  deletedAt?: number | null,
+  groupID: string,
+  joinAt: number,
+  userID: string,
+};
+
+export type RaffleMast = {
+  __typename: "RaffleMast",
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  headCount?: number | null,
+  raffleID: string,
+  taskID: string,
+  taskName: string,
+  updatedAt: number,
+  userID?: Array< string > | null,
+};
+
+export type TaskMasterObjectInput = {
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  limitTime?: number | null,
+  remindSlackTime?: number | null,
+  remindSlackWeek?: string | null,
+  tasks: Array< TaskMastInput >,
+  updatedAt: number,
+};
+
+export type TaskMastInput = {
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  headCount?: number | null,
+  taskID: string,
+  taskName: string,
+  updatedAt: number,
+};
+
+export type TaskMasterObject = {
+  __typename: "TaskMasterObject",
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  limitTime?: number | null,
+  remindSlackTime?: number | null,
+  remindSlackWeek?: string | null,
+  tasks:  Array<TaskMast >,
+  updatedAt: number,
+};
+
+export type TaskMast = {
+  __typename: "TaskMast",
+  createdAt: number,
+  deletedAt?: number | null,
+  groupID: string,
+  headCount?: number | null,
+  taskID: string,
+  taskName: string,
+  updatedAt: number,
 };
 
 export type UserMastInput = {
   createdAt: number,
-  email: string,
-  introduce?: string | null,
+  deletedAt?: number | null,
+  groupID: string,
   name: string,
+  records?: Array< string > | null,
+  role: string,
   updatedAt: number,
-  userIcon?: S3ObjectInput | null,
   userID: string,
 };
 
 export type UserMast = {
   __typename: "UserMast",
   createdAt: number,
-  email: string,
-  introduce?: string | null,
+  deletedAt?: number | null,
+  groupID: string,
   name: string,
+  records?: Array< string > | null,
+  role: string,
   updatedAt: number,
-  userIcon?: S3Object | null,
   userID: string,
 };
 
-export type AddCommentMutationVariables = {
-  input: CommentMastInput,
+export type AddGroupMutationVariables = {
+  input: GroupMastInput,
 };
 
-export type AddCommentMutation = {
-  addComment:  {
-    __typename: "CommentMast",
-    comment: string,
-    commentID: string,
-    commentUserID: string,
+export type AddGroupMutation = {
+  addGroup:  {
+    __typename: "GroupMast",
     createdAt: number,
-    postID: string,
+    deletedAt?: number | null,
+    groupID: string,
+    groupName: string,
+    updatedAt: number,
   },
 };
 
-export type AddPostMutationVariables = {
-  input: PostMastInput,
+export type AddRaffleObjectMutationVariables = {
+  input: RaffleObjectInput,
 };
 
-export type AddPostMutation = {
-  addPost:  {
-    __typename: "PostMast",
+export type AddRaffleObjectMutation = {
+  addRaffleObject:  {
+    __typename: "RaffleObject",
+    activeMembers?:  Array< {
+      __typename: "RaffleJoinUser",
+      deletedAt?: number | null,
+      groupID: string,
+      joinAt: number,
+      userID: string,
+    } > | null,
     createdAt: number,
     deletedAt?: number | null,
-    description?: string | null,
-    image:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    },
-    ownerUserID: string,
-    postID: string,
+    groupID: string,
+    limitTime: number,
+    raffleID: string,
+    raffleStatus: RaffleStatus,
+    remindSlackTime: number,
+    remindSlackWeek: string,
+    tasks:  Array< {
+      __typename: "RaffleMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      raffleID: string,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+      userID?: Array< string > | null,
+    } >,
+    updatedAt: number,
   },
 };
 
-export type DeletePostMutationVariables = {
-  postID: string,
+export type AddTaskMasterObjectMutationVariables = {
+  input: TaskMasterObjectInput,
 };
 
-export type DeletePostMutation = {
-  deletePost:  {
-    __typename: "PostMast",
+export type AddTaskMasterObjectMutation = {
+  addTaskMasterObject:  {
+    __typename: "TaskMasterObject",
     createdAt: number,
     deletedAt?: number | null,
-    description?: string | null,
-    image:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    },
-    ownerUserID: string,
-    postID: string,
+    groupID: string,
+    limitTime?: number | null,
+    remindSlackTime?: number | null,
+    remindSlackWeek?: string | null,
+    tasks:  Array< {
+      __typename: "TaskMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+    } >,
+    updatedAt: number,
   },
 };
 
@@ -141,17 +249,12 @@ export type UpdateUserMastMutation = {
   updateUserMast:  {
     __typename: "UserMast",
     createdAt: number,
-    email: string,
-    introduce?: string | null,
+    deletedAt?: number | null,
+    groupID: string,
     name: string,
+    records?: Array< string > | null,
+    role: string,
     updatedAt: number,
-    userIcon?:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    } | null,
     userID: string,
   },
 };
@@ -160,97 +263,108 @@ export type FetchAllUserMastQuery = {
   fetchAllUserMast:  Array< {
     __typename: "UserMast",
     createdAt: number,
-    email: string,
-    introduce?: string | null,
+    deletedAt?: number | null,
+    groupID: string,
     name: string,
+    records?: Array< string > | null,
+    role: string,
     updatedAt: number,
-    userIcon?:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    } | null,
     userID: string,
   } >,
 };
 
-export type FetchCommentsByPostIDQueryVariables = {
-  postID: string,
+export type FetchGroupByGroupIDQueryVariables = {
+  groupID: string,
 };
 
-export type FetchCommentsByPostIDQuery = {
-  fetchCommentsByPostID:  Array< {
-    __typename: "CommentMast",
-    comment: string,
-    commentID: string,
-    commentUserID: string,
+export type FetchGroupByGroupIDQuery = {
+  fetchGroupByGroupID:  {
+    __typename: "GroupMast",
     createdAt: number,
-    postID: string,
-  } >,
+    deletedAt?: number | null,
+    groupID: string,
+    groupName: string,
+    updatedAt: number,
+  },
 };
 
 export type FetchMyUserMastQuery = {
-  fetchMyUserMast?:  {
+  fetchMyUserMast:  {
     __typename: "UserMast",
     createdAt: number,
-    email: string,
-    introduce?: string | null,
+    deletedAt?: number | null,
+    groupID: string,
     name: string,
+    records?: Array< string > | null,
+    role: string,
     updatedAt: number,
-    userIcon?:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    } | null,
     userID: string,
-  } | null,
+  },
 };
 
-export type FetchPostByPostIDQueryVariables = {
-  postID: string,
+export type FetchRaffleObjectQueryVariables = {
+  raffleID: string,
 };
 
-export type FetchPostByPostIDQuery = {
-  fetchPostByPostID?:  {
-    __typename: "PostMast",
+export type FetchRaffleObjectQuery = {
+  fetchRaffleObject:  {
+    __typename: "RaffleObject",
+    activeMembers?:  Array< {
+      __typename: "RaffleJoinUser",
+      deletedAt?: number | null,
+      groupID: string,
+      joinAt: number,
+      userID: string,
+    } > | null,
     createdAt: number,
     deletedAt?: number | null,
-    description?: string | null,
-    image:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    },
-    ownerUserID: string,
-    postID: string,
-  } | null,
+    groupID: string,
+    limitTime: number,
+    raffleID: string,
+    raffleStatus: RaffleStatus,
+    remindSlackTime: number,
+    remindSlackWeek: string,
+    tasks:  Array< {
+      __typename: "RaffleMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      raffleID: string,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+      userID?: Array< string > | null,
+    } >,
+    updatedAt: number,
+  },
 };
 
-export type FetchPostsByOwnerUserIDQueryVariables = {
-  userID: string,
+export type FetchTaskMasterObjectQueryVariables = {
+  groupID: string,
 };
 
-export type FetchPostsByOwnerUserIDQuery = {
-  fetchPostsByOwnerUserID:  Array< {
-    __typename: "PostMast",
+export type FetchTaskMasterObjectQuery = {
+  fetchTaskMasterObject:  {
+    __typename: "TaskMasterObject",
     createdAt: number,
     deletedAt?: number | null,
-    description?: string | null,
-    image:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    },
-    ownerUserID: string,
-    postID: string,
-  } >,
+    groupID: string,
+    limitTime?: number | null,
+    remindSlackTime?: number | null,
+    remindSlackWeek?: string | null,
+    tasks:  Array< {
+      __typename: "TaskMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+    } >,
+    updatedAt: number,
+  },
 };
 
 export type FetchUserMastByUserIDQueryVariables = {
@@ -258,20 +372,15 @@ export type FetchUserMastByUserIDQueryVariables = {
 };
 
 export type FetchUserMastByUserIDQuery = {
-  fetchUserMastByUserID?:  {
+  fetchUserMastByUserID:  {
     __typename: "UserMast",
     createdAt: number,
-    email: string,
-    introduce?: string | null,
+    deletedAt?: number | null,
+    groupID: string,
     name: string,
+    records?: Array< string > | null,
+    role: string,
     updatedAt: number,
-    userIcon?:  {
-      __typename: "S3Object",
-      bucket: string,
-      key: string,
-      region: string,
-      url: string,
-    } | null,
     userID: string,
-  } | null,
+  },
 };
