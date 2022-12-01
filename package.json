@@ -14,22 +14,22 @@
         "generate": "nuxt generate"
     },
     "dependencies": {
-        "@aws-amplify/api": "^4.0.0",
-        "@aws-amplify/auth": "^4.0.0",
-        "@aws-amplify/storage": "^4.3.6",
+        "@aws-amplify/api": "^4.0.31",
+        "@aws-amplify/auth": "^4.4.0",
+        "@aws-amplify/storage": "^4.4.14",
         "@nuxtjs/axios": "^5.13.6",
         "@nuxtjs/dotenv": "^1.4.1",
         "@nuxtjs/pwa": "^3.3.5",
         "@nuxtjs/style-resources": "^1.2.1",
         "chillnn-cleanhack-abr": "git+ssh://git@github.com:hikari-8/chillnn-cleanhack-abr.git#dev",
         "core-js": "^3.16.3",
-        "nuxt": "^2.15.8",
+        "nuxt": "2.15.8",
         "nuxt-property-decorator": "^2.9.1",
-        "vee-validate": "^3.4.11"
+        "vee-validate": "^3.4.14"
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.14.7",
-        "@nuxt/types": "^2.15.7",
+        "@nuxt/types": "^2.15.8",
         "@nuxt/typescript-build": "^2.1.0",
         "@nuxtjs/eslint-config-typescript": "^6.0.1",
         "@nuxtjs/eslint-module": "^3.0.2",
@@ -40,8 +40,8 @@
         "prettier": "^2.3.2",
         "serverless-plugin-git-variables": "^5.2.0",
         "serverless-prune-plugin": "^2.0.1",
-        "serverless-scriptable-plugin": "^1.2.1",
-        "stylus": "^0.54.8",
+        "serverless-scriptable-plugin": "^1.2.2",
+        "stylus": "^0.56.0",
         "stylus-loader": "3.0.2"
     }
 }

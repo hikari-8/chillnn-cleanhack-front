@@ -1,6 +1,6 @@
+/* eslint-disable */
 // driverの接続部分を記述
-import { API, graphqlOperation } from '@aws-amplify/api'
-import { GraphQLResult } from '@aws-amplify/api/lib/types'
+import { API, graphqlOperation, GraphQLResult } from '@aws-amplify/api'
 import { ChillnnTrainingError, ErrorCode } from 'chillnn-cleanhack-abr'
 
 /**
@@ -12,11 +12,12 @@ import { ChillnnTrainingError, ErrorCode } from 'chillnn-cleanhack-abr'
 export async function callApi<U, T>(query: any, variables: T): Promise<U> {
     try {
         const response = (await API.graphql(
-            graphqlOperation(query, variables)
+            graphqlOperation(query, variables as {})
         )) as GraphQLResult<U>
         return response.data!
+        // await statusUpdate(options) // アプリケーションステータスの更新
     } catch (err) {
-        const errorCode = (err as any).errors[0].message as ErrorCode
+        const errorCode = (err as any)?.errors?.[0].message as ErrorCode
         throw new ChillnnTrainingError(errorCode)
     }
 }
