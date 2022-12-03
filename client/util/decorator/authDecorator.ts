@@ -30,6 +30,7 @@ class AuthDecorator extends Vue {
                     )
                 }
                 // methodの実行
+                // eslint-disable-next-line prefer-rest-params
                 const ret = await method.apply(this, arguments)
                 // 事後処理
                 return ret

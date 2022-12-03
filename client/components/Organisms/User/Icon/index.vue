@@ -1,25 +1,5 @@
 <template>
-    <div class="icon_container">
-        <div class="icon">
-            <!-- icon -->
-            <img :src="userIconUrl" />
-        </div>
-        <div class="name">
-            <!-- name -->
-            <div>{{ userName }}さん</div>
-            <div v-if="showEdit" class="edit_button" @click="openModal">
-                <img src="~/assets/img/edit.svg" />
-            </div>
-        </div>
-        <div class="introduce">
-            <!-- introduce -->
-            <div>{{ introduce }}</div>
-        </div>
-        <!-- edit -->
-        <app-modal v-model="showEditModal">
-            <user-edit :user-model="userModel" @registered="closeModal" />
-        </app-modal>
-    </div>
+    <div>aaaaaaa</div>
 </template>
 <script lang="ts">
 import { UserModel } from 'chillnn-cleanhack-abr'

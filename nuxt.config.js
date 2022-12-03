@@ -1,4 +1,5 @@
 const envPath = `env/app/${process.env.ENV || 'dev'}.env`
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config({
     path: envPath,
 })

@@ -27,6 +27,7 @@ class AbrDecorator extends Vue {
                     // 事前処理
                     await preAsyncDescriptor(rand, this as Vue)
                     // methodの実行
+                    // eslint-disable-next-line prefer-rest-params
                     const ret = await method.apply(this, arguments)
                     // 事後処理
                     await afterAsyncDescriptor(rand, this as Vue)
@@ -50,6 +51,7 @@ class AbrDecorator extends Vue {
             descriptor.value = async function () {
                 try {
                     // methodの実行
+                    // eslint-disable-next-line prefer-rest-params
                     const ret = await method.apply(this, arguments)
                     return ret
                 } catch (err) {
