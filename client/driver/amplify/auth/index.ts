@@ -14,6 +14,7 @@ class AuthInteractor {
     }
 
     public async signIn(email: Scalars['AWSEmail'], password: string) {
+        console.log(email, password)
         return await Auth.signIn(email, password)
     }
 
@@ -26,6 +27,7 @@ class AuthInteractor {
     }
 
     public async signUp(email: Scalars['AWSEmail'], password: string) {
+        console.log(email, password)
         await Auth.signUp({
             username: email,
             password,

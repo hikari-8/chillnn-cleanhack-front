@@ -6,6 +6,7 @@ export function errorHandle(err: ChillnnTrainingError): IInfoObject {
         // tslint:disable-next-line: no-console
         // eslint-disable-next-line no-console
         console.error(err)
+        console.error('errorHandleのprocess.env:', process.env)
     }
     return {
         type: 'ERROR',

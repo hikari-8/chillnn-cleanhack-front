@@ -72,6 +72,7 @@ export const updateUserMast = /* GraphQL */ `
     updateUserMast(input: $input) {
       createdAt
       deletedAt
+      email
       groupID
       name
       records

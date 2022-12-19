@@ -24,7 +24,7 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
         AppButton,
     },
 })
-export default class AppHeaderUserEdit extends Vue {
+export default class AppUserEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
 
     public get isShowLink() {

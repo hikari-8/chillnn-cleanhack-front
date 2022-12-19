@@ -1,7 +1,7 @@
 <template>
     <div class="auth_input_container">
-        <div class="label">{{ label }}</div>
-        <div class="input">
+        <div class="label font-semibold mb-4">{{ label }}</div>
+        <div class="input w-3/5">
             <app-input v-model="localValue" :type="type" />
         </div>
     </div>
@@ -20,11 +20,4 @@ export default class AuthInput extends AppInput {
     @Prop({ required: true }) label!: string | number
 }
 </script>
-<style lang="stylus" scoped>
-.auth_input_container {
-    .label {
-        font-size: 14px;
-    }
-
-}
-</style>
+<style lang="stylus" scoped></style>

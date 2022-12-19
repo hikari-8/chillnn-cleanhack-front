@@ -7,6 +7,7 @@ export const fetchAllUserMast = /* GraphQL */ `
     fetchAllUserMast {
       createdAt
       deletedAt
+      email
       groupID
       name
       records
@@ -32,6 +33,7 @@ export const fetchMyUserMast = /* GraphQL */ `
     fetchMyUserMast {
       createdAt
       deletedAt
+      email
       groupID
       name
       records
@@ -100,6 +102,7 @@ export const fetchUserMastByUserID = /* GraphQL */ `
     fetchUserMastByUserID(userID: $userID) {
       createdAt
       deletedAt
+      email
       groupID
       name
       records

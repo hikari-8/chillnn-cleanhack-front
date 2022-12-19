@@ -1,5 +1,4 @@
 const envPath = `env/app/${process.env.ENV || 'dev'}.env`
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config({
     path: envPath,
 })
@@ -8,12 +7,13 @@ export default {
     // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
     ssr: false,
     env: {
-        // 環境変数のNuxtへの流し込み
+        ENV: process.env.ENV,
+        // Input
         ...process.env,
     },
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        title: 'CHILLSTAGRAM',
+        title: 'CLEAN HACK',
         meta: [
             { charset: 'utf-8' },
             {
@@ -24,7 +24,7 @@ export default {
                 hid: 'description',
                 name: 'description',
                 content:
-                    'CHILLNNで用いている基本的な機能を全て盛り込んだサービスです',
+                    'CHILLNNで用いている基本的な機能を全て盛り込んだサービスです。毎週のチームのお掃除場所決めをサポートします。',
             },
             {
                 hid: 'og:site_name',
@@ -39,7 +39,7 @@ export default {
             {
                 hid: 'og:title',
                 name: 'og:title',
-                content: 'CHILLSTAGRAM',
+                content: 'CLEAN HACK',
             },
             {
                 hid: 'og:description',
@@ -63,7 +63,9 @@ export default {
     },
 
     // Global CSS: https://go.nuxtjs.dev/config-css
-    css: [],
+    css: [
+        './assets/css/main.css', //
+    ],
     loading: '~/components/Organisms/Loading.vue',
     srcDir: './client/',
 
@@ -77,6 +79,7 @@ export default {
     buildModules: [
         // https://go.nuxtjs.dev/typescript
         '@nuxt/typescript-build',
+        '@nuxt/postcss8',
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
@@ -97,6 +100,7 @@ export default {
         manifest: {
             lang: 'ja',
         },
+        icon: false,
     },
 
     styleResources: {
@@ -107,5 +111,12 @@ export default {
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
-    build: {},
+    build: {
+        postcss: {
+            plugins: {
+                tailwindcss: {},
+                autoprefixer: {},
+            },
+        },
+    },
 }

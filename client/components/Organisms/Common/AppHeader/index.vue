@@ -3,7 +3,7 @@
         <nuxt-link :to="{ name: 'index' }" tag="div" class="left_container">
             <!-- left -->
             <div class="logo">
-                <img src="~/assets/img/logo.svg" />
+                <img src="~/assets/img/logo.png" />
             </div>
             <div class="title">
                 <img src="~/assets/img/CHILLSTAGRAM.png" />
