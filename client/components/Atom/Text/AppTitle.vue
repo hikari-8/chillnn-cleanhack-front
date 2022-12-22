@@ -1,24 +1,15 @@
 各項目の見出しに使う
 <template>
-    <div
-        class="app_title font-semibold"
-        :class="{ white: white }"
-        v-html="value"
-    ></div>
+    <div class="app_title font-bold text-gray-500 text-2xl text-center">
+        <slot />
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 
 @Component({})
-export default class AppTextH1 extends Vue {
-    @Prop() public value!: string
-    @Prop({ default: false }) public white!: boolean
-}
+export default class AppTitle extends Vue {}
 </script>
 
-<style lang="stylus" scoped>
-.white {
-    color: white;
-}
-</style>
+<style lang="stylus" scoped></style>

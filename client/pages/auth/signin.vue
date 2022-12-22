@@ -1,44 +1,55 @@
 <template>
     <div class="auth_signup_container">
         <div>
-            <auth-title>サインイン</auth-title>
+            <app-title>サインイン</app-title>
         </div>
-        <div class="input_container">
-            email:{{ email }}
-            <auth-input v-model="email" label="Eメール" class="input_item" />
-            <auth-input
-                v-model="password"
-                label="パスワード"
-                type="password"
-                class="input_item"
-            />
+        <div class="all_input_area flex flex-col">
+            <div class="input_container">
+                <auth-input
+                    v-model="email"
+                    label="Eメール"
+                    class="input_item"
+                />
+                <auth-input
+                    v-model="password"
+                    label="パスワード"
+                    type="password"
+                    class="input_item"
+                />
+            </div>
+            <div class="button_container">
+                <app-button :disabled="disabled" @click="signIn"
+                    >サインイン</app-button
+                >
+            </div>
+            <div class="link_container">
+                <link-button :to="{ name: 'auth-signup' }"
+                    >アカウントをお持ちでない方はこちら</link-button
+                >
+            </div>
         </div>
-        <div class="button_container">
-            <app-button :disabled="disabled" @click="signIn"
-                >サインイン</app-button
-            >
-        </div>
-        <div class="link_container">
-            <link-button :to="{ name: 'auth-signup' }"
-                >アカウントをお持ちでない方はこちら</link-button
-            >
-        </div>
+        <!-- テスト -->
+        <!-- <app-base-input v-model="email" /> -->
     </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
-import AuthInput from '~/components/Organisms/Auth/InlineTypeInput.vue'
+import AppTitle from '@/components/Atom/Text/AppTitle.vue'
+import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
 import AppButton from '@/components/Atom/AppButton.vue'
 import LinkButton from '@/components/Atom/LinkButton.vue'
 import { authInteractor } from '~/driver/amplify/auth'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({
     layout: 'auth',
     components: {
         AuthTitle,
+        AppTitle,
+        AppBaseInput,
         AuthInput,
         AppButton,
         LinkButton,
@@ -55,11 +66,11 @@ export default class SignInPage extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async signIn() {
         await authInteractor.signIn(this.email, this.password)
-        console.log((this.email, this.password))
+        // console.log((this.email, this.password))
         this.$router.push({
             name: 'index',
         })
-        console.log((this.email, this.password))
+        // console.log((this.email, this.password))
     }
 }
 </script>

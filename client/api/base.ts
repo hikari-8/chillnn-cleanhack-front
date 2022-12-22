@@ -24,6 +24,6 @@ export async function callApi<U, T>(query: any, variables: T): Promise<U> {
         const errorCode = (err as any)?.errors?.[0].message as ErrorCode
         throw new ChillnnTrainingError(errorCode)
     }
-    console.log(res) //エラーでコンソールに出力されない
+    // console.log(res) //APIのres確認
     return res
 }

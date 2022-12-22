@@ -1,5 +1,5 @@
 <template>
-    <div class="auth_input_container mb-20">
+    <div class="auth_input_container">
         <div class="label font-semibold mb-4">{{ label }}</div>
 
         <div class="flex w-3/5 gap-x-3 items-center justify-center">
@@ -21,9 +21,9 @@ import AppInput from '@/components/Atom/AppInput.vue'
         AppInput,
     },
 })
-export default class AuthInput extends AppInput {
+export default class UserNameInput extends AppInput {
     @Prop({ required: true }) label!: string | number
-    //表示名の説明をつけるかどうか
+    //ユーザー名の説明をつけるかどうか(ここ、注意文言の赤文字に設定し直してもいいかも ex.)ユーザー名は必須です)
     @Prop({ required: false }) public description!: boolean
 }
 </script>

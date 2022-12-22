@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
-import AuthInput from '~/components/Organisms/Auth/InlineTypeInput.vue'
+import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
 import AppInput from '@/components/Atom/AppInput.vue'
 // import { UserModel } from 'chillnn-cleanhack-abr'
 // import { userInteractor } from '~/api'

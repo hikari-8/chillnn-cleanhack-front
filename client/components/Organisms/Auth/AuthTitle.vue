@@ -3,9 +3,13 @@
         <slot />
     </div>
 </template>
-<style lang="stylus" scoped>
-.title {
-    font-size: 18px;
-    text-align: center;
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
+
+@Component({})
+export default class AuthTitle extends Vue {
+    @Prop({ required: false, default: false }) disabled!: boolean
 }
-</style>
+</script>
+<style lang="stylus" scoped></style>
