@@ -1,41 +1,34 @@
 <template>
-    <div class="">
-        <div>ユーザー名</div>
-        <div class="name">
-            <!-- name -->
-            <div class="name_inner">
-                <!-- <app-input v-model="this.userModel.name" class="input" /> -->
-
-                <div>さん</div>
-            </div>
+    <div class="name_input_container">
+        <div class="label font-semibold mb-4">{{ label }}</div>
+        <!-- name -->
+        <div class="flex gap-x-3 items-center">
+            <app-base-input v-model="userModel.name" class="w-4/5" />
+            <div class="w-1/5">さん</div>
+        </div>
+        <div class="mt-2 text-sm text-gray-500" v-if="description">
+            ＊メンバーに表示される自分の名前です。
         </div>
     </div>
 </template>
 <script lang="ts">
 import { UserModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
-import AppInput from '@/components/Atom/AppInput.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({
     components: {
-        AppInput,
-        AppButton,
+        AppBaseInput,
     },
 })
 export default class UserEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
+    @Prop({ required: true }) label!: string | number
+    //ユーザー名の説明をつけるかどうか(ここ、注意文言の赤文字に設定し直してもいいかも ex.)ユーザー名は必須です)
+    @Prop({ required: false }) public description!: boolean
 
     get userName() {
         return this.userModel
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async register() {
-        await this.userModel.register()
-        this.$emit('registered')
-        console.log(this.userModel.name)
     }
 }
 </script>

@@ -1,6 +1,10 @@
 <template>
-    <div class="button_container">
-        <button :disabled="disabled" @click="click">
+    <div class="button_container inline-flex">
+        <button
+            :disabled="disabled"
+            @click="click"
+            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 mb-8"
+        >
             <slot />
         </button>
     </div>
@@ -16,25 +20,4 @@ export default class AppButton extends Vue {
     }
 }
 </script>
-<style lang="stylus" scoped>
-.button_container {
-    display: inline-block;
-
-    button {
-        border: 0;
-        border-radius: 5px;
-        font-size: 16px;
-        padding: 5px 5px;
-        cursor: pointer;
-
-        @media only screen and (max-width: $spSize) {
-            font-size: 14px;
-            padding: 5px 5px;
-        }
-
-        &:disabled {
-            color: $borderColor;
-        }
-    }
-}
-</style>
+<style lang="stylus" scoped></style>

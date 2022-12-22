@@ -2,21 +2,35 @@
     <!-- 一旦、user/index.vueで作って、cognito周りができたら_userIDにつなげる -->
     <div class="user_detail_container">
         <div>userホーム画面</div>
-        <div class="mx-auto py-32 auth_container w-600px">
+        <div v-if="userModel" class="mx-auto py-32 auth_container w-600px">
             <div class="alluser_area mb-10">
-                <auth-input
-                    v-model="name"
+                <user-edit
+                    :user-model="userModel"
                     label="ユーザー名"
-                    class="input_item"
                     :description="true"
+                    class="mb-4"
                 />
                 <div class="button_container">
-                    <app-button
-                        @click="register"
-                        class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 mb-8"
-                        >更新</app-button
-                    >
+                    <!-- 後で：ボタンの表記,
+                    登録と更新の使い分け -->
+                    <app-button @click="registerName">更新</app-button>
                 </div>
+            </div>
+            <!-- <div><div>テスト</div>
+            <div>{{this.}}</div></div>
+            </div> -->
+
+            <div class="open_grop_model">
+                <div v-show="isMyPage" class="button_container">
+                    <div class="button" @click="openModal">＋</div>
+                </div>
+                <app-modal v-model="isShowModal">
+                    <edit-group
+                        v-if="blancGroup"
+                        :group-model="blancGroup"
+                        @registered="registered"
+                    />
+                </app-modal>
             </div>
 
             <div class="admin_area mb-10">
@@ -64,9 +78,7 @@
                 <div class="mb-8 text-sm text-gray-500">
                     ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。
                 </div>
-                <app-button
-                    @click="sendToSlack"
-                    class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 mb-8"
+                <app-button @click="sendToSlack"
                     >Slackに送信(テスト)</app-button
                 >
             </div>
@@ -76,32 +88,36 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
-import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
 import AppInput from '@/components/Atom/AppInput.vue'
 import AppSelectWeekday from '@/components/Atom/AppSelectWeekday.vue'
 import AppButton from '@/components/Atom/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import axios from 'axios'
-import { UserModel } from 'chillnn-cleanhack-abr'
+import { UserModel, GroupModel } from 'chillnn-cleanhack-abr'
 const schedule = require('node-schedule')
-import UserEdit from '@/components/Organisms/User/Edit/modules/UserEdit.vue'
 import { userInteractor } from '~/api'
-
+import UserEdit from '@/components/Organisms/User/Edit/modules/UserEdit.vue'
+import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
+// @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
+import EditGroup from '@/components/Organisms/Group/index.vue'
+import { groupMastRepository } from '~/api/modules/GraphqlGroupMastRepository'
 // component
 @Component({
     components: {
         AppTitle,
-        AuthInput,
         AppInput,
         AppSelectWeekday,
         AppButton,
         UserEdit,
+        AppModal,
+        EditGroup,
     },
 })
 export default class UserPage extends Vue {
     public userModel: UserModel | null = null
-    // @Prop({ required: true }) userModel!: UserModel
-    public name: string = ''
+    public myUserModel: UserModel | null = null
+    public blancGroup: GroupModel | null = null
+    public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
     public params: Object = {}
@@ -148,29 +164,39 @@ export default class UserPage extends Vue {
         { key: '20:30', value: '30 20' },
     ]
 
-    // public isShowModal: boolean = false
-    // public async created() {
-    //     const userID = this.$route.params.userID
-    //     this.myUserModel = await userInteractor.fetchMyUserModel()
-    //     this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-    // }
-    // public get isMyPage() {
-    //     return (
-    //         this.myUserModel &&
-    //         this.myUserModel.userID === this.$route.params.userID
-    //     )
-    // }
+    public get isMyPage() {
+        return (
+            this.myUserModel &&
+            this.myUserModel.userID === this.$route.params.userID
+        )
+    }
+
     public async created() {
-        this.userModel = await userInteractor.fetchMyUserModel()
+        const userID = this.$route.params.userID
+        this.myUserModel = await userInteractor.fetchMyUserModel()
+        this.userModel = await userInteractor.fetchUserModelByUserID(userID)
+        console.log(this.userModel)
     }
 
     @AsyncLoadingAndErrorHandle()
-    public async register() {
+    public async registerName() {
         if (this.userModel!.name) {
             await this.userModel!.register()
-            this.$emit('registered')
-            console.log(this.userModel!.name)
+            this.$emit('registerd')
+            console.log(this.userModel)
         } else return alert('ユーザー名を登録してください。')
+    }
+
+    public openModal() {
+        if (this.userModel) {
+            this.blancGroup = this.userModel.createGroupModel()
+            this.isShowModal = true
+        }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        this.isShowModal = false
     }
 
     @AsyncLoadingAndErrorHandle()
