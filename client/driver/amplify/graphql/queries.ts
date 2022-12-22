@@ -21,6 +21,7 @@ export const fetchGroupByGroupID = /* GraphQL */ `
   query FetchGroupByGroupID($groupID: ID!) {
     fetchGroupByGroupID(groupID: $groupID) {
       createdAt
+      createdUserID
       deletedAt
       groupID
       groupName

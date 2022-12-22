@@ -6,6 +6,7 @@ export const addGroup = /* GraphQL */ `
   mutation AddGroup($input: GroupMastInput!) {
     addGroup(input: $input) {
       createdAt
+      createdUserID
       deletedAt
       groupID
       groupName

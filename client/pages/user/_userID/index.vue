@@ -16,11 +16,8 @@
                     <app-button @click="registerName">更新</app-button>
                 </div>
             </div>
-            <!-- <div><div>テスト</div>
-            <div>{{this.}}</div></div>
-            </div> -->
 
-            <div class="open_grop_model">
+            <!-- <div class="open_grop_model">
                 <div v-show="isMyPage" class="button_container">
                     <div class="button" @click="openModal">＋</div>
                 </div>
@@ -31,7 +28,7 @@
                         @registered="registered"
                     />
                 </app-modal>
-            </div>
+            </div> -->
 
             <div class="admin_area mb-10">
                 <!-- これ以降は管理者のみ表示 -->
@@ -82,6 +79,11 @@
                     >Slackに送信(テスト)</app-button
                 >
             </div>
+
+            <div>
+                <div>テスト</div>
+                <edit-group v-if="groupModel" :group-model="groupModel" />
+            </div>
         </div>
     </div>
 </template>
@@ -116,7 +118,7 @@ import { groupMastRepository } from '~/api/modules/GraphqlGroupMastRepository'
 export default class UserPage extends Vue {
     public userModel: UserModel | null = null
     public myUserModel: UserModel | null = null
-    public blancGroup: GroupModel | null = null
+    public groupModel: GroupModel | null = null
     public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
@@ -175,7 +177,9 @@ export default class UserPage extends Vue {
         const userID = this.$route.params.userID
         this.myUserModel = await userInteractor.fetchMyUserModel()
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
+        this.groupModel = await this.userModel.createGroupModel(userID)
         console.log(this.userModel)
+        console.log(this.groupModel)
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -185,18 +189,6 @@ export default class UserPage extends Vue {
             this.$emit('registerd')
             console.log(this.userModel)
         } else return alert('ユーザー名を登録してください。')
-    }
-
-    public openModal() {
-        if (this.userModel) {
-            this.blancGroup = this.userModel.createGroupModel()
-            this.isShowModal = true
-        }
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async registered() {
-        this.isShowModal = false
     }
 
     @AsyncLoadingAndErrorHandle()

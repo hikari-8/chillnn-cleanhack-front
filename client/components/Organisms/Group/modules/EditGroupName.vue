@@ -3,7 +3,7 @@
         <div class="label font-semibold mb-4">グループ名</div>
         <!-- name -->
         <div class="flex gap-x-3 items-center">
-            <app-base-input v-model="groupModel.name" class="w-4/5" />
+            <app-base-input v-model="groupModel.groupName" class="w-4/5" />
         </div>
     </div>
 </template>

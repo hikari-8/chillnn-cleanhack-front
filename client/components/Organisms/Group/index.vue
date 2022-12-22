@@ -11,7 +11,7 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel } from 'chillnn-cleanhack-abr'
+import { GroupModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import GroupEditName from '@/components/Organisms/Group/modules/EditGroupName.vue'
@@ -25,17 +25,14 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
     },
 })
 export default class EditGroup extends Vue {
-    @Prop({ required: true }) groupModel!: UserModel
-
-    public get isShowLink() {
-        return this.$route.params.userID !== this.groupModel.userID
-    }
+    @Prop({ required: true }) groupModel!: GroupModel
 
     @AsyncLoadingAndErrorHandle()
     public async register() {
         await this.groupModel.register()
         this.$emit('registered')
-        console.log(this.groupModel.name)
+        console.log(this.groupModel.groupName, '子コンポーネント')
+        console.log(this.groupModel)
     }
 }
 </script>

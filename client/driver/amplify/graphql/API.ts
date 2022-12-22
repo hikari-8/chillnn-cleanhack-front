@@ -4,18 +4,20 @@
 
 export type GroupMastInput = {
   createdAt: number,
+  createdUserID: string,
   deletedAt?: number | null,
   groupID: string,
-  groupName: string,
+  groupName?: string | null,
   updatedAt: number,
 };
 
 export type GroupMast = {
   __typename: "GroupMast",
   createdAt: number,
+  createdUserID: string,
   deletedAt?: number | null,
   groupID: string,
-  groupName: string,
+  groupName?: string | null,
   updatedAt: number,
 };
 
@@ -171,9 +173,10 @@ export type AddGroupMutation = {
   addGroup:  {
     __typename: "GroupMast",
     createdAt: number,
+    createdUserID: string,
     deletedAt?: number | null,
     groupID: string,
-    groupName: string,
+    groupName?: string | null,
     updatedAt: number,
   },
 };
@@ -285,9 +288,10 @@ export type FetchGroupByGroupIDQuery = {
   fetchGroupByGroupID:  {
     __typename: "GroupMast",
     createdAt: number,
+    createdUserID: string,
     deletedAt?: number | null,
     groupID: string,
-    groupName: string,
+    groupName?: string | null,
     updatedAt: number,
   },
 };
