@@ -24,8 +24,11 @@ import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 export default class EditGroup extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
 
-    get userName() {
-        return this.groupModel
+    get groupName() {
+        return this.groupName || ''
+    }
+    set groupName(input: string) {
+        this.groupName = input
     }
 }
 </script>

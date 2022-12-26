@@ -68,6 +68,18 @@ export const addTaskMasterObject = /* GraphQL */ `
     }
   }
 `;
+export const updateGroup = /* GraphQL */ `
+  mutation UpdateGroup($input: GroupMastInput!) {
+    updateGroup(input: $input) {
+      createdAt
+      createdUserID
+      deletedAt
+      groupID
+      groupName
+      updatedAt
+    }
+  }
+`;
 export const updateUserMast = /* GraphQL */ `
   mutation UpdateUserMast($input: UserMastInput!) {
     updateUserMast(input: $input) {

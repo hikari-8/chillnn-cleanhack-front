@@ -13,22 +13,9 @@
                 <div class="button_container">
                     <!-- 後で：ボタンの表記,
                     登録と更新の使い分け -->
-                    <app-button @click="registerName">更新</app-button>
+                    <app-button @click="register">更新</app-button>
                 </div>
             </div>
-
-            <!-- <div class="open_grop_model">
-                <div v-show="isMyPage" class="button_container">
-                    <div class="button" @click="openModal">＋</div>
-                </div>
-                <app-modal v-model="isShowModal">
-                    <edit-group
-                        v-if="blancGroup"
-                        :group-model="blancGroup"
-                        @registered="registered"
-                    />
-                </app-modal>
-            </div> -->
 
             <div class="admin_area mb-10">
                 <!-- これ以降は管理者のみ表示 -->
@@ -81,8 +68,11 @@
             </div>
 
             <div>
-                <div>テスト</div>
                 <edit-group v-if="groupModel" :group-model="groupModel" />
+                <div class="button_container">
+                    <!-- button -->
+                    <app-button @click="registerGroup">更新する</app-button>
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +85,11 @@ import AppSelectWeekday from '@/components/Atom/AppSelectWeekday.vue'
 import AppButton from '@/components/Atom/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import axios from 'axios'
-import { UserModel, GroupModel } from 'chillnn-cleanhack-abr'
+import {
+    UserModel,
+    GroupModel,
+    RepositoryContainer,
+} from 'chillnn-cleanhack-abr'
 const schedule = require('node-schedule')
 import { userInteractor } from '~/api'
 import UserEdit from '@/components/Organisms/User/Edit/modules/UserEdit.vue'
@@ -103,6 +97,7 @@ import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
 // @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
 import EditGroup from '@/components/Organisms/Group/index.vue'
 import { groupMastRepository } from '~/api/modules/GraphqlGroupMastRepository'
+import { fetchGroupByGroupID } from '~/driver/amplify/graphql/queries'
 // component
 @Component({
     components: {
@@ -177,19 +172,40 @@ export default class UserPage extends Vue {
         const userID = this.$route.params.userID
         this.myUserModel = await userInteractor.fetchMyUserModel()
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-        this.groupModel = await this.userModel.createGroupModel(userID)
-        console.log(this.userModel)
-        console.log(this.groupModel)
+        //自分のgroupModelをuserIDがあればfetchしてきたい
+        this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(userID)
+        console.log('userModel', this.userModel)
+        console.log('myUserModel', this.myUserModel)
+        console.log('groupModel', this.groupModel)
     }
 
     @AsyncLoadingAndErrorHandle()
-    public async registerName() {
-        if (this.userModel!.name) {
-            await this.userModel!.register()
-            this.$emit('registerd')
-            console.log(this.userModel)
-        } else return alert('ユーザー名を登録してください。')
+    public async register() {
+        if (!this.userModel?.name) {
+            return console.error('ユーザー名を入力してください')
+        }
+        await this.userModel.register()
+        this.$emit('registered')
+        console.log('userModel', this.userModel)
+        console.log('myUserModel', this.myUserModel)
+        console.log('groupModel', this.groupModel)
     }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        await this.userModel!.updateGroupMast()
+        this.$emit('registered')
+        console.log(this.groupModel!.groupName, '子コンポーネント')
+        console.log(this.groupModel)
+    }
+
+    // @AsyncLoadingAndErrorHandle()
+    // public async registerGroup() {
+    //     await this.groupModel!.register()
+    //     this.$emit('registered')
+    //     console.log(this.groupModel!.groupName, '子コンポーネント')
+    //     console.log(this.groupModel)
+    // }
 
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {

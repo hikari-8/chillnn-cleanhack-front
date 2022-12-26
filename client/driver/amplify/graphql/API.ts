@@ -144,7 +144,7 @@ export type UserMastInput = {
   createdAt: number,
   deletedAt?: number | null,
   email: string,
-  groupID: string,
+  groupID?: string | null,
   name: string,
   records?: Array< string > | null,
   role: string,
@@ -157,7 +157,7 @@ export type UserMast = {
   createdAt: number,
   deletedAt?: number | null,
   email: string,
-  groupID: string,
+  groupID?: string | null,
   name: string,
   records?: Array< string > | null,
   role: string,
@@ -246,6 +246,22 @@ export type AddTaskMasterObjectMutation = {
   },
 };
 
+export type UpdateGroupMutationVariables = {
+  input: GroupMastInput,
+};
+
+export type UpdateGroupMutation = {
+  updateGroup:  {
+    __typename: "GroupMast",
+    createdAt: number,
+    createdUserID: string,
+    deletedAt?: number | null,
+    groupID: string,
+    groupName?: string | null,
+    updatedAt: number,
+  },
+};
+
 export type UpdateUserMastMutationVariables = {
   input: UserMastInput,
 };
@@ -256,7 +272,7 @@ export type UpdateUserMastMutation = {
     createdAt: number,
     deletedAt?: number | null,
     email: string,
-    groupID: string,
+    groupID?: string | null,
     name: string,
     records?: Array< string > | null,
     role: string,
@@ -271,7 +287,7 @@ export type FetchAllUserMastQuery = {
     createdAt: number,
     deletedAt?: number | null,
     email: string,
-    groupID: string,
+    groupID?: string | null,
     name: string,
     records?: Array< string > | null,
     role: string,
@@ -297,18 +313,18 @@ export type FetchGroupByGroupIDQuery = {
 };
 
 export type FetchMyUserMastQuery = {
-  fetchMyUserMast:  {
+  fetchMyUserMast?:  {
     __typename: "UserMast",
     createdAt: number,
     deletedAt?: number | null,
     email: string,
-    groupID: string,
+    groupID?: string | null,
     name: string,
     records?: Array< string > | null,
     role: string,
     updatedAt: number,
     userID: string,
-  },
+  } | null,
 };
 
 export type FetchRaffleObjectQueryVariables = {
@@ -381,16 +397,16 @@ export type FetchUserMastByUserIDQueryVariables = {
 };
 
 export type FetchUserMastByUserIDQuery = {
-  fetchUserMastByUserID:  {
+  fetchUserMastByUserID?:  {
     __typename: "UserMast",
     createdAt: number,
     deletedAt?: number | null,
     email: string,
-    groupID: string,
+    groupID?: string | null,
     name: string,
     records?: Array< string > | null,
     role: string,
     updatedAt: number,
     userID: string,
-  },
+  } | null,
 };
