@@ -7,29 +7,28 @@
     </div>
 </template>
 <script lang="ts">
-import { GroupModel } from 'chillnn-cleanhack-abr'
+import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import GroupEditName from '@/components/Organisms/Group/modules/EditGroupName.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
         GroupEditName,
-        AppButton,
     },
 })
 export default class EditGroup extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) userModel!: UserModel
 
-    // @AsyncLoadingAndErrorHandle()
-    // public async register() {
-    //     await this.groupModel.register()
-    //     this.$emit('registered')
-    //     console.log(this.groupModel.groupName, '子コンポーネント')
-    //     console.log(this.groupModel)
-    // }
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        await this.userModel!.updateGroupMast()
+        this.$emit('registered')
+        console.log(this.groupModel!.groupName, '子コンポーネント')
+        console.log(this.groupModel)
+    }
 }
 </script>
 <style lang="stylus" scoped>

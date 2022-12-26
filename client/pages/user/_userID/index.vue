@@ -59,7 +59,7 @@
                     </select>
                 </div>
 
-                <div class="mb-8 text-sm text-gray-500">
+                <div class="mb-8 text-sm text-gray-500 mt-2">
                     ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。
                 </div>
                 <app-button @click="sendToSlack"
@@ -68,7 +68,11 @@
             </div>
 
             <div>
-                <edit-group v-if="groupModel" :group-model="groupModel" />
+                <edit-group
+                    v-if="groupModel"
+                    :group-model="groupModel"
+                    :user-model="userModel"
+                />
                 <div class="button_container">
                     <!-- button -->
                     <app-button @click="registerGroup">更新する</app-button>
@@ -82,7 +86,6 @@ import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppInput from '@/components/Atom/AppInput.vue'
 import AppSelectWeekday from '@/components/Atom/AppSelectWeekday.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import axios from 'axios'
 import {
@@ -94,20 +97,19 @@ const schedule = require('node-schedule')
 import { userInteractor } from '~/api'
 import UserEdit from '@/components/Organisms/User/Edit/modules/UserEdit.vue'
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
+import AppButton from '@/components/Atom/AppButton.vue'
 // @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
 import EditGroup from '@/components/Organisms/Group/index.vue'
-import { groupMastRepository } from '~/api/modules/GraphqlGroupMastRepository'
-import { fetchGroupByGroupID } from '~/driver/amplify/graphql/queries'
 // component
 @Component({
     components: {
         AppTitle,
         AppInput,
         AppSelectWeekday,
-        AppButton,
         UserEdit,
         AppModal,
         EditGroup,
+        AppButton,
     },
 })
 export default class UserPage extends Vue {
@@ -178,7 +180,7 @@ export default class UserPage extends Vue {
         console.log('myUserModel', this.myUserModel)
         console.log('groupModel', this.groupModel)
     }
-
+    // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async register() {
         if (!this.userModel?.name) {
@@ -190,7 +192,7 @@ export default class UserPage extends Vue {
         console.log('myUserModel', this.myUserModel)
         console.log('groupModel', this.groupModel)
     }
-
+    // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
         await this.userModel!.updateGroupMast()
@@ -198,15 +200,6 @@ export default class UserPage extends Vue {
         console.log(this.groupModel!.groupName, '子コンポーネント')
         console.log(this.groupModel)
     }
-
-    // @AsyncLoadingAndErrorHandle()
-    // public async registerGroup() {
-    //     await this.groupModel!.register()
-    //     this.$emit('registered')
-    //     console.log(this.groupModel!.groupName, '子コンポーネント')
-    //     console.log(this.groupModel)
-    // }
-
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
