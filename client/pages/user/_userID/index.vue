@@ -96,7 +96,8 @@ import axios from 'axios'
 import {
     UserModel,
     GroupModel,
-    TaskMasterObject,
+    TaskMasterObjectModel,
+    TaskMastModel,
     RepositoryContainer,
 } from 'chillnn-cleanhack-abr'
 const schedule = require('node-schedule')
@@ -124,7 +125,8 @@ export default class UserPage extends Vue {
     public userModel: UserModel | null = null
     public myUserModel: UserModel | null = null
     public groupModel: GroupModel | null = null
-    public taskMasterObject: TaskMasterObject | null = null
+    public taskMasterObjectModel: TaskMasterObjectModel | null = null
+    public taskMastModel: TaskMastModel | null = null
     public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
@@ -185,6 +187,14 @@ export default class UserPage extends Vue {
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
         //自分のgroupModelをuserIDがあればfetchしてきたい
         this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(userID)
+        //グループのtaskMasterObjをgroupIDがあればfetchしてきたい
+        this.taskMastModel = await this.myUserModel.createTaskMast()
+        this.taskMasterObjectModel =
+            await this.myUserModel.createNewTaskMasterObj()
+        // this.taskMasterObjectModel.tasks.push(this.taskMastModel)
+        console.log('taskMasterObjectModel', this.taskMasterObjectModel)
+        console.log('taskMastModel', this.taskMastModel)
+        console.log('groupModel', this.groupModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
