@@ -22,12 +22,14 @@
         "@nuxtjs/pwa": "^3.3.5",
         "@nuxtjs/style-resources": "^1.2.1",
         "@slack/webhook": "^6.1.0",
+        "@types/vuedraggable": "^2.24.0",
         "chillnn-cleanhack-abr": "git+ssh://git@github.com:hikari-8/chillnn-cleanhack-abr.git#dev",
         "core-js": "^3.26.1",
         "node-schedule": "^2.1.0",
         "nuxt": "^2.15.8",
         "nuxt-property-decorator": "^2.9.1",
-        "vee-validate": "^3.4.14"
+        "vee-validate": "^3.4.14",
+        "vuedraggable": "^2.24.3"
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.19.1",

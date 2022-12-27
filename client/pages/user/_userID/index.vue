@@ -2,7 +2,12 @@
     <!-- 一旦、user/index.vueで作って、cognito周りができたら_userIDにつなげる -->
     <div class="user_detail_container">
         <div>userホーム画面</div>
+
         <div v-if="userModel" class="mx-auto py-32 auth_container w-600px">
+            <div>テスト用↓</div>
+            <div class="mb-20">
+                <edit-task label="Taskデータ" />
+            </div>
             <div class="alluser_area mb-10">
                 <user-edit
                     :user-model="userModel"
@@ -67,7 +72,7 @@
                 >
             </div>
 
-            <div>
+            <div class="mb-8">
                 <edit-group
                     v-if="groupModel"
                     :group-model="groupModel"
@@ -91,6 +96,7 @@ import axios from 'axios'
 import {
     UserModel,
     GroupModel,
+    TaskMasterObject,
     RepositoryContainer,
 } from 'chillnn-cleanhack-abr'
 const schedule = require('node-schedule')
@@ -100,6 +106,7 @@ import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
 import AppButton from '@/components/Atom/AppButton.vue'
 // @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
 import EditGroup from '@/components/Organisms/Group/index.vue'
+import EditTask from '@/components/Organisms/User/Task/index.vue'
 // component
 @Component({
     components: {
@@ -110,12 +117,14 @@ import EditGroup from '@/components/Organisms/Group/index.vue'
         AppModal,
         EditGroup,
         AppButton,
+        EditTask,
     },
 })
 export default class UserPage extends Vue {
     public userModel: UserModel | null = null
     public myUserModel: UserModel | null = null
     public groupModel: GroupModel | null = null
+    public taskMasterObject: TaskMasterObject | null = null
     public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
@@ -176,9 +185,6 @@ export default class UserPage extends Vue {
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
         //自分のgroupModelをuserIDがあればfetchしてきたい
         this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(userID)
-        console.log('userModel', this.userModel)
-        console.log('myUserModel', this.myUserModel)
-        console.log('groupModel', this.groupModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
@@ -188,17 +194,12 @@ export default class UserPage extends Vue {
         }
         await this.userModel.register()
         this.$emit('registered')
-        console.log('userModel', this.userModel)
-        console.log('myUserModel', this.myUserModel)
-        console.log('groupModel', this.groupModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
         await this.userModel!.updateGroupMast()
         this.$emit('registered')
-        console.log(this.groupModel!.groupName, '子コンポーネント')
-        console.log(this.groupModel)
     }
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
