@@ -80,6 +80,28 @@ export const updateGroup = /* GraphQL */ `
     }
   }
 `;
+export const updateTaskMasterObject = /* GraphQL */ `
+  mutation UpdateTaskMasterObject($input: TaskMasterObjectInput!) {
+    updateTaskMasterObject(input: $input) {
+      createdAt
+      deletedAt
+      groupID
+      limitTime
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        taskID
+        taskName
+        updatedAt
+      }
+      updatedAt
+    }
+  }
+`;
 export const updateUserMast = /* GraphQL */ `
   mutation UpdateUserMast($input: UserMastInput!) {
     updateUserMast(input: $input) {

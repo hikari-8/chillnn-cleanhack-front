@@ -9,6 +9,8 @@ import * as mutation from '@/driver/amplify/graphql/mutations'
 import {
     AddTaskMasterObjectMutation,
     AddTaskMasterObjectMutationVariables,
+    UpdateTaskMasterObjectMutation,
+    UpdateTaskMasterObjectMutationVariables,
     FetchTaskMasterObjectQueryVariables,
     FetchTaskMasterObjectQuery,
 } from '~/driver/amplify/graphql/API'
@@ -25,6 +27,19 @@ class GraphqlTaskMasterObjectRepository implements ITaskMasterObjectRepository {
                 input,
             })
         ).addTaskMasterObject
+    }
+
+    async updateTaskMasterObject(
+        input: TaskMasterObject
+    ): Promise<TaskMasterObject> {
+        return (
+            await callApi<
+                UpdateTaskMasterObjectMutation,
+                UpdateTaskMasterObjectMutationVariables
+            >(mutation.updateTaskMasterObject, {
+                input,
+            })
+        ).updateTaskMasterObject
     }
 
     // async deleteTaskMasterObject(TaskMasterObjectID: string): Promise<TaskMasterObject> {

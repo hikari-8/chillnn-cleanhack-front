@@ -21,7 +21,7 @@
 import { TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 

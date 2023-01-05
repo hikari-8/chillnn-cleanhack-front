@@ -1,11 +1,15 @@
 <template>
     <div
-        v-show="localValue"
-        class="modal_wrapper"
-        @click.self="localValue = false"
+        class="fixed top-0 left-0 right-0 z-50 overflow-x-hidden overflow-y-auto"
     >
-        <div class="inner">
-            <slot />
+        <div
+            v-show="localValue"
+            class="modal_wrapper"
+            @click.self="localValue = false"
+        >
+            <div class="inner w-2/3">
+                <slot />
+            </div>
         </div>
     </div>
 </template>
@@ -44,13 +48,13 @@ export default class AppModal extends Vue {
         width: 80%;
         max-height: 70%;
         background-color: white;
-        padding: 20px 20px;
+        padding: 40px 40px;
         border-radius: 25px;
 
         @media only screen and (max-width: $spSize) {
             font-size: 14px;
-            padding: 40px 10px;
-            width: 90%;
+            padding: 40px 40px;
+            width: 70%;
         }
     }
 }

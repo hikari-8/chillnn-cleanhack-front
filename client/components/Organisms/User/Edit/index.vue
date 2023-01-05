@@ -15,7 +15,7 @@ import { UserModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import UserEdit from './modules/UserEdit.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({

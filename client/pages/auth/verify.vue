@@ -34,7 +34,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
 import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import LinkButton from '@/components/Atom/LinkButton.vue'
 import { authInteractor } from '~/driver/amplify/auth'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'

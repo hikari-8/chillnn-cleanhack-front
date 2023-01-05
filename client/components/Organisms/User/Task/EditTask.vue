@@ -3,17 +3,24 @@
         <div class="label font-semibold mb-4">{{ label }}</div>
         <div class="input_container">
             <!-- task edit -->
-            <task-list />
+            <task-list
+                :user-model="userModel"
+                :task-master-object-model="taskMasterObjectModel"
+            />
             <!-- <edit-tasks :user-model="userModel" /> -->
         </div>
     </div>
 </template>
 <script lang="ts">
-import { UserModel } from 'chillnn-cleanhack-abr'
+import {
+    UserModel,
+    TaskMasterObjectModel,
+    TaskMastModel,
+} from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import TaskList from '~/components/Organisms/User/Task/modules/TaskList.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppText from '@/components/Atom/Text/AppText.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
@@ -26,7 +33,9 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
         AppText,
     },
 })
-export default class TaskEdit extends Vue {
+export default class EditTask extends Vue {
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) label!: string | number
     // public get isShowLink() {
     //     return this.$route.params.userID !== this.userModel.userID

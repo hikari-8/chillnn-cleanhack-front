@@ -6,7 +6,11 @@
         <div v-if="userModel" class="mx-auto py-32 auth_container w-600px">
             <div>テスト用↓</div>
             <div class="mb-20">
-                <edit-task label="Taskデータ" />
+                <edit-task
+                    label="Taskデータ"
+                    :user-model="userModel"
+                    :task-master-object-model="taskMasterObjectModel"
+                />
             </div>
             <div class="alluser_area mb-10">
                 <user-edit
@@ -34,7 +38,7 @@
                     <!-- セレクトボックス -->
                     <select
                         id="week"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/5 p-2.5"
                         v-model="weekdayKey"
                     >
                         <option disabled selected value=""></option>
@@ -72,7 +76,7 @@
                 >
             </div>
 
-            <div class="mb-8">
+            <div class="mb-8" v-show="groupModel">
                 <edit-group
                     v-if="groupModel"
                     :group-model="groupModel"
@@ -104,10 +108,10 @@ const schedule = require('node-schedule')
 import { userInteractor } from '~/api'
 import UserEdit from '@/components/Organisms/User/Edit/modules/UserEdit.vue'
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 // @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
 import EditGroup from '@/components/Organisms/Group/index.vue'
-import EditTask from '@/components/Organisms/User/Task/index.vue'
+import EditTask from '~/components/Organisms/User/Task/EditTask.vue'
 // component
 @Component({
     components: {
@@ -126,7 +130,6 @@ export default class UserPage extends Vue {
     public myUserModel: UserModel | null = null
     public groupModel: GroupModel | null = null
     public taskMasterObjectModel: TaskMasterObjectModel | null = null
-    public taskMastModel: TaskMastModel | null = null
     public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
@@ -185,16 +188,30 @@ export default class UserPage extends Vue {
         const userID = this.$route.params.userID
         this.myUserModel = await userInteractor.fetchMyUserModel()
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-        //自分のgroupModelをuserIDがあればfetchしてきたい
-        this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(userID)
-        //グループのtaskMasterObjをgroupIDがあればfetchしてきたい
-        this.taskMastModel = await this.myUserModel.createTaskMast()
-        this.taskMasterObjectModel =
-            await this.myUserModel.createNewTaskMasterObj()
-        // this.taskMasterObjectModel.tasks.push(this.taskMastModel)
+        //自分のgroupModelとグループのtaskMasterObjをgroupIDがあればfetchしてきたい
+        if (!this.myUserModel.groupID) {
+            return null
+            console.log('まだgroupDataが作成されていません')
+        } else {
+            this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(
+                this.myUserModel.groupID
+            )
+        }
+        //groupModelがある、かつtaskMasterObjectModelがnull
+        if (this.groupModel && this.taskMasterObjectModel == null) {
+            this.taskMasterObjectModel =
+                await this.myUserModel.createNewTaskMasterObj()
+        } else if (this.groupModel && this.taskMasterObjectModel) {
+            //もし作成済みなら、そのデータをfetchしてくる
+            this.taskMasterObjectModel =
+                await this.myUserModel.fetchTaskMasterDataObjByGroupID(
+                    this.groupModel.groupID
+                )
+        }
+
         console.log('taskMasterObjectModel', this.taskMasterObjectModel)
-        console.log('taskMastModel', this.taskMastModel)
         console.log('groupModel', this.groupModel)
+        console.log('userModel', this.userModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
@@ -204,12 +221,28 @@ export default class UserPage extends Vue {
         }
         await this.userModel.register()
         this.$emit('registered')
+        //GroupModelが作成されているはずなので、fetchしてくる
+        if (this.userModel.groupID) {
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID(
+                this.userModel.groupID
+            )
+        }
+
+        console.log('groupModel', this.groupModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
-        await this.userModel!.updateGroupMast()
-        this.$emit('registered')
+        if (!this.userModel) {
+            return console.error('registerGroupメソッドで、userModelがnullです')
+        } else {
+            const groupID = this.userModel.groupID
+            await this.userModel!.updateGroupMast()
+            this.$emit('registered')
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID(
+                groupID!
+            )
+        }
     }
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {

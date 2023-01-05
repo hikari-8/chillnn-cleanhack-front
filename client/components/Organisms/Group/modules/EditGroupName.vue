@@ -12,7 +12,7 @@
 import { GroupModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
-import AppButton from '@/components/Atom/AppButton.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({

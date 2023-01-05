@@ -15,8 +15,19 @@
                 /> -->
 
                 <div class="flex">
-                    <button-base>新規追加＋</button-base>
+                    <button-base @click="openModal">新規追加＋</button-base>
                 </div>
+
+                <!-- モーダル -->
+                <app-modal v-model="isShowModal">
+                    <add-task
+                        v-if="taskMastItem"
+                        :task-master-obj-model="taskMasterObjectModel"
+                        :task-mast-item="taskMastItem"
+                        :user-model="userModel"
+                        @registered="registered"
+                    />
+                </app-modal>
             </div>
         </div>
 
@@ -42,69 +53,15 @@
             </div>
             <!-- </draggable> -->
         </div>
-
-        <!-- <div class="mb-[10px] flex items-center justify-between"> -->
-        <!-- title -->
-        <!-- <div class="my-[10px] flex items-center">
-                <template v-if="!orderChange">
-                    <button-base-sub @click="orderChange = !orderChange"
-                        >↕︎並び替え</button-base-sub
-                    >
-                </template>
-                <div v-else class="flex items-center">
-                    <button-base @click="updateOrder"
-                        >並び替えを終了する</button-base
-                    >
-                    <app-caption
-                        class="pl-2"
-                        value="売り出し中のプランをドラッグ&ドロップで並び替えてください"
-                    />
-                </div>
-            </div> -->
-        <!-- add -->
-        <!-- <div class="flex">
-                <button-base v-if="!orderChange" @click="goAdd"
-                    >新規追加＋</button-base
-                >
-            </div> -->
-        <!-- </div> -->
-        <!-- <div class="mb-5 flex border-b-2 border-solid border-black pb-[5px]">
-            <app-caption value="順番" :boldCenter="true" class="w-[7%]" />
-            <app-caption value="プラン名" :boldCenter="true" class="w-[30%]" />
-            <app-caption value="残在庫" :boldCenter="true" class="w-[13%]" />
-            <app-caption value="単価" :boldCenter="true" class="w-1/4" />
-            <div class="w-1/4" />
-        </div> -->
-        <!-- <div
-            class="bg-chillnn-bg-layer-4 py-2 text-center text-xs font-bold"
-            v-if="privateMasts || notsaleMasts"
-        >
-            売り出し中
-        </div> -->
-        <!-- <div class="mb-[30px]">
-            <draggable
-                v-model="insalePlans"
-                class="plan_draggable"
-                :disabled="!orderChange"
-            >
-                <div v-for="(plan, idx) in insalePlans" :key="plan.planID">
-                    <plan-item
-                        :idx="idx"
-                        :plan="plan"
-                        @delete-emit="deleteEmit"
-                        :orderChange="orderChange"
-                    />
-                </div>
-                <div v-if="!insalePlans.length" class="mt-7 text-center">
-                    売り出し中のプランはありません。
-                </div>
-            </draggable>
-        </div> -->
     </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Emit, Watch } from 'nuxt-property-decorator'
-import {} from 'chillnn-cleanhack-abr'
+import {
+    TaskMasterObjectModel,
+    TaskMastModel,
+    UserModel,
+} from 'chillnn-cleanhack-abr'
 // component
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppCaption from '@/components/Atom/Text/AppText.vue'
@@ -114,66 +71,74 @@ import draggable from 'vuedraggable'
 import ButtonBase from '@/components/Atom/Button/button_base.vue'
 import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import TaskItem from '@/components/Organisms/User/Task/modules/TaskItem.vue'
+import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
+import AddTask from '@/components/Organisms/User/Task/AddTask.vue'
+import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 
 @Component({
     components: {
         AppTitle,
         AppText,
+        AppModal,
+        AddTask,
         AppBaseInput,
         ButtonBase,
         ButtonBaseSub,
+        AppButton,
         AppCaption,
         TaskItem,
         draggable,
     },
 })
 export default class TaskList extends Vue {
-    public edited: boolean = false
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) userModel!: UserModel
+    // public edited: boolean = false
+    public isShowModal: boolean = false
     public orderChange: boolean = false
+    public taskMastItem: TaskMastModel | null = null
+    public taskModel: TaskMastModel | null = null
+    public updatedMasterModel: TaskMasterObjectModel | null = null
     public exampleTasks: { idx: number; name: string; headcount: number }[] = [
         { idx: 1, name: '洗面所', headcount: 2 },
         { idx: 2, name: '床', headcount: 3 },
         { idx: 3, name: 'トイレ', headcount: 1 },
     ]
-    // public initialValue: PlanMast[] = []
-    // @Prop() public privateMasts!: PlanMast[]
-    // @Prop() public notsaleMasts!: PlanMast[]
-    // @Prop() public addRouteName!: string
-    // @Emit('updateOrder') public updateOrder() {
-    //     this.orderChange = false
-    // }
-    // @Emit('delete-emit') public deleteEmit() {}
 
-    // @Watch('insalePlans')
-    // public getChange() {
-    //     if (
-    //         this.initialValue !== [] &&
-    //         JSON.stringify(this.initialValue) !==
-    //             JSON.stringify(this.insalePlans)
-    //     ) {
-    //         this.edited = true
-    //     } else {
-    //         this.edited = false
+    public openModal() {
+        if (this.taskMasterObjectModel) {
+            //taskMastを新規作成している
+            this.taskMastItem = this.userModel.createTaskMast()
+            console.log('TaskMast作成', this.taskMastItem)
+            this.isShowModal = true
+        }
+    }
+
+    // @AsyncLoadingAndErrorHandle()
+    // public async registered() {
+    //     const groupID = this.userModel.groupID
+    //     if (!groupID) {
+    //         console.error('Group ID is required')
     //     }
-    // }
-    // @Prop()
-    // public value!: PlanMast[]
-    // @Emit() public input(_: PlanMast[]) {}
-    // public get insalePlans() {
-    //     return this.value
-    // }
-    // public set insalePlans(val: PlanMast[]) {
-    //     this.input(val)
-    // }
-    // public goAdd() {
-    //     this.$router.push({
-    //         name: this.addRouteName,
-    //         params: { hotelID: this.$route.params.hotelID },
-    //     })
-    // }
+    //     if (!this.taskMasterObjectModel || !groupID) {
+    //         return console.error('Task Master Object Model or GroupID is null')
+    //     } else {
+    //         //アップデートする
+    //         this.updatedMasterModel =
+    //             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+    //         //その値がnullじゃなければ、taskMasterObjectModelに入れる
+    //         if (this.updatedMasterModel == null) {
+    //             return console.error('this.updatedMasterModel is null')
+    //         } else {
+    //             this.taskMasterObjectModel = this.updatedMasterModel
+    //         }
+    //     }
 
-    // public created() {
-    //     this.initialValue = [...this.value]
+    //     // this.updatedMasterModel =
+    //     //     await this.userModel.fetchTaskMasterDataObjByGroupID(groupID!)
+    //     this.taskMastItem = null
+    //     this.isShowModal = false
     // }
 }
 </script>

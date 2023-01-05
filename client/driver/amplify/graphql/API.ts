@@ -262,6 +262,33 @@ export type UpdateGroupMutation = {
   },
 };
 
+export type UpdateTaskMasterObjectMutationVariables = {
+  input: TaskMasterObjectInput,
+};
+
+export type UpdateTaskMasterObjectMutation = {
+  updateTaskMasterObject:  {
+    __typename: "TaskMasterObject",
+    createdAt: number,
+    deletedAt?: number | null,
+    groupID: string,
+    limitTime?: number | null,
+    remindSlackTime?: number | null,
+    remindSlackWeek?: string | null,
+    tasks:  Array< {
+      __typename: "TaskMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+    } >,
+    updatedAt: number,
+  },
+};
+
 export type UpdateUserMastMutationVariables = {
   input: UserMastInput,
 };
