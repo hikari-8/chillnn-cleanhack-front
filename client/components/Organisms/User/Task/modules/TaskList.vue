@@ -72,7 +72,7 @@ import ButtonBase from '@/components/Atom/Button/button_base.vue'
 import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import TaskItem from '@/components/Organisms/User/Task/modules/TaskItem.vue'
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
-import AddTask from '@/components/Organisms/User/Task/AddTask.vue'
+import AddTask from '@/components/Organisms/User/Task/modules/AddTask.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 
@@ -92,19 +92,29 @@ import AppButton from '@/components/Atom/Button/AppButton.vue'
     },
 })
 export default class TaskList extends Vue {
-    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) userModel!: UserModel
-    // public edited: boolean = false
     public isShowModal: boolean = false
     public orderChange: boolean = false
+    public updatedMasterObjModel: TaskMasterObjectModel | null = null
+    public taskMasterObjectModel: TaskMasterObjectModel | null = null
     public taskMastItem: TaskMastModel | null = null
     public taskModel: TaskMastModel | null = null
-    public updatedMasterModel: TaskMasterObjectModel | null = null
     public exampleTasks: { idx: number; name: string; headcount: number }[] = [
         { idx: 1, name: '洗面所', headcount: 2 },
         { idx: 2, name: '床', headcount: 3 },
         { idx: 3, name: 'トイレ', headcount: 1 },
     ]
+
+    public async created() {
+        //taskMasterObjectModelをgroupIDでfetchしてくる
+        if (this.userModel) {
+            this.taskMasterObjectModel =
+                await this.userModel.fetchTaskMasterDataObjByGroupID(
+                    this.userModel.groupID!
+                )
+            console.log('Attention', this.taskMasterObjectModel)
+        }
+    }
 
     public openModal() {
         if (this.taskMasterObjectModel) {
@@ -115,31 +125,29 @@ export default class TaskList extends Vue {
         }
     }
 
-    // @AsyncLoadingAndErrorHandle()
-    // public async registered() {
-    //     const groupID = this.userModel.groupID
-    //     if (!groupID) {
-    //         console.error('Group ID is required')
-    //     }
-    //     if (!this.taskMasterObjectModel || !groupID) {
-    //         return console.error('Task Master Object Model or GroupID is null')
-    //     } else {
-    //         //アップデートする
-    //         this.updatedMasterModel =
-    //             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
-    //         //その値がnullじゃなければ、taskMasterObjectModelに入れる
-    //         if (this.updatedMasterModel == null) {
-    //             return console.error('this.updatedMasterModel is null')
-    //         } else {
-    //             this.taskMasterObjectModel = this.updatedMasterModel
-    //         }
-    //     }
-
-    //     // this.updatedMasterModel =
-    //     //     await this.userModel.fetchTaskMasterDataObjByGroupID(groupID!)
-    //     this.taskMastItem = null
-    //     this.isShowModal = false
-    // }
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        const groupID = this.userModel.groupID
+        if (!groupID) {
+            console.error('Group ID is required')
+        }
+        if (!this.taskMasterObjectModel || !groupID) {
+            return console.error('Task Master Object Model or GroupID is null')
+        } else {
+            //アップデートしたものをfetchしてくる
+            this.updatedMasterObjModel =
+                await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+            if (this.updatedMasterObjModel) {
+                this.taskMasterObjectModel = this.updatedMasterObjModel
+            }
+        }
+        console.log(
+            'registered後のthis.taskMasterObjectModel',
+            this.taskMasterObjectModel
+        )
+        this.taskMastItem = null
+        this.isShowModal = false
+    }
 }
 </script>
 <style lang="stylus" scoped></style>

@@ -6,11 +6,7 @@
         <div v-if="userModel" class="mx-auto py-32 auth_container w-600px">
             <div>テスト用↓</div>
             <div class="mb-20">
-                <edit-task
-                    label="Taskデータ"
-                    :user-model="userModel"
-                    :task-master-object-model="taskMasterObjectModel"
-                />
+                <edit-task label="Taskデータ" :user-model="userModel" />
             </div>
             <div class="alluser_area mb-10">
                 <user-edit
@@ -129,7 +125,6 @@ export default class UserPage extends Vue {
     public userModel: UserModel | null = null
     public myUserModel: UserModel | null = null
     public groupModel: GroupModel | null = null
-    public taskMasterObjectModel: TaskMasterObjectModel | null = null
     public isShowModal: boolean = false
     public message: Object = {}
     public slackURL: string = ''
@@ -137,6 +132,7 @@ export default class UserPage extends Vue {
     public pattern: any = null
     public weekdayKey: string = ''
     public timeKey: string = ''
+    public test: TaskMasterObjectModel | null = null
 
     public limitWeekdaysList: { key: string; value: number }[] = [
         { key: '日', value: 0 },
@@ -177,6 +173,15 @@ export default class UserPage extends Vue {
         { key: '20:30', value: '30 20' },
     ]
 
+    public async created() {
+        const userID = this.$route.params.userID
+        this.myUserModel = await userInteractor.fetchMyUserModel()
+        this.userModel = await userInteractor.fetchUserModelByUserID(userID)
+        this.groupModel = await this.myUserModel.fetchGroupDataByGroupID()
+        console.log('groupModel', this.groupModel)
+        console.log('userModel', this.userModel)
+    }
+
     public get isMyPage() {
         return (
             this.myUserModel &&
@@ -184,64 +189,25 @@ export default class UserPage extends Vue {
         )
     }
 
-    public async created() {
-        const userID = this.$route.params.userID
-        this.myUserModel = await userInteractor.fetchMyUserModel()
-        this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-        //自分のgroupModelとグループのtaskMasterObjをgroupIDがあればfetchしてきたい
-        if (!this.myUserModel.groupID) {
-            return null
-            console.log('まだgroupDataが作成されていません')
-        } else {
-            this.groupModel = await this.myUserModel.fetchGroupDataByGroupID(
-                this.myUserModel.groupID
-            )
-        }
-        //groupModelがある、かつtaskMasterObjectModelがnull
-        if (this.groupModel && this.taskMasterObjectModel == null) {
-            this.taskMasterObjectModel =
-                await this.myUserModel.createNewTaskMasterObj()
-        } else if (this.groupModel && this.taskMasterObjectModel) {
-            //もし作成済みなら、そのデータをfetchしてくる
-            this.taskMasterObjectModel =
-                await this.myUserModel.fetchTaskMasterDataObjByGroupID(
-                    this.groupModel.groupID
-                )
-        }
-
-        console.log('taskMasterObjectModel', this.taskMasterObjectModel)
-        console.log('groupModel', this.groupModel)
-        console.log('userModel', this.userModel)
-    }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async register() {
-        if (!this.userModel?.name) {
+        if (!this.myUserModel?.name) {
             return console.error('ユーザー名を入力してください')
         }
-        await this.userModel.register()
+        await this.myUserModel.register()
         this.$emit('registered')
-        //GroupModelが作成されているはずなので、fetchしてくる
-        if (this.userModel.groupID) {
-            this.groupModel = await this.userModel.fetchGroupDataByGroupID(
-                this.userModel.groupID
-            )
-        }
-
-        console.log('groupModel', this.groupModel)
     }
     // なんかこここんぽーねんと分割できない
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
-        if (!this.userModel) {
+        if (!this.myUserModel) {
             return console.error('registerGroupメソッドで、userModelがnullです')
         } else {
-            const groupID = this.userModel.groupID
-            await this.userModel!.updateGroupMast()
+            const groupID = this.myUserModel.groupID
+            await this.groupModel!.updateGroupMast()
             this.$emit('registered')
-            this.groupModel = await this.userModel.fetchGroupDataByGroupID(
-                groupID!
-            )
+            this.groupModel = await this.myUserModel.fetchGroupDataByGroupID()
         }
     }
     @AsyncLoadingAndErrorHandle()

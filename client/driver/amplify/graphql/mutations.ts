@@ -55,6 +55,7 @@ export const addTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      taskMasterObjectID
       tasks {
         createdAt
         deletedAt
@@ -89,6 +90,7 @@ export const updateTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      taskMasterObjectID
       tasks {
         createdAt
         deletedAt

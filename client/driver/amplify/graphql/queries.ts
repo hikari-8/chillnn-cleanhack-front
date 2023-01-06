@@ -85,6 +85,7 @@ export const fetchTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      taskMasterObjectID
       tasks {
         createdAt
         deletedAt

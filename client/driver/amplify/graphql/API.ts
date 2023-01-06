@@ -103,6 +103,7 @@ export type TaskMasterObjectInput = {
   limitTime?: number | null,
   remindSlackTime?: number | null,
   remindSlackWeek?: string | null,
+  taskMasterObjectID: string,
   tasks: Array< TaskMastInput >,
   updatedAt: number,
 };
@@ -125,6 +126,7 @@ export type TaskMasterObject = {
   limitTime?: number | null,
   remindSlackTime?: number | null,
   remindSlackWeek?: string | null,
+  taskMasterObjectID: string,
   tasks:  Array<TaskMast >,
   updatedAt: number,
 };
@@ -232,6 +234,7 @@ export type AddTaskMasterObjectMutation = {
     limitTime?: number | null,
     remindSlackTime?: number | null,
     remindSlackWeek?: string | null,
+    taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",
       createdAt: number,
@@ -275,6 +278,7 @@ export type UpdateTaskMasterObjectMutation = {
     limitTime?: number | null,
     remindSlackTime?: number | null,
     remindSlackWeek?: string | null,
+    taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",
       createdAt: number,
@@ -405,6 +409,7 @@ export type FetchTaskMasterObjectQuery = {
     limitTime?: number | null,
     remindSlackTime?: number | null,
     remindSlackWeek?: string | null,
+    taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",
       createdAt: number,

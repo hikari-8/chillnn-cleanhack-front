@@ -81,12 +81,10 @@ export default class AddTask extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ default: true }) public taskMasterObjModel!: TaskMasterObjectModel
 
+    public updatedMasterModel: TaskMasterObjectModel | null = null
+
     public async created() {
-        console.log('modal中のtaskmastmodelです', this.taskMastItem)
-        console.log(
-            'modal中のtaskMastmodelのtaskNameです',
-            this.taskMastItem.taskName
-        )
+        // console.log('modal中のtaskmastmodelです', this.taskMastItem)
     }
     public headCountList: { key: number; value: number }[] = [
         { key: 1, value: 1 },
@@ -120,11 +118,9 @@ export default class AddTask extends Vue {
         if (!this.taskMasterObjModel) {
             return null
         } else {
-            this.taskMasterObjModel.register()
+            this.taskMasterObjModel.updateTaskMasterObj()
             this.$emit('registered')
         }
-
-        //fetchする
     }
 }
 </script>

@@ -3,10 +3,7 @@
         <div class="label font-semibold mb-4">{{ label }}</div>
         <div class="input_container">
             <!-- task edit -->
-            <task-list
-                :user-model="userModel"
-                :task-master-object-model="taskMasterObjectModel"
-            />
+            <task-list :user-model="userModel" />
             <!-- <edit-tasks :user-model="userModel" /> -->
         </div>
     </div>
@@ -34,9 +31,9 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
     },
 })
 export default class EditTask extends Vue {
-    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) label!: string | number
+
     // public get isShowLink() {
     //     return this.$route.params.userID !== this.userModel.userID
     // }

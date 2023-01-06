@@ -24,7 +24,7 @@ export default class EditGroup extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
-        await this.userModel!.updateGroupMast()
+        await this.groupModel!.updateGroupMast()
         this.$emit('registered')
         console.log(this.groupModel!.groupName, '子コンポーネント')
         console.log(this.groupModel)
