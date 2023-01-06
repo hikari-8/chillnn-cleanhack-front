@@ -12,7 +12,6 @@
                     class="block text-sm font-medium text-gray-900 flex-shrink-0"
                     >掃除場所名</label
                 >
-                <!-- {{ taskMasterObject.taskName }} -->
                 <app-base-input
                     v-model="taskMastItem.taskName"
                     class="input_taskname"
@@ -80,12 +79,7 @@ export default class AddTask extends Vue {
     @Prop({ default: true }) public taskMastItem!: TaskMastModel
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ default: true }) public taskMasterObjModel!: TaskMasterObjectModel
-
     public updatedMasterModel: TaskMasterObjectModel | null = null
-
-    public async created() {
-        // console.log('modal中のtaskmastmodelです', this.taskMastItem)
-    }
     public headCountList: { key: number; value: number }[] = [
         { key: 1, value: 1 },
         { key: 2, value: 2 },
@@ -125,24 +119,6 @@ export default class AddTask extends Vue {
 }
 </script>
 <style lang="stylus" scoped>
-.caption {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 1rem;
-
-    .input_description_wapper {
-        margin-left: auto;
-        margin-right: auto;
-
-    }
-
-    .input_description {
-        width: 300px;
-        border-radius: 0.375rem;
-        border-width: 2px;
-    }
-}
 
 .button {
     margin: 20px auto 0;
