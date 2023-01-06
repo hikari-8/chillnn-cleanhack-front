@@ -2,28 +2,23 @@
     <div
         class="flex items-center border-b border-solid border-chillnn-border-base py-[15px]"
     >
-        <!-- 順番 -->
-        <div class="w-[10%] text-center flex-grow-0">
-            <span>{{ index + 1 }}</span>
+        <!-- ポチ -->
+        <div class="w-[15%] text-center flex-grow-0">
+            <span class="text-gray-600">⚫︎</span>
         </div>
-        <!-- ドラッグ&ドロップを実装するなら、ここ必要 -->
-        <!-- <div class="w-[7%] text-center">
-            <span v-if="!orderChange">{{ idx + 1 }}</span>
-            <hamburger-small v-else />
-        </div> -->
         <!-- 掃除場所名 -->
-        <div class="mr-[55px] text-black flex-grow">
-            <app-text :bold="true" :value="task.name" />
+        <div class="w-[55%] text-black flex-grow">
+            <app-text :bold="true" :value="task.taskName" />
             <!-- <app-text :bold="true" :value="plan.name.default" /> -->
         </div>
         <!-- 人数 -->
         <div class="w-[10%] text-center flex-grow-0">
             <template>
-                <span>{{ task.headcount }}</span>
+                <span>{{ task.headCount }}</span>
             </template>
         </div>
 
-        <div class="w-[25%] flex-grow-0">
+        <div class="w-[20%] flex-grow-0">
             <div class="flex justify-center gap-[10px]">
                 <!-- ボタン -->
                 <table-button>
@@ -55,6 +50,7 @@ import ButtonBase from '@/components/Atom/Button/button_base.vue'
 import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 import TableButton from '@/components/Atom/Button/TableButton.vue'
+import { TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
 
 export const planTableHeader = ['プラン名', '残在庫', '単価', '']
 
@@ -68,8 +64,9 @@ export const planTableHeader = ['プラン名', '残在庫', '単価', '']
     },
 })
 export default class TaskItem extends Vue {
-    @Prop({ default: false }) public task!: Object
-    @Prop({ default: false }) public index!: number
+    @Prop({ default: false }) public task!: TaskMasterObjectModel
+    // @Prop({ default: false }) public task!: Object
+    // @Prop({ default: false }) public index!: number
     public taskIndex: number = 0
     public exampleTaskObj: Object = []
     // @Prop({ default: false }) public orderChange!: number
@@ -80,9 +77,6 @@ export default class TaskItem extends Vue {
 
     public get getTask() {
         return (this.exampleTaskObj = this.task)
-    }
-    public get getTaskIndex() {
-        return (this.taskIndex = this.index)
     }
 
     // @AsyncLoadingAndErrorHandle()

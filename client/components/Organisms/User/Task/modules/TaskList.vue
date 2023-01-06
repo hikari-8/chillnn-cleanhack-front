@@ -1,19 +1,8 @@
 <template>
     <div class="task_list_container">
-        <!-- 仮デザ -->
-        <!-- ボタン部分 -->
-        <div class="my-[10px] flex items-center justify-between mb-2">
-            <template>
-                <button-base-sub>↕︎並び替え</button-base-sub>
-            </template>
-            <div class="flex items-center">
-                <!-- ドラッグアンドドロップ -->
-                <!-- <button-base>並び替えを終了する</button-base>
-                <app-caption
-                    class="pl-2"
-                    value="売り出し中のプランをドラッグ&ドロップで並び替えてください"
-                /> -->
-
+        <!-- ボタン -->
+        <div class="my-[10px] flex mb-2 justify-end">
+            <div class="flex">
                 <div class="flex">
                     <button-base @click="openModal">新規追加＋</button-base>
                 </div>
@@ -31,27 +20,32 @@
             </div>
         </div>
 
+        <!-- リスト -->
         <div class="flex border-b-2 border-solid border-black pb-2">
-            <app-caption value="順番" :boldCenter="true" class="w-[10%]" />
+            <div class="w-[15%] text-center flex-grow-0"></div>
             <app-caption
                 value="掃除場所名"
                 :boldCenter="true"
                 class="w-[55%]"
             />
-            <app-caption value="人数" :boldCenter="true" class="w-[10%]" />
+            <app-caption
+                value="人数"
+                :boldCenter="true"
+                class="w-[10%] text-center"
+            />
         </div>
-        <div class="mb-[25px]">
-            <!-- <draggable v-if="exampleTasks" class="task_draggable"> -->
-            <div v-show="exampleTasks" class="task_draggable">
-                <div v-for="(task, index) in exampleTasks" :key="task.idx">
-                    <!-- {{ name }} -->
-                    <task-item :task="task" :index="index" />
+        <div class="mb-[20px]">
+            <div v-if="taskMasterObjectModel" class="tasks">
+                <div
+                    v-for="task in taskMasterObjectModel.tasks"
+                    :key="task.taskID"
+                >
+                    <task-item :task="task" />
                 </div>
-                <div class="mt-7 text-center">
+                <div class="mt-7 text-center" v-show="!taskMasterObjectModel">
                     くじを作成するために、掃除場所データを登録してください。
                 </div>
             </div>
-            <!-- </draggable> -->
         </div>
     </div>
 </template>
