@@ -147,7 +147,7 @@ export default class SlackRemindTime extends Vue {
         let message = { text: '13:13 指定のテストです' }
         let slackUrl =
             'https://hooks.slack.com/services/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'
-        //times-hikati
+        //times-hikari
         // let slackUrlTimesHikari =
         //     'https://hooks.slack.com/services/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'
 
