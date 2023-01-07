@@ -1,8 +1,21 @@
 <template>
-    <div class="group_edit_container">
+    <div
+        class="mx-auto py-32 auth_container w-600px"
+        v-if="groupModel && userModel"
+    >
+        <div class="font-semibold mb-8 text-2xl">グループ設定 👤</div>
         <div class="input_container">
-            <!-- user edit -->
-            <group-edit-name :group-model="groupModel" />
+            <!-- ユーザー名変更 -->
+            <edit-group
+                :group-model="groupModel"
+                label="グループ名"
+                :description="true"
+                class="mb-4"
+            />
+            <div class="button_container">
+                <!-- button -->
+                <app-button @click="registerGroup">更新</app-button>
+            </div>
         </div>
     </div>
 </template>
@@ -10,47 +23,34 @@
 import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
-import GroupEditName from '@/components/Organisms/Group/modules/EditGroupName.vue'
+import EditGroup from '@/components/Organisms/Group/modules/EditGroup.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
-        GroupEditName,
+        EditGroup,
+        AppButton,
     },
 })
-export default class EditGroup extends Vue {
+export default class AppGroupEdit extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     @Prop({ required: true }) userModel!: UserModel
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
-        await this.groupModel!.updateGroupMast()
-        this.$emit('registered')
-        console.log(this.groupModel!.groupName, '子コンポーネント')
-        console.log(this.groupModel)
+        if (!this.userModel) {
+            return console.error('registerGroupメソッドで、userModelがnullです')
+        } else {
+            await this.groupModel!.updateGroupMast()
+            this.$emit('registered')
+            await this.userModel.fetchGroupDataByGroupID()
+        }
     }
 }
 </script>
 <style lang="stylus" scoped>
-.user_edit_container {
-    height: 100%;
-
-    .title_container {
-        text-align: center;
-        padding-bottom: 30px;
-
-        @media only screen and (max-width: $spSize) {
-            padding-bottom: 10px;
-        }
-    }
-
-    .input_container {
-    }
-
-    .button_container {
-        padding-top: 10px;
-        display: flex;
-        justify-content: center;
-    }
+.auth_container {
+    width: 600px;
 }
 </style>

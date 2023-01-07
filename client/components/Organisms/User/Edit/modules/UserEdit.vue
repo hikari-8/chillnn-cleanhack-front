@@ -1,5 +1,5 @@
 <template>
-    <div class="name_input_container">
+    <div class="name_input_container" v-if="userModel">
         <div class="label font-semibold mb-4">{{ label }}</div>
         <!-- name -->
         <div class="flex gap-x-3 items-center">
@@ -26,10 +26,6 @@ export default class UserEdit extends Vue {
     @Prop({ required: true }) label!: string | number
     //ユーザー名の説明をつけるかどうか(ここ、注意文言の赤文字に設定し直してもいいかも ex.)ユーザー名は必須です)
     @Prop({ required: false }) public description!: boolean
-
-    get userName() {
-        return this.userModel
-    }
 }
 </script>
 <style lang="stylus" scoped></style>
