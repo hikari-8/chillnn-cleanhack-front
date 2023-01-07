@@ -175,6 +175,7 @@
                     <app-task-edit
                         v-if="show == 'rSettings'"
                         :userModel="userModel"
+                        :taskMasterObjectModel="taskMasterObjectModel"
                     />
                     <div v-if="show == '2'">ホームがおされたよ</div>
                 </div>
@@ -184,7 +185,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
-import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
+import {
+    GroupModel,
+    UserModel,
+    TaskMasterObjectModel,
+} from 'chillnn-cleanhack-abr'
 // components
 import AppSideMenuSummary from '@/components/Organisms/Common/SideMenu/AppSideMenuSummary.vue'
 import AppSideMenuContent from '@/components/Organisms/Common/SideMenu/AppSideMenuContent.vue'
@@ -211,6 +216,7 @@ import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 export default class AppHome extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false

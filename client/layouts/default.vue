@@ -1,8 +1,8 @@
 <template>
-    <div class="app_container">
+    <div class="app_container" v-if="userModel">
         <div class="app_header">
             <!-- header -->
-            <app-header v-if="userModel" :user-model="userModel" />
+            <app-header :user-model="userModel" />
         </div>
         <div class="app">
             <!-- app -->
@@ -23,13 +23,13 @@ import { userInteractor } from '~/api'
 })
 export default class DefaultLayout extends Vue {
     public userModel: UserModel | null = null
+    public isSignIn: boolean = false
 
     public async created() {
         const isSignIn = await authInteractor.isSignIn()
         if (!isSignIn) {
-            this.$router.push({ name: 'auth-signin' })
+            this.$router.push({ name: 'auth-signup' })
         }
-
         this.userModel = await userInteractor.fetchMyUserModel()
     }
 }

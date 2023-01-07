@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div>
-                <div class="button_container flex justify-center">
+                <div class="button_container flex justify-center mb-2">
                     <app-button :disabled="disabled" @click="signIn"
                         >ログイン</app-button
                     >

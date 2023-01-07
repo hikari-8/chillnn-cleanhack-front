@@ -1,5 +1,5 @@
 <template>
-    <div class="slack_rimind_edit_container h-full">
+    <div class="slack_rimind_edit_container h-full mt-20">
         <!-- マスターデータ: くじの編集 -->
         <div class="font-semibold mb-8 text-2xl">掃除場所設定 🧹</div>
         <div class="label font-semibold mb-4">掃除場所のマスターデータ</div>
@@ -56,18 +56,19 @@ const schedule = require('node-schedule')
 })
 export default class EditTask extends Vue {
     @Prop({ required: true }) userModel!: UserModel
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public updatedMasterObjModel: TaskMasterObjectModel | null = null
-    public taskMasterObjectModel: TaskMasterObjectModel | null = null
-    public async created() {
-        //taskMasterObjectModelをgroupIDでfetchしてくる
-        if (this.userModel) {
-            this.taskMasterObjectModel =
-                await this.userModel.fetchTaskMasterDataObjByGroupID(
-                    this.userModel.groupID!
-                )
-            console.log('Attention', this.taskMasterObjectModel)
-        }
-    }
+    // public taskMasterObjectModel: TaskMasterObjectModel | null = null
+    // public async created() {
+    //     //taskMasterObjectModelをgroupIDでfetchしてくる
+    //     if (this.userModel) {
+    //         this.taskMasterObjectModel =
+    //             await this.userModel.fetchTaskMasterDataObjByGroupID(
+    //                 this.userModel.groupID!
+    //             )
+    //         console.log('Attention', this.taskMasterObjectModel)
+    //     }
+    // }
 
     @AsyncLoadingAndErrorHandle()
     public async registerTask() {

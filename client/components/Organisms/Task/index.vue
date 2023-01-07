@@ -1,8 +1,14 @@
 <template>
-    <div class="mx-auto pb-32 auth_container w-600px" v-if="userModel">
+    <div
+        class="mx-auto pb-32 auth_container w-600px"
+        v-if="userModel && taskMasterObjectModel"
+    >
         <!-- 掃除場所のマスターデータ -->
         <div class="mb-20">
-            <edit-task :user-model="userModel" />
+            <edit-task
+                :user-model="userModel"
+                :taskMasterObjectModel="taskMasterObjectModel"
+            />
         </div>
     </div>
 </template>
@@ -22,6 +28,7 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 })
 export default class AppTaskEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public get isShowLink() {
         return this.$route.params.userID !== this.userModel.userID
     }

@@ -18,14 +18,14 @@
                 </div>
             </div>
             <div>
-                <div class="button_container">
+                <div class="button_container mb-2">
                     <app-button :disabled="disabled" @click="authSignUp"
                         >新規登録</app-button
                     >
                 </div>
                 <div class="link_container">
                     <link-button :to="{ name: 'auth-signin' }"
-                        >アカウントをお持ちでない方はこちら</link-button
+                        >アカウントをお持ちの方はこちら</link-button
                     >
                 </div>
             </div>

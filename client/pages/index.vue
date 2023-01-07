@@ -1,6 +1,10 @@
 <template>
-    <div>
-        <app-home :userModel="userModel" :groupModel="groupModel" />
+    <div v-if="userModel">
+        <app-home
+            :userModel="userModel"
+            :groupModel="groupModel"
+            :taskMasterObjectModel="taskMasterObjectModel"
+        />
         <!--ナブバーの実装が完了するまで残す -->
         <!-- <div v-if="userModel">
             <app-button class="mt-2">
@@ -19,12 +23,17 @@
     </div>
 </template>
 <script lang="ts">
-import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
+import {
+    GroupModel,
+    UserModel,
+    TaskMasterObjectModel,
+} from 'chillnn-cleanhack-abr'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { userInteractor } from '~/api'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppHome from '@/components/Organisms/Home/index.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import { authInteractor } from '~/driver/amplify/auth'
 
 // component
 @Component({
@@ -36,9 +45,20 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class Top extends Vue {
     public userModel: UserModel | null = null
     public groupModel: GroupModel | null = null
+    public updatedMasterObjModel: TaskMasterObjectModel | null = null
+    public taskMasterObjectModel: TaskMasterObjectModel | null = null
+
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
         this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        //taskMasterObjectModelをgroupIDでfetchしてくる
+        if (this.userModel) {
+            this.taskMasterObjectModel =
+                await this.userModel.fetchTaskMasterDataObjByGroupID(
+                    this.userModel.groupID!
+                )
+            console.log('Attention', this.taskMasterObjectModel)
+        }
     }
 
     @AsyncLoadingAndErrorHandle()
