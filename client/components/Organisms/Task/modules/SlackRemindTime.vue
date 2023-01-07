@@ -49,7 +49,7 @@
 import { UserModel, TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
-import TaskList from '~/components/Organisms/User/Task/modules/TaskList.vue'
+import TaskList from '~/components/Organisms/Task/modules/TaskList.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppText from '@/components/Atom/Text/AppText.vue'

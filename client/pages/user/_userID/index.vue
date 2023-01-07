@@ -67,7 +67,7 @@ import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 // @ts-ignore --pagesの配下からGUIで引っ張ってきたので、tsがパスに対してwarnを出している
 import EditGroup from '@/components/Organisms/Group/index.vue'
-import EditTask from '~/components/Organisms/User/Task/EditTask.vue'
+import EditTask from '~/components/Organisms/Task/index.vue'
 // component
 @Component({
     components: {

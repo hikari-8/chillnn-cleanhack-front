@@ -56,10 +56,17 @@
                                             title="くじを発行する"
                                             text="くじを発行する"
                                         />
-                                        <app-side-menu-sub-content
-                                            title="くじを設定する"
-                                            text="くじを設定する"
-                                        />
+                                        <div
+                                            @click="showBody('rSettings')"
+                                            v-bind:class="{
+                                                active: show == 'rSettings',
+                                            }"
+                                        >
+                                            <app-side-menu-sub-content
+                                                title="くじを設定する"
+                                                text="くじを設定する"
+                                            />
+                                        </div>
                                     </app-side-menu-summary>
                                 </div>
                             </div>
@@ -168,6 +175,10 @@
                         :groupModel="groupModel"
                         :userModel="userModel"
                     />
+                    <app-task-edit
+                        v-if="show == 'rSettings'"
+                        :userModel="userModel"
+                    />
                     <div v-if="show == '2'">ホームがおされたよ</div>
                 </div>
             </div>
@@ -186,6 +197,7 @@ import AppText from '@/components/Atom/Text/AppText.vue'
 import AppUserEdit from '@/components/Organisms/User/Edit/index.vue'
 import AppGroupEdit from '@/components/Organisms/Group/index.vue'
 import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
+import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -196,6 +208,7 @@ import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
         AppUserEdit,
         AppGroupEdit,
         HomeBody,
+        AppTaskEdit,
     },
 })
 export default class AppHome extends Vue {

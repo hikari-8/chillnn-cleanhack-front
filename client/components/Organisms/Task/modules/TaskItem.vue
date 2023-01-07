@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="task"
         class="flex items-center border-b border-solid border-chillnn-border-base py-[15px]"
     >
         <!-- ポチ -->
