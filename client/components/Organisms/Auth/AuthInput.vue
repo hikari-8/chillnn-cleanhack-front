@@ -1,8 +1,8 @@
 <template>
     <div class="auth_input_container">
         <div class="label">{{ label }}</div>
-        <div class="input">
-            <app-input v-model="localValue" :type="type" />
+        <div class="input w-max">
+            <app-base-input v-model="localValue" :type="type" />
         </div>
     </div>
 </template>
@@ -10,21 +10,15 @@
 import { Component, Prop } from 'nuxt-property-decorator'
 // component
 import AppInput from '@/components/Atom/AppInput.vue'
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({
     components: {
-        AppInput,
+        AppBaseInput,
     },
 })
 export default class AuthInput extends AppInput {
     @Prop({ required: true }) label!: string | number
 }
 </script>
-<style lang="stylus" scoped>
-.auth_input_container {
-    .label {
-        font-size: 14px;
-    }
-
-}
-</style>
+<style lang="stylus" scoped></style>

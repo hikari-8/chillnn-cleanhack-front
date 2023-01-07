@@ -1,31 +1,36 @@
 <template>
     <div class="auth_signup_container">
         <div>
-            <auth-title>メール認証</auth-title>
+            <app-title>メール認証</app-title>
         </div>
-        <div class="input_container">
-            <auth-input v-model="email" label="Eメール" class="input_item" />
-            <auth-input
-                v-model="password"
-                label="パスワード"
-                type="password"
-                class="input_item"
-            />
-            <auth-input
-                v-model="verifyCode"
-                label="認証コード"
-                class="input_item"
-            />
-        </div>
-        <div class="button_container">
-            <app-button :disabled="disabled" @click="verifyAndSignIn"
-                >認証</app-button
-            >
-        </div>
-        <div class="link_container">
-            <link-button :to="{ name: 'auth-signin' }"
-                >アカウントをお持ちの方はこちら</link-button
-            >
+        <!-- input areas -->
+        <div>
+            <div class="flex justify-center">
+                <div class="">
+                    <div class="label font-semibold mb-4">Eメール</div>
+                    <app-base-input v-model="email" class="mb-4 w-96" />
+                    <div class="label font-semibold mb-4 w-96">パスワード</div>
+                    <app-base-input
+                        v-model="password"
+                        type="password"
+                        class="mb-4"
+                    />
+                    <div class="label font-semibold mb-4 w-96">認証コード</div>
+                    <app-base-input v-model="verifyCode" class="mb-4" />
+                </div>
+            </div>
+            <div>
+                <div class="button_container">
+                    <app-button :disabled="disabled" @click="verifyAndSignIn"
+                        >認証</app-button
+                    >
+                </div>
+                <div class="link_container">
+                    <link-button :to="{ name: 'auth-signin' }"
+                        >アカウントをお持ちの方はこちら</link-button
+                    >
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +39,8 @@ import { Component, Vue } from 'nuxt-property-decorator'
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
 import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
+import AppTitle from '@/components/Atom/Text/AppTitle.vue'
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import LinkButton from '@/components/Atom/LinkButton.vue'
 import { authInteractor } from '~/driver/amplify/auth'
@@ -43,9 +50,11 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
     layout: 'auth',
     components: {
         AuthTitle,
+        AppTitle,
         AuthInput,
         AppButton,
         LinkButton,
+        AppBaseInput,
     },
 })
 export default class VerifyPage extends Vue {

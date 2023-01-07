@@ -5,7 +5,7 @@
             <div class="font-semibold mb-8 text-2xl">ユーザー設定 👤</div>
 
             <!-- ユーザー名 -->
-            <div class="alluser_area mb-10">
+            <div class="alluser_area mb-14">
                 <user-edit
                     :user-model="userModel"
                     label="ユーザー名"
@@ -21,7 +21,7 @@
                 <!-- これ以降は管理者のみ表示 -->
                 <div class="font-semibold mb-8 text-2xl">グループ設定 🤝</div>
                 <!-- グループ名 -->
-                <div class="mb-8" v-show="groupModel">
+                <div class="mb-14" v-show="groupModel">
                     <edit-group
                         v-if="groupModel"
                         :group-model="groupModel"

@@ -1,35 +1,34 @@
 <template>
-    <div class="auth_signup_container">
+    <div class="auth_signin_container mx-auto p-32 w-600px">
         <div>
-            <app-title>サインイン</app-title>
+            <app-title>ログイン 🏃</app-title>
         </div>
-        <div class="all_input_area flex flex-col">
-            <div class="input_container">
-                <auth-input
-                    v-model="email"
-                    label="Eメール"
-                    class="input_item"
-                />
-                <auth-input
-                    v-model="password"
-                    label="パスワード"
-                    type="password"
-                    class="input_item"
-                />
+        <div>
+            <div class="flex justify-center">
+                <div class="">
+                    <div class="label font-semibold mb-4">Eメール</div>
+                    <app-base-input v-model="email" class="mb-4 w-96" />
+                    <div class="label font-semibold mb-4 w-96">パスワード</div>
+                    <app-base-input
+                        v-model="password"
+                        type="password"
+                        class="mb-4"
+                    />
+                </div>
             </div>
-            <div class="button_container">
-                <app-button :disabled="disabled" @click="signIn"
-                    >サインイン</app-button
-                >
-            </div>
-            <div class="link_container">
-                <link-button :to="{ name: 'auth-signup' }"
-                    >アカウントをお持ちでない方はこちら</link-button
-                >
+            <div>
+                <div class="button_container flex justify-center">
+                    <app-button :disabled="disabled" @click="signIn"
+                        >ログイン</app-button
+                    >
+                </div>
+                <div class="link_container flex justify-center">
+                    <link-button :to="{ name: 'auth-signup' }"
+                        >アカウントをお持ちでない方はこちら</link-button
+                    >
+                </div>
             </div>
         </div>
-        <!-- テスト -->
-        <!-- <app-base-input v-model="email" /> -->
     </div>
 </template>
 <script lang="ts">
@@ -75,17 +74,11 @@ export default class SignInPage extends Vue {
 }
 </script>
 <style lang="stylus" scoped>
-.auth_signup_container {
+.auth_signin_container {
     padding: 80px 80px 60px;
 
     @media only screen and (max-width: $spSize) {
         padding: 50px 20px;
-    }
-
-    .input_container {
-        .input_item {
-            padding-bottom: 20px;
-        }
     }
 
     .button_container {

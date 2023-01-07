@@ -1,36 +1,33 @@
 <template>
-    <div class="">
-        <div class="auth_signup_container">
-            <div class="block text-pink-200 mb-8">
-                <auth-title>新規登録</auth-title>
-            </div>
-            <!-- input areas -->
-            <div class="">
-                <div class="block input_container">
-                    <!-- email:{{ email }} password: {{ password }} -->
-                    <auth-input
-                        v-model="email"
-                        label="Eメール"
-                        class="input_item justify-center"
-                    />
-                    <auth-input
+    <div class="auth_signup_container mx-auto p-32 w-600px">
+        <div>
+            <app-title>新規登録 🎉</app-title>
+        </div>
+        <!-- input areas -->
+        <div>
+            <div class="flex justify-center">
+                <div class="">
+                    <div class="label font-semibold mb-4">Eメール</div>
+                    <app-base-input v-model="email" class="mb-4 w-96" />
+                    <div class="label font-semibold mb-4 w-96">パスワード</div>
+                    <app-base-input
                         v-model="password"
-                        label="パスワード"
                         type="password"
-                        class="input_item justify-center"
+                        class="mb-4"
                     />
                 </div>
             </div>
-
-            <div class="button_container">
-                <app-button :disabled="disabled" @click="authSignUp"
-                    >新規登録</app-button
-                >
-            </div>
-            <div class="link_container block">
-                <link-button :to="{ name: 'auth-signin' }"
-                    >アカウントをお持ちの方はこちら</link-button
-                >
+            <div>
+                <div class="button_container">
+                    <app-button :disabled="disabled" @click="authSignUp"
+                        >新規登録</app-button
+                    >
+                </div>
+                <div class="link_container">
+                    <link-button :to="{ name: 'auth-signin' }"
+                        >アカウントをお持ちでない方はこちら</link-button
+                    >
+                </div>
             </div>
         </div>
     </div>
@@ -39,19 +36,23 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
+import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import LinkButton from '@/components/Atom/LinkButton.vue'
 import { authInteractor } from '~/driver/amplify/auth'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({
     layout: 'auth',
     components: {
         AuthTitle,
+        AppTitle,
         AuthInput,
         AppButton,
         LinkButton,
+        AppBaseInput,
     },
 })
 export default class SignUpPage extends Vue {

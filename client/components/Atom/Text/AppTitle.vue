@@ -1,6 +1,6 @@
 各項目の見出しに使う
 <template>
-    <div class="app_title font-bold text-gray-500 text-2xl text-center">
+    <div class="app_title font-semibold mb-8 text-xl text-center">
         <slot />
     </div>
 </template>

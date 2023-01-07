@@ -1,12 +1,18 @@
 <template>
-    <div class="user_edit_container">
+    <div class="mx-auto py-32 auth_container w-600px" v-if="userModel">
+        <div class="font-semibold mb-8 text-2xl">ユーザー設定 👤</div>
         <div class="input_container">
-            <!-- user edit -->
-            <user-edit :user-model="userModel" />
-        </div>
-        <div class="button_container">
-            <!-- button -->
-            <app-button @click="register">更新する</app-button>
+            <!-- ユーザー名変更 -->
+            <user-edit
+                :user-model="userModel"
+                label="ユーザー名"
+                :description="true"
+                class="mb-4"
+            />
+            <div class="button_container">
+                <!-- button -->
+                <app-button @click="register">更新</app-button>
+            </div>
         </div>
     </div>
 </template>
@@ -33,31 +39,16 @@ export default class AppUserEdit extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async register() {
+        if (!this.userModel?.name) {
+            return console.error('ユーザー名を入力してください')
+        }
         await this.userModel.register()
         this.$emit('registered')
     }
 }
 </script>
 <style lang="stylus" scoped>
-.user_edit_container {
-    height: 100%;
-
-    .title_container {
-        text-align: center;
-        padding-bottom: 30px;
-
-        @media only screen and (max-width: $spSize) {
-            padding-bottom: 10px;
-        }
-    }
-
-    .input_container {
-    }
-
-    .button_container {
-        padding-top: 10px;
-        display: flex;
-        justify-content: center;
-    }
+.auth_container {
+    width: 600px;
 }
 </style>
