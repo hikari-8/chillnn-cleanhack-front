@@ -45,7 +45,7 @@ export default class AppModal extends Vue {
         // overflow-x: none;
         box-sizing: border-box;
         // max-width: 800px;
-        width: 80%;
+        width: 50%;
         max-height: 70%;
         background-color: white;
         padding: 40px 40px;

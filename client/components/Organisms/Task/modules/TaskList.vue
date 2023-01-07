@@ -4,7 +4,7 @@
         <div class="my-[10px] flex mb-2 justify-end">
             <div class="flex">
                 <div class="flex">
-                    <button-base @click="openModal">新規追加＋</button-base>
+                    <app-button @click="openModal">新規追加＋</app-button>
                 </div>
 
                 <!-- モーダル -->

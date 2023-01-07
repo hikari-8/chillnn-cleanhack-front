@@ -1,17 +1,19 @@
 <template>
     <!-- モーダルの内側 -->
     <div
-        class="task_add_container w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full flex"
+        class="task_add_container w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
     >
-        <div class="relative w-full h-full max-w-md md:h-auto">
+        <!-- 掃除場所と人数のdiv -->
+        <div class="flex justify-center">
             <div
-                class="input_taskname_wapper flex items-center text-center gap-x-2 mb-8"
+                class="input_taskname_wapper flex items-center text-center gap-x-2 w-72"
             >
-                <label
-                    for="email"
-                    class="block text-sm font-medium text-gray-900 flex-shrink-0"
-                    >掃除場所名</label
+                <div
+                    for="cleanPlace"
+                    class="text-sm font-medium text-gray-900 flex-shrink-0"
                 >
+                    掃除場所名
+                </div>
                 <app-base-input
                     v-model="taskMastItem.taskName"
                     class="input_taskname"
@@ -19,17 +21,18 @@
                 <!-- 数字の追加と、できればオプションの追加-->
             </div>
             <div
-                class="input_taskname_wapper flex items-center text-center gap-x-2"
+                class="input_headcount_wapper w-32 flex items-center text-center gap-x-2 w-32"
             >
-                <label
-                    for="email"
-                    class="block text-xs font-medium text-gray-900 flex-shrink-0"
-                    >人数</label
+                <div
+                    for="headCount"
+                    class="text-xs font-medium text-gray-900 flex-shrink-0"
                 >
+                    人数
+                </div>
                 <!-- セレクトボックス -->
                 <select
                     id="headCount"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/5 p-2.5"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                     v-model="taskMastItem.headCount"
                 >
                     <option disabled selected value=""></option>
@@ -41,18 +44,33 @@
                         {{ selectedHeadCount.key }}
                     </option>
                 </select>
-
-                <div class="block text-sm font-medium text-gray-900">人</div>
+                <div class="text-sm font-medium text-gray-900">人</div>
                 <!-- 数字の追加と、できればオプションの追加-->
             </div>
-            <div class="button flex">
-                <app-button
-                    :disabled="!taskMastItem"
-                    @click="registered"
-                    class="mx-auto mt-8"
-                    >追加</app-button
+        </div>
+        <!-- オプション -->
+        <div class="flex justify-center">
+            <div
+                class="input_option_wapper flex items-center text-center gap-x-2 mt-8"
+            >
+                <div
+                    for="headCount"
+                    class="text-sm font-medium text-gray-900 flex-shrink-0"
                 >
+                    オプション(後で)
+                </div>
+                <app-base-input class="input_option w-full"></app-base-input>
             </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="button">
+            <app-button
+                :disabled="!taskMastItem"
+                @click="registered"
+                class="mx-auto mt-8"
+                >追加</app-button
+            >
         </div>
     </div>
 </template>
@@ -120,9 +138,13 @@ export default class AddTask extends Vue {
 </script>
 <style lang="stylus" scoped>
 
+.input_option_wapper{
+  width: 416px;
+}
+
 .button {
     margin: 20px auto 0;
-    display: inline-block;
+    // display: inline-block;
     text-align: center;
     width: 100%;
 }

@@ -1,11 +1,7 @@
 <template>
     <div class="slack_rimind_edit_container h-full">
-        <!-- マスターデータ: リマインド時間の編集 -->
-        <slack-remind-time
-            :user-model="userModel"
-            :taskMasterObjectModel="taskMasterObjectModel"
-        />
         <!-- マスターデータ: くじの編集 -->
+        <div class="font-semibold mb-8 text-2xl">掃除場所設定 🧹</div>
         <div class="label font-semibold mb-4">掃除場所のマスターデータ</div>
         <div class="task_edit_container">
             <!-- task edit -->
@@ -25,6 +21,15 @@
             <!-- button -->
             <app-button @click="updateTaskMasterObj">更新する</app-button>
         </div>
+
+        <!-- マスターデータ: リマインド時間の編集 -->
+        <div class="font-semibold mb-8 text-2xl">
+            くじ引きリマインド時間設定 ⏰
+        </div>
+        <slack-remind-time
+            :user-model="userModel"
+            :taskMasterObjectModel="taskMasterObjectModel"
+        />
     </div>
 </template>
 <script lang="ts">

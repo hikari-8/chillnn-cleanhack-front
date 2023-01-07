@@ -1,6 +1,5 @@
 <template>
     <div class="mx-auto pb-32 auth_container w-600px" v-if="userModel">
-        <div class="font-semibold mb-8 text-2xl">掃除場所設定 🧹</div>
         <!-- 掃除場所のマスターデータ -->
         <div class="mb-20">
             <edit-task :user-model="userModel" />
