@@ -30,9 +30,18 @@
                 <select
                     id="time"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-2.5"
-                    v-model="timeKey"
+                    v-model="taskMasterObjectModel.remindSlackTime"
                 >
                     <option disabled selected value="">時間</option>
+                    <!-- 選択肢にありさえすれば、リロードしても表示されている。inputで入力できるようにした時には、使えるかも、今だとcronの値が入っているので表示してもよくわからない -->
+                    <!-- <option
+                        v-if="taskMasterObjectModel.remindSlackTime"
+                        disabled
+                        selected
+                        :value="taskMasterObjectModel.remindSlackTime"
+                    >
+                        {{ taskMasterObjectModel.remindSlackTime }}
+                    </option> -->
                     <option
                         v-for="selectedTime in limitTimesList"
                         :value="selectedTime.value"
@@ -57,12 +66,13 @@
         <!-- マスターデータ: リマインド時間の編集 -->
 
         <div class="mb-8 text-sm text-gray-500 mt-2">
-            ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。
+            ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。<br />
+            　再度リマインド日時を変更すると、最後に登録された日時でリマインドされます。
         </div>
         <!-- ボタン -->
-        <div class="button">
+        <!-- <div class="button">
             <app-button @click="sendToSlack">Slackにテスト送信</app-button>
-        </div>
+        </div> -->
     </div>
 </template>
 <script lang="ts">
@@ -89,8 +99,6 @@ export default class SlackRemindTime extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public slackURL: string = ''
-    public weekdayKey: string = ''
-    public timeKey: string = ''
 
     public limitWeekdaysList: { key: string; value: number }[] = [
         { key: '日', value: 0 },
@@ -103,31 +111,31 @@ export default class SlackRemindTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '13:13', value: '13 13' },
-        { key: '09:00', value: '* 9' },
-        { key: '09:30', value: '* 9' },
-        { key: '10:00', value: '* 10' },
+        { key: '20:06', value: '06 20' },
+        { key: '09:00', value: '00 9' },
+        { key: '09:30', value: '00 9' },
+        { key: '10:00', value: '00 10' },
         { key: '10:30', value: '30 10' },
-        { key: '11:00', value: '* 11' },
+        { key: '11:00', value: '00 11' },
         { key: '11:30', value: '30 11' },
-        { key: '12:00', value: '* 12' },
+        { key: '12:00', value: '00 12' },
         { key: '12:30', value: '30 12' },
-        { key: '13:00', value: '* 13' },
+        { key: '13:00', value: '00 13' },
         { key: '13:30', value: '30 13' },
-        { key: '14:00', value: '* 14' },
+        { key: '14:00', value: '00 14' },
         { key: '14:30', value: '30 14' },
-        { key: '15:00', value: '* 15' },
+        { key: '15:00', value: '00 15' },
         { key: '15:30', value: '30 15' },
-        { key: '16:00', value: '* 16' },
+        { key: '16:00', value: '00 16' },
         { key: '16:30', value: '30 16' },
-        { key: '17:00', value: '* 17' },
+        { key: '17:00', value: '00 17' },
         { key: '17:15', value: '15 17' },
         { key: '17:30', value: '30 17' },
-        { key: '18:00', value: '* 18' },
+        { key: '18:00', value: '00 18' },
         { key: '18:30', value: '30 18' },
-        { key: '19:00', value: '* 19' },
+        { key: '19:00', value: '00 19' },
         { key: '19:30', value: '30 19' },
-        { key: '20:00', value: '* 20' },
+        { key: '20:00', value: '00 20' },
         { key: '20:30', value: '30 20' },
     ]
 
@@ -137,26 +145,25 @@ export default class SlackRemindTime extends Vue {
         const groupID = this.userModel.groupID
         if (groupID) {
             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
-            console.log('曜日', this.taskMasterObjectModel.remindSlackWeek)
         }
+        this.sendToSlack()
     }
 
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
-        let message = { text: '13:13 指定のテストです' }
+        let message = {
+            text: `${this.taskMasterObjectModel.remindSlackTime} * * ${this.taskMasterObjectModel.remindSlackWeek}時間指定のメッセージです。頑張って！！`,
+        }
         let slackUrl =
             'https://hooks.slack.com/services/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'
         //times-hikari
         // let slackUrlTimesHikari =
         //     'https://hooks.slack.com/services/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'
 
-        //アラート
-        alert(`通知がスケジュールされました`)
-
         //時間指定 (分、時、日、月、曜日)
-        const setTime = `${this.timeKey} * * ${this.weekdayKey}`
-        console.log(this.timeKey, setTime)
+        const setTime = `${this.taskMasterObjectModel.remindSlackTime} * * ${this.taskMasterObjectModel.remindSlackWeek}`
+        console.log('時間指定→', setTime)
 
         const sendAtSchedule = schedule.scheduleJob(setTime, () => {
             params.append('payload', JSON.stringify(message))
@@ -169,6 +176,8 @@ export default class SlackRemindTime extends Vue {
                     console.log(err)
                 })
         })
+        //アラート
+        alert(`通知がスケジュールされました`)
     }
 }
 </script>

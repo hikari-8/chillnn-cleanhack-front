@@ -14,6 +14,16 @@
                 :taskMasterObjectModel="taskMasterObjectModel"
                 @registered="registerTask"
             />
+            <div class="mb-8 text-sm text-gray-500 mt-4">
+                ＊くじの基盤となるデータです。これを元に、各回のくじを作成します。
+            </div>
+        </div>
+
+        <div>テストボタン</div>
+        <!-- 全ての掃除場所設定を登録する -->
+        <div class="button_container">
+            <!-- button -->
+            <app-button @click="updateTaskMasterObj">更新する</app-button>
         </div>
     </div>
 </template>
@@ -74,6 +84,17 @@ export default class EditTask extends Vue {
             'registered後のthis.taskMasterObjectModel',
             this.taskMasterObjectModel
         )
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async updateTaskMasterObj() {
+        if (this.taskMasterObjectModel)
+            this.taskMasterObjectModel.updateTaskMasterObj()
+        const groupID = this.userModel.groupID
+        if (groupID) {
+            await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+        }
+        console.log('テストです')
     }
 }
 </script>

@@ -81,6 +81,38 @@ export const updateGroup = /* GraphQL */ `
     }
   }
 `;
+export const updateRaffleObject = /* GraphQL */ `
+  mutation UpdateRaffleObject($input: RaffleObjectInput!) {
+    updateRaffleObject(input: $input) {
+      activeMembers {
+        deletedAt
+        groupID
+        joinAt
+        userID
+      }
+      createdAt
+      deletedAt
+      groupID
+      limitTime
+      raffleID
+      raffleStatus
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        raffleID
+        taskID
+        taskName
+        updatedAt
+        userID
+      }
+      updatedAt
+    }
+  }
+`;
 export const updateTaskMasterObject = /* GraphQL */ `
   mutation UpdateTaskMasterObject($input: TaskMasterObjectInput!) {
     updateTaskMasterObject(input: $input) {

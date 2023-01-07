@@ -9,6 +9,8 @@ import * as mutation from '@/driver/amplify/graphql/mutations'
 import {
     AddRaffleObjectMutation,
     AddRaffleObjectMutationVariables,
+    UpdateRaffleObjectMutation,
+    UpdateRaffleObjectMutationVariables,
     FetchRaffleObjectQueryVariables,
     FetchRaffleObjectQuery,
 } from '~/driver/amplify/graphql/API'
@@ -23,6 +25,17 @@ class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
                 input,
             })
         ).addRaffleObject
+    }
+
+    async updateRaffleObject(input: RaffleObject): Promise<RaffleObject> {
+        return (
+            await callApi<
+                UpdateRaffleObjectMutation,
+                UpdateRaffleObjectMutationVariables
+            >(mutation.updateRaffleObject, {
+                input,
+            })
+        ).updateRaffleObject
     }
 
     // async deleteRaffleObject(RaffleObjectID: string): Promise<RaffleObject> {

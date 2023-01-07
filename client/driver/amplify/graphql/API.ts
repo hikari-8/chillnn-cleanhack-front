@@ -29,7 +29,7 @@ export type RaffleObjectInput = {
   limitTime: number,
   raffleID: string,
   raffleStatus: RaffleStatus,
-  remindSlackTime: number,
+  remindSlackTime: string,
   remindSlackWeek: string,
   tasks: Array< RaffleMastInput >,
   updatedAt: number,
@@ -69,7 +69,7 @@ export type RaffleObject = {
   limitTime: number,
   raffleID: string,
   raffleStatus: RaffleStatus,
-  remindSlackTime: number,
+  remindSlackTime: string,
   remindSlackWeek: string,
   tasks:  Array<RaffleMast >,
   updatedAt: number,
@@ -101,7 +101,7 @@ export type TaskMasterObjectInput = {
   deletedAt?: number | null,
   groupID: string,
   limitTime?: number | null,
-  remindSlackTime?: number | null,
+  remindSlackTime?: string | null,
   remindSlackWeek?: string | null,
   taskMasterObjectID: string,
   tasks: Array< TaskMastInput >,
@@ -124,7 +124,7 @@ export type TaskMasterObject = {
   deletedAt?: number | null,
   groupID: string,
   limitTime?: number | null,
-  remindSlackTime?: number | null,
+  remindSlackTime?: string | null,
   remindSlackWeek?: string | null,
   taskMasterObjectID: string,
   tasks:  Array<TaskMast >,
@@ -203,7 +203,7 @@ export type AddRaffleObjectMutation = {
     limitTime: number,
     raffleID: string,
     raffleStatus: RaffleStatus,
-    remindSlackTime: number,
+    remindSlackTime: string,
     remindSlackWeek: string,
     tasks:  Array< {
       __typename: "RaffleMast",
@@ -232,7 +232,7 @@ export type AddTaskMasterObjectMutation = {
     deletedAt?: number | null,
     groupID: string,
     limitTime?: number | null,
-    remindSlackTime?: number | null,
+    remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
@@ -265,6 +265,44 @@ export type UpdateGroupMutation = {
   },
 };
 
+export type UpdateRaffleObjectMutationVariables = {
+  input: RaffleObjectInput,
+};
+
+export type UpdateRaffleObjectMutation = {
+  updateRaffleObject:  {
+    __typename: "RaffleObject",
+    activeMembers?:  Array< {
+      __typename: "RaffleJoinUser",
+      deletedAt?: number | null,
+      groupID: string,
+      joinAt: number,
+      userID: string,
+    } > | null,
+    createdAt: number,
+    deletedAt?: number | null,
+    groupID: string,
+    limitTime: number,
+    raffleID: string,
+    raffleStatus: RaffleStatus,
+    remindSlackTime: string,
+    remindSlackWeek: string,
+    tasks:  Array< {
+      __typename: "RaffleMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount?: number | null,
+      raffleID: string,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+      userID?: Array< string > | null,
+    } >,
+    updatedAt: number,
+  },
+};
+
 export type UpdateTaskMasterObjectMutationVariables = {
   input: TaskMasterObjectInput,
 };
@@ -276,7 +314,7 @@ export type UpdateTaskMasterObjectMutation = {
     deletedAt?: number | null,
     groupID: string,
     limitTime?: number | null,
-    remindSlackTime?: number | null,
+    remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
@@ -378,7 +416,7 @@ export type FetchRaffleObjectQuery = {
     limitTime: number,
     raffleID: string,
     raffleStatus: RaffleStatus,
-    remindSlackTime: number,
+    remindSlackTime: string,
     remindSlackWeek: string,
     tasks:  Array< {
       __typename: "RaffleMast",
@@ -407,7 +445,7 @@ export type FetchTaskMasterObjectQuery = {
     deletedAt?: number | null,
     groupID: string,
     limitTime?: number | null,
-    remindSlackTime?: number | null,
+    remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
