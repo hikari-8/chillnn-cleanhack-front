@@ -1,48 +1,68 @@
 <template>
-    <div class="user_edit_container h-full">
+    <div v-if="taskMasterObjectModel" class="user_edit_container h-full mb-8">
         <div class="font-semibold">くじ引きリマインド時間設定</div>
-        <!-- マスターデータ: リマインド時間の編集 -->
-        <div
-            class="app_select_weekday flex gap-x-3 mt-4 items-center justify-center"
-        >
-            <div class="text-sm font-medium text-gray-900">毎週</div>
-            <!-- セレクトボックス -->
-            <select
-                id="week"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/5 p-2.5"
-                v-model="weekdayKey"
+
+        <!-- 時間設定と、ボタンのコンテナ -->
+        <div class="flex mt-8 gap-x-3">
+            <div
+                class="app_select_weekday flex text-center items-center gap-x-2 justify-center flex-shrink-0"
             >
-                <option disabled selected value=""></option>
-                <option
-                    v-for="selectedWeekday in limitWeekdaysList"
-                    :value="selectedWeekday.value"
-                    :key="selectedWeekday.id"
+                <!-- 週の予定 -->
+                <div class="text-sm font-medium text-gray-900 w-10">毎週</div>
+                <!-- セレクトボックス -->
+                <select
+                    id="week"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-18 p-2.5"
+                    v-model="taskMasterObjectModel.remindSlackWeek"
                 >
-                    {{ selectedWeekday.key }}
-                </option>
-            </select>
-            <div class="text-sm font-medium text-gray-900">曜日</div>
-            <!-- セレクトボックス -->
-            <select
-                id="time"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                v-model="timeKey"
-            >
-                <option disabled selected value="">時間</option>
-                <option
-                    v-for="selectedTime in limitTimesList"
-                    :value="selectedTime.value"
-                    :key="selectedTime.id"
+                    <option disabled selected value=""></option>
+                    <option
+                        v-for="selectedWeekday in limitWeekdaysList"
+                        :value="selectedWeekday.value"
+                        :key="selectedWeekday.id"
+                    >
+                        {{ selectedWeekday.key }}
+                    </option>
+                </select>
+
+                <div class="text-sm font-medium text-gray-900 w-12">曜日の</div>
+                <!-- セレクトボックス -->
+                <select
+                    id="time"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-2.5"
+                    v-model="timeKey"
                 >
-                    {{ selectedTime.key }}
-                </option>
-            </select>
+                    <option disabled selected value="">時間</option>
+                    <option
+                        v-for="selectedTime in limitTimesList"
+                        :value="selectedTime.value"
+                        :key="selectedTime.id"
+                    >
+                        {{ selectedTime.key }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-x-3 justify-center flex-shrink-0">
+                <div class="text-sm font-medium text-gray-900 w-32">
+                    にSlackに送信する
+                </div>
+            </div>
+            <div class="flex items-center gap-x-3 justify-center flex-shrink-0">
+                <div class="button">
+                    <app-button @click="registered">更新</app-button>
+                </div>
+            </div>
         </div>
+        <!-- マスターデータ: リマインド時間の編集 -->
 
         <div class="mb-8 text-sm text-gray-500 mt-2">
             ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。
         </div>
-        <app-button @click="sendToSlack">Slackに送信(テスト)</app-button>
+        <!-- ボタン -->
+        <div class="button">
+            <app-button @click="sendToSlack">Slackにテスト送信</app-button>
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -112,6 +132,16 @@ export default class SlackRemindTime extends Vue {
     ]
 
     @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        this.taskMasterObjectModel.updateTaskMasterObj()
+        const groupID = this.userModel.groupID
+        if (groupID) {
+            await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+            console.log('曜日', this.taskMasterObjectModel.remindSlackWeek)
+        }
+    }
+
+    @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = { text: '13:13 指定のテストです' }
@@ -143,11 +173,8 @@ export default class SlackRemindTime extends Vue {
 }
 </script>
 <style lang="stylus" scoped>
-.user_edit_container {
-    .button_container {
-        padding-top: 10px;
-        display: flex;
-        justify-content: center;
-    }
+.button {
+  min-width: 200px;
+  width: 200px
 }
 </style>
