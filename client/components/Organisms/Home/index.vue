@@ -4,11 +4,8 @@
         <!-- テスト -->
         <div class="flexbox z-stacking flex" v-if="userModel">
             <!-- ナビゲーションバー -->
-            <div>
-                <div
-                    v-if="userModel"
-                    class="side_menu_container max-w-sm p-6 border-r border-gray-200 shadow-md"
-                >
+            <div class="overflow-hidden border-r border-gray-200 shadow-md">
+                <div v-if="userModel" class="side_menu_container max-w-sm p-6">
                     <side-menu-template :showSideMenu="showSideMenu">
                         <template>
                             <div class="side-menu__logo">

@@ -5,22 +5,27 @@
             <div class="logo">
                 <img src="~/assets/img/logo.png" />
             </div>
-            <div class="title">
-                <img src="~/assets/img/CHILLSTAGRAM.png" />
+            <div class="title text-xl font-semibold text-white">
+                <div>CLEAN HACK</div>
+                <!-- <img src="~/assets/img/CHILLSTAGRAM.png" /> -->
             </div>
         </nuxt-link>
 
-        <nuxt-link
+        <!-- <nuxt-link
             :to="{ name: 'user-userID', params: { userID: userModel.userID } }"
             tag="div"
             class="right_container"
+        > -->
+        <!-- right -->
+        <div
+            class="right_container edit_button text-sm font-semibold text-white"
         >
-            <!-- right -->
-            <div class="edit_button">{{ name }}さん</div>
-            <div class="icon">
-                <img :src="userModel.userIcon" />
-            </div>
-        </nuxt-link>
+            Welcome Back !! {{ name }}さん
+        </div>
+        <!-- <div class="icon">
+            <img :src="userModel.userIcon" />
+        </div> -->
+        <!-- </nuxt-link> -->
     </div>
 </template>
 <script lang="ts">
@@ -42,7 +47,7 @@ export default class AppHeader extends Vue {
     align-items: center;
     justify-content: space-between;
     padding: 15px $sidePaddingPC;
-    background-color: white;
+    background-color: #4CD9D0;
 
     @media only screen and (max-width: $spSize) {
         padding: 15px $sidePaddingSP;
@@ -70,7 +75,7 @@ export default class AppHeader extends Vue {
 
         .title {
             padding-left: 10px;
-            width: 120px;
+            width: 200px;
             height: auto;
 
             @media only screen and (max-width: $spSize) {

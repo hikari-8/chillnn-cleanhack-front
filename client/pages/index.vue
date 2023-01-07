@@ -1,14 +1,8 @@
 <template>
     <div>
-        <div class="">CleanHack</div>
-        <div class="">Home</div>
-        <br />
-        <br />
-
-        <!-- テスト -->
         <app-home :userModel="userModel" :groupModel="groupModel" />
         <!--ナブバーの実装が完了するまで残す -->
-        <div v-if="userModel">
+        <!-- <div v-if="userModel">
             <app-button class="mt-2">
                 <nuxt-link
                     :to="{
@@ -21,7 +15,7 @@
                     >Go to your user settings
                 </nuxt-link>
             </app-button>
-        </div>
+        </div> -->
     </div>
 </template>
 <script lang="ts">

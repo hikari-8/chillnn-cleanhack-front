@@ -2,7 +2,7 @@
     <div>
         <div
             v-if="userModel"
-            class="side_menu_container max-w-sm p-6 border-r border-gray-200 shadow-md"
+            class="side_menu_container max-w-sm p-6 border-r border-gray-200 shadow-md overflow-hidden"
         >
             <side-menu-template :showSideMenu="showSideMenu">
                 <template>
@@ -232,6 +232,7 @@ export default class SideMenu extends Vue {
     width: 250px
     padding: 0 20px;
     box-sizing: border-box;
+    overflow: hidden;
 
     .divider {
         width: 100%;
