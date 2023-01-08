@@ -59,7 +59,10 @@
                 >
                     オプション(後で)
                 </div>
-                <app-base-input class="input_option w-full"></app-base-input>
+                <app-base-input
+                    class="input_option w-full"
+                    value=""
+                ></app-base-input>
             </div>
         </div>
 

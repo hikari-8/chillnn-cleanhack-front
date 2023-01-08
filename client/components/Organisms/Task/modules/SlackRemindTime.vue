@@ -1,7 +1,5 @@
 <template>
     <div v-if="taskMasterObjectModel" class="user_edit_container h-full mb-8">
-        <div class="font-semibold">くじ引きリマインド時間設定</div>
-
         <!-- 時間設定と、ボタンのコンテナ -->
         <div class="flex mt-8 gap-x-3">
             <div
