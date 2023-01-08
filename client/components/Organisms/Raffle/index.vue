@@ -37,9 +37,11 @@ export default class AppRaffleEdit extends Vue {
     }
 
     public async created() {
-        this.raffleObjectModel = this.taskMasterObjectModel.getRaffleModel()
-        console.log(this.raffleObjectModel)
-        console.log(this.raffleObjectModel.tasks, 'tasksです')
+        if (this.taskMasterObjectModel.tasks.length > 0) {
+            this.raffleObjectModel = this.taskMasterObjectModel.getRaffleModel()
+            console.log(this.raffleObjectModel)
+            console.log(this.raffleObjectModel.tasks, 'tasksです')
+        }
     }
 }
 </script>
