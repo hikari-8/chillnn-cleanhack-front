@@ -52,6 +52,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import {
+    TaskMast,
     TaskMasterObjectModel,
     TaskMastModel,
     UserModel,
@@ -92,6 +93,22 @@ export default class TaskList extends Vue {
     public orderChange: boolean = false
     public taskMastItem: TaskMastModel | null = null
     public taskModel: TaskMastModel | null = null
+    public taskArrayFixed: TaskMast[] = [
+        {
+            createdAt: 0,
+            groupID: 'blanc',
+            headCount: 0,
+            taskID: 'blanc',
+            taskName: 'blanc',
+            updatedAt: 0,
+        },
+    ]
+
+    //deleteを実装しないといけない
+    // public created() {
+    //   //
+
+    // }
 
     public openModal() {
         if (this.taskMasterObjectModel) {

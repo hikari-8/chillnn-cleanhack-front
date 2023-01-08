@@ -1,16 +1,17 @@
 <template>
     <!-- ナビゲーションバーの切り替えが難しいので、ここに一旦全てを書いています -->
     <div>
-        <!-- テスト -->
         <div class="flexbox z-stacking flex" v-if="userModel">
             <!-- ナビゲーションバー -->
-            <div class="overflow-hidden fixed">
-                <div
-                    v-if="userModel"
-                    class="side_menu_container max-w-sm p-6 border-r border-gray-200 shadow-md"
-                >
+            <div class="overflow-hidden border-r border-gray-200 shadow-md">
+                <div v-if="userModel" class="side_menu_container max-w-sm">
                     <side-menu-template :showSideMenu="showSideMenu">
                         <template>
+                            <div class="logo_container p-4 text-center title">
+                                <div class="text-xl font-semibold mt-8">
+                                    CLEAN HACK
+                                </div>
+                            </div>
                             <div class="side-menu__logo">
                                 <nuxt-link :to="{ name: 'index' }">
                                     <img src="~/assets/img/logo.png" />
@@ -52,10 +53,17 @@
                                             title="くじをひく"
                                             text="くじをひく"
                                         />
-                                        <app-side-menu-sub-content
-                                            title="くじを発行する"
-                                            text="くじを発行する"
-                                        />
+                                        <div
+                                            @click="showBody('rEffective')"
+                                            v-bind:class="{
+                                                active: show == 'rEffective',
+                                            }"
+                                        >
+                                            <app-side-menu-sub-content
+                                                title="くじを発行する"
+                                                text="くじを発行する"
+                                            />
+                                        </div>
                                         <div
                                             @click="showBody('rSettings')"
                                             v-bind:class="{
@@ -96,6 +104,7 @@
                             <ul
                                 class="pt-4 mt-6 space-y-2 border-t border-gray-200"
                             />
+                            <!-- **************************************************************** -->
 
                             <!-- ユーザー設定 -->
                             <nuxt-link
@@ -159,9 +168,10 @@
                 </div>
             </div>
 
+            <!-- ******************************************************************************************************** -->
             <!-- 切り替わるBody -->
             <div
-                class="min-h-full w-[calc(100%-220px)] bg-chillnn-bg-page lg-max:w-full ml-56"
+                class="min-h-full w-[calc(100%-220px)] bg-chillnn-bg-page lg-max:w-full"
             >
                 <div class="z-0">
                     <!-- これ以降編集: ナブバーで切り替わる -->
@@ -177,6 +187,11 @@
                     />
                     <app-task-edit
                         v-if="show == 'rSettings'"
+                        :userModel="userModel"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                    />
+                    <app-raffle-edit
+                        v-if="show == 'rEffective'"
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
                     />
@@ -203,6 +218,7 @@ import AppUserEdit from '@/components/Organisms/User/Edit/index.vue'
 import AppGroupEdit from '@/components/Organisms/Group/index.vue'
 import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
 import AppTaskEdit from '@/components/Organisms/Task/index.vue'
+import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -214,6 +230,7 @@ import AppTaskEdit from '@/components/Organisms/Task/index.vue'
         AppGroupEdit,
         HomeBody,
         AppTaskEdit,
+        AppRaffleEdit,
     },
 })
 export default class AppHome extends Vue {
@@ -251,6 +268,10 @@ export default class AppHome extends Vue {
 .auth_container {
     width: 600px;
 }
+
+.title {
+  color: #4CD9D0;
+}
 .side_menu_container {
     border-right: 1px solid $background-layer-color-10;
     z-index: 81;
@@ -284,6 +305,9 @@ export default class AppHome extends Vue {
             height: auto;
         }
     }
+
+
+
 
     .request_num {
         position: absolute;

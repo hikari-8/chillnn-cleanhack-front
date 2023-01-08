@@ -37,6 +37,7 @@ export const addRaffleObject = /* GraphQL */ `
         groupID
         headCount
         raffleID
+        raffleItemID
         taskID
         taskName
         updatedAt
@@ -104,6 +105,7 @@ export const updateRaffleObject = /* GraphQL */ `
         groupID
         headCount
         raffleID
+        raffleItemID
         taskID
         taskName
         updatedAt

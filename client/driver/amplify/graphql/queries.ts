@@ -67,6 +67,7 @@ export const fetchRaffleObject = /* GraphQL */ `
         groupID
         headCount
         raffleID
+        raffleItemID
         taskID
         taskName
         updatedAt

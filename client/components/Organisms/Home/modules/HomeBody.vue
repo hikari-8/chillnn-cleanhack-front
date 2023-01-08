@@ -1,7 +1,17 @@
 <template>
     <div class="mx-auto py-32 auth_container w-600px" v-if="userModel">
         <div class="font-semibold mb-8 text-2xl">Home 🏠</div>
-        <div class="input_container flex font-semibold mb-4">
+        <div
+            v-if="!isNameUpdated"
+            class="input_container flex font-semibold mb-4"
+        >
+            <div class="mt-12">
+                ようこそCLEAN HACKへ　🎉
+                <br />
+                ユーザー設定からお名前を登録してください！
+            </div>
+        </div>
+        <div v-else class="input_container flex font-semibold mb-4">
             <div>おかえりなさい！</div>
             {{ userModel.name }}
             <div>さん！🎉</div>
@@ -18,6 +28,13 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 })
 export default class HomeBody extends Vue {
     @Prop({ required: true }) userModel!: UserModel
+    isNameUpdated: boolean = false
+
+    public created() {
+        if (this.userModel.name !== '名無し') {
+            this.isNameUpdated = true
+        }
+    }
 }
 </script>
 <style lang="stylus" scoped>

@@ -1,9 +1,9 @@
 <template>
     <div class="app_container" v-if="userModel">
-        <div class="app_header">
-            <!-- header -->
-            <app-header :user-model="userModel" />
-        </div>
+        <!-- <div class="app_header"> -->
+        <!-- header -->
+        <!-- <app-header :user-model="userModel" /> -->
+        <!-- </div> -->
         <div class="app">
             <!-- app -->
             <nuxt />

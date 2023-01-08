@@ -27,6 +27,8 @@ import {
     GroupModel,
     UserModel,
     TaskMasterObjectModel,
+    RaffleObject,
+    RaffleObjectModel,
 } from 'chillnn-cleanhack-abr'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { userInteractor } from '~/api'
@@ -45,8 +47,9 @@ import { authInteractor } from '~/driver/amplify/auth'
 export default class Top extends Vue {
     public userModel: UserModel | null = null
     public groupModel: GroupModel | null = null
-    public updatedMasterObjModel: TaskMasterObjectModel | null = null
     public taskMasterObjectModel: TaskMasterObjectModel | null = null
+    public blancRaffleObjectModel: RaffleObjectModel | null = null
+    public raffleObjectModel: RaffleObjectModel | null = null
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()

@@ -6,7 +6,6 @@
                 <div class="logo w-5 h-5 mr-2">
                     <img src="~/assets/img/logo.png" />
                 </div>
-                <!-- <img src="~/assets/img/CHILLSTAGRAM.png" /> -->
                 <div class="text-xl font-semibold">CLEAN HACK</div>
             </div>
         </div>
