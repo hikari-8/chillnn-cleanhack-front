@@ -47,26 +47,27 @@ export default class AppHeader extends Vue {
     align-items: center;
     justify-content: space-between;
     padding: 15px $sidePaddingPC;
+    // background-color: #83E5DF;
     background-color: #4CD9D0;
 
-    @media only screen and (max-width: $spSize) {
-        padding: 15px $sidePaddingSP;
-    }
+    // @media only screen and (max-width: $spSize) {
+    //     padding: 15px $sidePaddingSP;
+    // }
 
     .left_container {
         display: flex;
         align-items: center;
-        height: auto;
+        height: 50px;
         cursor: pointer;
 
         .logo {
             width: 30px;
             height: 30px;
 
-            @media only screen and (max-width: $spSize) {
-                width: 20px;
-                height: 20px;
-            }
+            // @media only screen and (max-width: $spSize) {
+            //     width: 20px;
+            //     height: 20px;
+            // }
 
             img {
                 width: 100%;
@@ -78,10 +79,10 @@ export default class AppHeader extends Vue {
             width: 200px;
             height: auto;
 
-            @media only screen and (max-width: $spSize) {
-                padding-left: 5px;
-                width: 100px;
-            }
+            // @media only screen and (max-width: $spSize) {
+            //     padding-left: 5px;
+            //     width: 100px;
+            // }
 
             img {
                 width: 100%;
@@ -96,9 +97,9 @@ export default class AppHeader extends Vue {
         cursor: pointer;
         font-size: 14px;
 
-        @media only screen and (max-width: $spSize) {
-            font-size: 12px;
-        }
+        // @media only screen and (max-width: $spSize) {
+        //     font-size: 12px;
+        // }
 
         .icon {
             width: 40px;
@@ -106,12 +107,12 @@ export default class AppHeader extends Vue {
             padding-left: 10px;
             border-radius: 100px;
 
-            @media only screen and (max-width: $spSize) {
-                width: 25px;
-                height: 25px;
-                padding-left: 5px;
-                border-radius: 100px;
-            }
+            // @media only screen and (max-width: $spSize) {
+            //     width: 25px;
+            //     height: 25px;
+            //     padding-left: 5px;
+            //     border-radius: 100px;
+            // }
 
             img {
                 object-fit: cover;

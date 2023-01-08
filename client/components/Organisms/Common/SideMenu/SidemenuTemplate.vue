@@ -3,6 +3,10 @@
         <div class="sidebar" v-if="!!showSideMenu">
             <!-- アコーディオン -->
             <div class="sidebar-block-only-open">
+                <!-- <div
+                    class="sidebar-block__only-open-menu"
+                    v-scroll-lock="showSideMenu"
+                > -->
                 <div class="sidebar-block__only-open-menu">
                     <slot></slot>
                 </div>

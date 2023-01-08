@@ -1,14 +1,8 @@
 <template>
-    <!-- 一旦、click聞かないようにしてます -->
     <div
         class="h-9 w-9 cursor-pointer rounded-full bg-chillnn-bg-layer-0 text-center opacity-50 shadow-[0_1px_5px_0_rgba(0,0,0,0.3)] hover:opacity-100"
         target="_blanc"
     >
-        <!-- <div
-        class="h-9 w-9 cursor-pointer rounded-full bg-chillnn-bg-layer-0 text-center opacity-50 shadow-[0_1px_5px_0_rgba(0,0,0,0.3)] hover:opacity-100"
-        target="_blanc"
-        @click="click"
-    > -->
         <div
             class="relative flex h-full items-center justify-center"
             @mouseover="isShow = true"

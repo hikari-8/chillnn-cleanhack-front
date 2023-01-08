@@ -1,7 +1,7 @@
 <template>
-    <div class="slack_rimind_edit_container h-full mt-20">
+    <div class="slack_rimind_edit_container h-full">
         <!-- マスターデータ: くじの編集 -->
-        <div class="font-semibold mb-8 text-2xl">掃除場所設定 🧹</div>
+        <div class="font-semibold mb-8 text-2xl mt-20">掃除場所設定 🧹</div>
         <div class="label font-semibold mb-4">掃除場所のマスターデータ</div>
         <div class="task_edit_container">
             <!-- task edit -->

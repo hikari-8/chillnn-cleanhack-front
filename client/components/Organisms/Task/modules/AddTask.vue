@@ -21,7 +21,7 @@
                 <!-- 数字の追加と、できればオプションの追加-->
             </div>
             <div
-                class="input_headcount_wapper w-32 flex items-center text-center gap-x-2 w-32"
+                class="input_headcount_wapper w-32 flex items-center text-center gap-x-2 mr-2 w-32"
             >
                 <div
                     for="headCount"
@@ -32,7 +32,7 @@
                 <!-- セレクトボックス -->
                 <select
                     id="headCount"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-14 p-2.5"
                     v-model="taskMastItem.headCount"
                 >
                     <option disabled selected value=""></option>

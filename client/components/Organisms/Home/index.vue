@@ -4,8 +4,11 @@
         <!-- テスト -->
         <div class="flexbox z-stacking flex" v-if="userModel">
             <!-- ナビゲーションバー -->
-            <div class="overflow-hidden border-r border-gray-200 shadow-md">
-                <div v-if="userModel" class="side_menu_container max-w-sm p-6">
+            <div class="overflow-hidden fixed">
+                <div
+                    v-if="userModel"
+                    class="side_menu_container max-w-sm p-6 border-r border-gray-200 shadow-md"
+                >
                     <side-menu-template :showSideMenu="showSideMenu">
                         <template>
                             <div class="side-menu__logo">
@@ -158,9 +161,9 @@
 
             <!-- 切り替わるBody -->
             <div
-                class="min-h-full w-[calc(100%-220px)] bg-chillnn-bg-page lg-max:w-full"
+                class="min-h-full w-[calc(100%-220px)] bg-chillnn-bg-page lg-max:w-full ml-56"
             >
-                <div class="z-0 min-h-screen">
+                <div class="z-0">
                     <!-- これ以降編集: ナブバーで切り替わる -->
                     <home-body v-if="show == 'home'" :userModel="userModel" />
                     <app-user-edit
@@ -253,7 +256,7 @@ export default class AppHome extends Vue {
     z-index: 81;
     min-width: 220px;
     width: 250px
-    padding: 0 20px;
+    padding: 20px;
     box-sizing: border-box;
 
     .divider {
