@@ -36,6 +36,12 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class AppGroupEdit extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     @Prop({ required: true }) userModel!: UserModel
+    public blancGroupModel: GroupModel | null = null
+
+    public async created() {
+        this.blancGroupModel = await this.groupModel.fetchGroupMast()
+        console.log('AppGroupEditのgroupModelです', this.blancGroupModel)
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {

@@ -5,7 +5,11 @@
     >
         <!-- くじ -->
         <div class="mb-20">
-            <make-raffle :raffleObjectModel="raffleObjectModel" />
+            <make-raffle
+                :raffleObjectModel="raffleObjectModel"
+                :taskMasterObjectModel="taskMasterObjectModel"
+                :groupModel="groupModel"
+            />
         </div>
         <join-raffle
             :raffleObjectModel="raffleObjectModel"
@@ -18,6 +22,7 @@ import {
     UserModel,
     TaskMasterObjectModel,
     RaffleObjectModel,
+    GroupModel,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -36,6 +41,7 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class AppRaffleEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) groupModel!: GroupModel
     public raffleObjectModel: RaffleObjectModel | null = null
 
     public get isShowLink() {

@@ -205,6 +205,7 @@
                         v-if="show == 'rEffective'"
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
+                        :groupModel="groupModel"
                     />
                 </div>
             </div>

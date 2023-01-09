@@ -25,6 +25,35 @@ export const fetchGroupByGroupID = /* GraphQL */ `
       deletedAt
       groupID
       groupName
+      records {
+        activeMembers {
+          deletedAt
+          groupID
+          joinAt
+          userID
+        }
+        createdAt
+        deletedAt
+        groupID
+        limitTime
+        raffleID
+        raffleStatus
+        remindSlackTime
+        remindSlackWeek
+        tasks {
+          createdAt
+          deletedAt
+          groupID
+          headCount
+          raffleID
+          raffleItemID
+          taskID
+          taskName
+          updatedAt
+          userID
+        }
+        updatedAt
+      }
       updatedAt
     }
   }

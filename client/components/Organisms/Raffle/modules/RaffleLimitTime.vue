@@ -107,7 +107,7 @@ export default class RaffleLimitTime extends Vue {
     ]
 
     public async created() {
-        const weekValue = this.raffleObjectModel.remindSlackWeek
+        const weekValue = await this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
                 this.week = '日'
@@ -123,6 +123,8 @@ export default class RaffleLimitTime extends Vue {
                 this.week = '金'
             case '6':
                 this.week = '土'
+            case '':
+                this.week = ''
         }
     }
 

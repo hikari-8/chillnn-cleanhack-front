@@ -76,7 +76,6 @@ export default class SignUpPage extends Vue {
                 password: this.password,
             },
         })
-        console.log('push後:', this.email, this.password)
     }
 }
 </script>
