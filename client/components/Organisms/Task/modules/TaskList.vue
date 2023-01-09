@@ -6,17 +6,6 @@
                 <div class="flex">
                     <app-button @click="openModal">新規追加＋</app-button>
                 </div>
-
-                <!-- モーダル -->
-                <app-modal v-model="isShowModal">
-                    <add-task
-                        v-if="taskMastItem"
-                        :task-master-obj-model="taskMasterObjectModel"
-                        :task-mast-item="taskMastItem"
-                        :user-model="userModel"
-                        @registered="registered"
-                    />
-                </app-modal>
             </div>
         </div>
 
@@ -34,6 +23,17 @@
                 class="w-[10%] text-center"
             />
         </div>
+
+        <!-- 追加するタスク -->
+        <add-item-area v-model="isShowModal" class="mb-[20px]">
+            <add-task
+                v-if="taskMastItem"
+                :task-master-obj-model="taskMasterObjectModel"
+                :task-mast-item="taskMastItem"
+                :user-model="userModel"
+                @registered="registered"
+            />
+        </add-item-area>
         <div class="mb-[20px]">
             <div v-if="taskMasterObjectModel" class="tasks">
                 <div
@@ -70,6 +70,7 @@ import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
 import AddTask from '@/components/Organisms/Task/modules/AddTask.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
+import AddItemArea from '@/components/Organisms/Common/AddItemArea/index.vue'
 
 @Component({
     components: {
@@ -84,6 +85,7 @@ import AppButton from '@/components/Atom/Button/AppButton.vue'
         AppCaption,
         TaskItem,
         draggable,
+        AddItemArea,
     },
 })
 export default class TaskList extends Vue {

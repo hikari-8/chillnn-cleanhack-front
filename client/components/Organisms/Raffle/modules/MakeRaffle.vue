@@ -70,6 +70,7 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async pushRaffle() {
+        await this.createRaffle()
         // fetchする
         const updatedRaffle = await this.groupModel.fetchRaffleObjectModel(
             this.raffleObjectModel.raffleID
@@ -80,8 +81,7 @@ export default class MakeRaffle extends Vue {
         const updatedRaffleMast =
             await updatedRaffle.RaffleObjectModelToGroupObject()
         console.log('GroupDataにpushしました→', updatedRaffleMast)
-        if (this.groupModel)
-            this.groupModel.records.push(await updatedRaffleMast)
+        if (this.groupModel) this.groupModel.records.push(updatedRaffleMast)
         console.log('push後updatedRaffleMast:', updatedRaffleMast)
         console.log('push後this.groupModel:', this.groupModel)
 

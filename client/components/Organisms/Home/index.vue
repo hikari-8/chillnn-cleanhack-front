@@ -14,7 +14,7 @@
                             </div>
                             <div class="side-menu__logo">
                                 <nuxt-link :to="{ name: 'index' }">
-                                    <img src="~/assets/img/logo.png" />
+                                    <img src="~/assets/img/icon.png" />
                                 </nuxt-link>
                             </div>
 
@@ -304,17 +304,17 @@ export default class AppHome extends Vue {
     }
 
     .content-menu {
-        margin-top: 15px;
+        margin-top: 40px;
     }
 
     .side-menu__logo {
         margin: 0 auto;
         z-index: 5;
-        margin: 30px 0;
+        // margin: 20px 0;
 
         & img {
             margin: 0 auto;
-            width: 50%;
+            width: 60%;
             height: auto;
         }
     }

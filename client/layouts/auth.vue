@@ -4,7 +4,7 @@
             <!-- left -->
             <div class="title flex items-center ml-20">
                 <div class="logo w-5 h-5 mr-2">
-                    <img src="~/assets/img/logo.png" />
+                    <img src="~/assets/img/icon.png" />
                 </div>
                 <div class="text-xl font-semibold">CLEAN HACK</div>
             </div>

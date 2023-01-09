@@ -1,79 +1,67 @@
 <template>
-    <!-- モーダルの内側 -->
     <div
-        class="task_add_container w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
+        v-if="taskMastItem"
+        class="flex items-center border-b border-solid border-chillnn-border-base py-[15px]"
     >
-        <!-- 掃除場所と人数のdiv -->
-        <div class="flex justify-center">
-            <div
-                class="input_taskname_wapper flex items-center text-center gap-x-2 w-72"
-            >
-                <div
-                    for="cleanPlace"
-                    class="text-sm font-medium text-gray-900 flex-shrink-0"
-                >
-                    掃除場所名
-                </div>
-                <app-base-input
-                    v-model="taskMastItem.taskName"
-                    class="input_taskname"
-                ></app-base-input>
-                <!-- 数字の追加と、できればオプションの追加-->
-            </div>
-            <div
-                class="input_headcount_wapper w-32 flex items-center text-center gap-x-2 mr-2 w-32"
-            >
-                <div
-                    for="headCount"
-                    class="text-xs font-medium text-gray-900 flex-shrink-0"
-                >
-                    人数
-                </div>
-                <!-- セレクトボックス -->
-                <select
-                    id="headCount"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-14 p-2.5"
-                    v-model="taskMastItem.headCount"
-                >
-                    <option disabled selected value=""></option>
-                    <option
-                        v-for="selectedHeadCount in headCountList"
-                        :value="selectedHeadCount.value"
-                        :key="selectedHeadCount.id"
-                    >
-                        {{ selectedHeadCount.key }}
-                    </option>
-                </select>
-                <div class="text-sm font-medium text-gray-900">人</div>
-                <!-- 数字の追加と、できればオプションの追加-->
-            </div>
+        <!-- ポチ -->
+        <div class="w-[15%] text-center flex-grow-0">
+            <span class="text-gray-600">⚫︎</span>
         </div>
-        <!-- オプション -->
-        <div class="flex justify-center">
-            <div
-                class="input_option_wapper flex items-center text-center gap-x-2 mt-8"
-            >
-                <div
-                    for="headCount"
-                    class="text-sm font-medium text-gray-900 flex-shrink-0"
+        <!-- 掃除場所名 -->
+        <div class="w-[55%] text-black flex-grow h-auto w-auto">
+            <app-base-input
+                v-model="taskMastItem.taskName"
+                class="input_taskname"
+            ></app-base-input>
+        </div>
+        <!-- 人数 -->
+        <div class="w-[10%] text-center flex-grow-0">
+            <template>
+                <span>
+                    <!-- セレクトボックス -->
+                    <select
+                        id="headCount"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                        v-model="taskMastItem.headCount"
+                    >
+                        <option disabled selected value=""></option>
+                        <option
+                            v-for="selectedHeadCount in headCountList"
+                            :value="selectedHeadCount.value"
+                            :key="selectedHeadCount.id"
+                        >
+                            {{ selectedHeadCount.key }}
+                        </option>
+                    </select>
+                    <div class="text-sm font-medium text-gray-900">
+                        人
+                    </div></span
                 >
-                    オプション(後で)
-                </div>
-                <app-base-input
-                    class="input_option w-full"
-                    value=""
-                ></app-base-input>
-            </div>
+            </template>
         </div>
 
-        <!-- ボタン -->
-        <div class="button">
+        <div class="w-[20%] flex-grow-0">
+            <div class="flex justify-center gap-[10px]">
+                <!-- ボタン -->
+                <table-button @click="registered" explanation="オプション">
+                    <img class="w-4" src="@/assets/img/icon/plus.svg" />
+                </table-button>
+                <!-- <table-button @click="showModal = true" explanation="オプション">
+                    <img
+                        class="w-4"
+                        src="@/assets/img/icon/trash-alt-regular.svg"
+                    />
+                </table-button> -->
+                <!-- ボタン -->
+                <!-- <div class="button">
             <app-button
                 :disabled="!taskMastItem"
                 @click="registered"
                 class="mx-auto mt-8"
                 >追加</app-button
             >
+        </div> -->
+            </div>
         </div>
     </div>
 </template>
@@ -89,11 +77,13 @@ import {
 } from 'chillnn-cleanhack-abr'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
+import TableButton from '@/components/Atom/Button/TableButton.vue'
 
 @Component({
     components: {
         AppButton,
         AppBaseInput,
+        TableButton,
     },
 })
 export default class AddTask extends Vue {
@@ -139,16 +129,4 @@ export default class AddTask extends Vue {
     }
 }
 </script>
-<style lang="stylus" scoped>
-
-.input_option_wapper{
-  width: 416px;
-}
-
-.button {
-    margin: 20px auto 0;
-    // display: inline-block;
-    text-align: center;
-    width: 100%;
-}
-</style>
+<style lang="stylus" scoped></style>

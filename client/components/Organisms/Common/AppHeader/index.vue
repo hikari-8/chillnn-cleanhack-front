@@ -3,7 +3,7 @@
         <nuxt-link :to="{ name: 'index' }" tag="div" class="left_container">
             <!-- left -->
             <div class="logo">
-                <img src="~/assets/img/logo.png" />
+                <img src="~/assets/img/icon.png" />
             </div>
             <div class="title text-xl font-semibold text-white">
                 <div>CLEAN HACK</div>

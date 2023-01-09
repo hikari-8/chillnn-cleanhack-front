@@ -8,7 +8,7 @@
                 <template>
                     <div class="side-menu__logo">
                         <nuxt-link :to="{ name: 'index' }">
-                            <img src="~/assets/img/logo.png" />
+                            <img src="~/assets/img/icon.png" />
                         </nuxt-link>
                     </div>
 
