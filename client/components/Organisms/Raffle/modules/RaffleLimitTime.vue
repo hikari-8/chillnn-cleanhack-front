@@ -8,7 +8,7 @@
                 >
                     <!-- 曜日 -->
                     <div
-                        v-if="week"
+                        v-if="isWeekBlank"
                         class="text-sm font-medium text-gray-900 w-18"
                     >
                         {{ week }}曜日の
@@ -106,7 +106,7 @@ export default class RaffleLimitTime extends Vue {
         { key: '20:30', value: '30 20' },
     ]
 
-    public created() {
+    public async created() {
         const weekValue = this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
@@ -123,6 +123,14 @@ export default class RaffleLimitTime extends Vue {
                 this.week = '金'
             case '6':
                 this.week = '土'
+        }
+    }
+
+    public get isWeekBlank() {
+        if (this.week == '') {
+            return false
+        } else {
+            return true
         }
     }
 

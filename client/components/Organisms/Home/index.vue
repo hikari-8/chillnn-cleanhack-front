@@ -49,10 +49,17 @@
                                         title="くじ"
                                         text="くじ"
                                     >
-                                        <app-side-menu-sub-content
-                                            title="くじをひく"
-                                            text="くじをひく"
-                                        />
+                                        <div
+                                            @click="showBody('rJoin')"
+                                            v-bind:class="{
+                                                active: show == 'rJoin',
+                                            }"
+                                        >
+                                            <app-side-menu-sub-content
+                                                title="くじに参加する"
+                                                text="くじに参加する"
+                                            />
+                                        </div>
                                         <div
                                             @click="showBody('rEffective')"
                                             v-bind:class="{
@@ -185,6 +192,10 @@
                         :groupModel="groupModel"
                         :userModel="userModel"
                     />
+                    <!-- <join-raffle
+                        v-if="show == 'rJoin'"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                    /> -->
                     <app-task-edit
                         v-if="show == 'rSettings'"
                         :userModel="userModel"
@@ -195,7 +206,6 @@
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
                     />
-                    <div v-if="show == '2'">ホームがおされたよ</div>
                 </div>
             </div>
         </div>
@@ -219,6 +229,7 @@ import AppGroupEdit from '@/components/Organisms/Group/index.vue'
 import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
 import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
+import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -231,6 +242,7 @@ import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
         HomeBody,
         AppTaskEdit,
         AppRaffleEdit,
+        JoinRaffle,
     },
 })
 export default class AppHome extends Vue {

@@ -7,6 +7,10 @@
         <div class="mb-20">
             <make-raffle :raffleObjectModel="raffleObjectModel" />
         </div>
+        <join-raffle
+            :raffleObjectModel="raffleObjectModel"
+            :taskMasterObjectModel="taskMasterObjectModel"
+        />
     </div>
 </template>
 <script lang="ts">
@@ -19,12 +23,14 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import MakeRaffle from '@/components/Organisms/Raffle/modules/MakeRaffle.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
+import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
         MakeRaffle,
         AppButton,
+        JoinRaffle,
     },
 })
 export default class AppRaffleEdit extends Vue {
