@@ -8,9 +8,6 @@
                 <app-button @click="createRaffle" class="text-sm w-44 h-16 p-1"
                     >くじを発行する</app-button
                 >
-                <app-button @click="pushRaffle" class="text-sm w-44 h-16 p-1"
-                    >くじを有効にする</app-button
-                >
             </div>
         </div>
 
@@ -65,11 +62,6 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
-        await this.raffleObjectModel.addNewRaffle()
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async pushRaffle() {
         await this.createRaffle()
         // fetchする
         const updatedRaffle = await this.groupModel.fetchRaffleObjectModel(
@@ -82,51 +74,13 @@ export default class MakeRaffle extends Vue {
             await updatedRaffle.RaffleObjectModelToGroupObject()
         console.log('GroupDataにpushしました→', updatedRaffleMast)
         if (this.groupModel) this.groupModel.records.push(updatedRaffleMast)
-        console.log('push後updatedRaffleMast:', updatedRaffleMast)
-        console.log('push後this.groupModel:', this.groupModel)
-
         //アップデートする
         if (!this.groupModel) {
             return null
         } else {
             this.groupModel.updateGroupMast()
         }
-
-        //register&fetchしたraffleをgroupのrecords末尾にも追加してupdate
-        // await this.groupModel.pushGroupRecord(updatedRaffleMast)
-
-        // //groupMastを作成
-        // ;(await this.groupModel.GroupModelToGroupMast()).records
-        // groupMast.records.push(updatedRaffleMast)
-        // //groupMastをupdateする
-        // console.log('push直後のupdateされていないgroup:', groupMast)
-        // const changedGroupModel =
-        //     this.groupModel.GroupMastToGroupModel(groupMast)
-        // console.log('changedGroupModel', changedGroupModel)
-        // this.groupModel = await changedGroupModel.updateGroupMast()
-
-        console.log('GroupDataにpushしました!!!!!諦めないで！！')
     }
-
-    public validRaffle() {
-        this.createRaffle()
-        this.pushRaffle()
-    }
-
-    // @AsyncLoadingAndErrorHandle()
-    // public async createRaffle() {
-    //     await this.raffleObjectModel.addNewRaffle()
-    // }
-
-    // @AsyncLoadingAndErrorHandle()
-    // public async pushRaffle() {
-    //     await this.raffleObjectModel.pushGroupRecord()
-    // }
-
-    // public validRaffle() {
-    //     this.createRaffle()
-    //     this.pushRaffle()
-    // }
 }
 </script>
 <style lang="stylus" scoped>
