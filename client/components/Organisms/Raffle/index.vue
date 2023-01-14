@@ -15,6 +15,7 @@
             <join-raffle
                 :raffleObjectModel="raffleObjectModel"
                 :taskMasterObjectModel="taskMasterObjectModel"
+                :groupModel="groupModel"
             />
         </div>
         <div v-else>

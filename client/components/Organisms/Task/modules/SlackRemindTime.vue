@@ -109,31 +109,31 @@ export default class SlackRemindTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '20:06', value: '06 20' },
-        { key: '09:00', value: '00 9' },
-        { key: '09:30', value: '00 9' },
-        { key: '10:00', value: '00 10' },
+        { key: '16:23', value: '23 16' },
+        { key: '09:00', value: '0 9' },
+        { key: '09:30', value: '30 9' },
+        { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
-        { key: '11:00', value: '00 11' },
+        { key: '11:00', value: '0 11' },
         { key: '11:30', value: '30 11' },
-        { key: '12:00', value: '00 12' },
+        { key: '12:00', value: '0 12' },
         { key: '12:30', value: '30 12' },
-        { key: '13:00', value: '00 13' },
+        { key: '13:00', value: '0 13' },
         { key: '13:30', value: '30 13' },
-        { key: '14:00', value: '00 14' },
+        { key: '14:00', value: '0 14' },
         { key: '14:30', value: '30 14' },
-        { key: '15:00', value: '00 15' },
+        { key: '15:00', value: '0 15' },
         { key: '15:30', value: '30 15' },
-        { key: '16:00', value: '00 16' },
+        { key: '16:00', value: '0 16' },
         { key: '16:30', value: '30 16' },
-        { key: '17:00', value: '00 17' },
+        { key: '17:00', value: '0 17' },
         { key: '17:15', value: '15 17' },
         { key: '17:30', value: '30 17' },
-        { key: '18:00', value: '00 18' },
+        { key: '18:00', value: '0 18' },
         { key: '18:30', value: '30 18' },
-        { key: '19:00', value: '00 19' },
+        { key: '19:00', value: '0 19' },
         { key: '19:30', value: '30 19' },
-        { key: '20:00', value: '00 20' },
+        { key: '20:00', value: '0 20' },
         { key: '20:30', value: '30 20' },
     ]
 
@@ -144,7 +144,7 @@ export default class SlackRemindTime extends Vue {
         if (groupID) {
             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
         }
-        this.sendToSlack()
+        await this.sendToSlack()
     }
 
     @AsyncLoadingAndErrorHandle()

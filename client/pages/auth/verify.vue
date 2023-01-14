@@ -31,11 +31,15 @@
                     >
                 </div>
             </div>
+            <div>テストGroupID→:{{ groupID }}</div>
         </div>
     </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
+import { userInteractor } from '~/api'
+import { UserModel } from 'chillnn-cleanhack-abr'
+
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
 import AuthInput from '~/components/Organisms/Auth/UserNameInput.vue'
@@ -61,6 +65,7 @@ export default class VerifyPage extends Vue {
     public email: string = ''
     public password: string = ''
     public verifyCode: string = ''
+    public groupID: string = ''
 
     public get disabled() {
         return !this.email || !this.password || !this.verifyCode
@@ -70,16 +75,26 @@ export default class VerifyPage extends Vue {
     public async verifyAndSignIn() {
         await authInteractor.signUpConfirmed(this.email, this.verifyCode)
         await authInteractor.signIn(this.email, this.password)
-        this.$router.push({
-            name: 'index',
-        })
+        if (this.groupID === '' || this.groupID == undefined) {
+            this.$router.push({
+                name: 'index',
+            })
+        } else {
+            this.$router.push({
+                name: 'group',
+                params: { groupID: this.groupID },
+            })
+        }
     }
 
     public created() {
+        console.log('verify.vueです')
         const email = this.$route.query.email
         const password = this.$route.query.password
+        const groupID = this.$route.query.groupID
         this.email = (typeof email === 'string' && email) || ''
         this.password = (typeof password === 'string' && password) || ''
+        this.groupID = (typeof groupID === 'string' && groupID) || ''
     }
 }
 </script>

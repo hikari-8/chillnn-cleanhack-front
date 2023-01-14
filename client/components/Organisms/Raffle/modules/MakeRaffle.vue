@@ -18,7 +18,8 @@
                         tag="div"
                         class="link"
                         :groupModel="groupModel"
-                        >URLを取得する(テスト)
+                    >
+                        URLを取得する(テスト)
                     </nuxt-link>
                 </app-button>
             </div>

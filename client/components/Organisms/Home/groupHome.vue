@@ -65,6 +65,7 @@
                                             v-bind:class="{
                                                 active: show == 'rEffective',
                                             }"
+                                            v-if="isAdmin"
                                         >
                                             <app-side-menu-sub-content
                                                 title="くじを発行する"
@@ -76,6 +77,7 @@
                                             v-bind:class="{
                                                 active: show == 'rSettings',
                                             }"
+                                            v-if="isAdmin"
                                         >
                                             <app-side-menu-sub-content
                                                 title="くじを設定する"
@@ -88,6 +90,7 @@
 
                             <!-- グループ -->
                             <div
+                                v-if="isAdmin"
                                 class="content-menu flex"
                                 @click="showBody('group')"
                                 v-bind:class="{ active: show == 'group' }"
@@ -114,23 +117,32 @@
                             <!-- **************************************************************** -->
 
                             <!-- ユーザー設定 -->
-                            <div
-                                class="flex"
-                                v-if="userModel"
-                                @click="showBody('user')"
-                                v-bind:class="{ active: show == 'user' }"
+                            <nuxt-link
+                                :to="{
+                                    name: 'user-userID',
+                                    params: { userID: userModel.userID },
+                                }"
+                                class="link"
+                                :userModel="userModel"
                             >
-                                <div class="icon mr-2">
-                                    <img
-                                        class="w-6 h-6 flex-shrink-0"
-                                        src="@/assets/img/icon/user-circle.svg"
+                                <div
+                                    class="flex"
+                                    v-if="userModel"
+                                    @click="showBody('user')"
+                                    v-bind:class="{ active: show == 'user' }"
+                                >
+                                    <div class="icon mr-2">
+                                        <img
+                                            class="w-6 h-6 flex-shrink-0"
+                                            src="@/assets/img/icon/user-circle.svg"
+                                        />
+                                    </div>
+                                    <app-side-menu-content
+                                        title="ユーザー設定"
+                                        text="ユーザー設定"
                                     />
                                 </div>
-                                <app-side-menu-content
-                                    title="ユーザー設定"
-                                    text="ユーザー設定"
-                                />
-                            </div>
+                            </nuxt-link>
 
                             <!-- Signin -->
                             <div class="content-menu flex">
@@ -173,15 +185,35 @@
             >
                 <div class="z-0">
                     <!-- これ以降編集: ナブバーで切り替わる -->
-                    <home-body v-if="show == 'home'" :userModel="userModel" />
+                    <home-body
+                        v-if="show == 'home'"
+                        :userModel="userModel"
+                        :groupModel="groupModel"
+                    />
                     <app-user-edit
                         v-if="show == 'user'"
+                        :userModel="userModel"
+                    />
+                    <app-group-edit
+                        v-if="show == 'group'"
+                        :groupModel="groupModel"
                         :userModel="userModel"
                     />
                     <!-- <join-raffle
                         v-if="show == 'rJoin'"
                         :taskMasterObjectModel="taskMasterObjectModel"
                     /> -->
+                    <app-task-edit
+                        v-if="show == 'rSettings'"
+                        :userModel="userModel"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                    />
+                    <app-raffle-edit
+                        v-if="show == 'rEffective'"
+                        :userModel="userModel"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                        :groupModel="groupModel"
+                    />
                 </div>
             </div>
         </div>
@@ -221,23 +253,37 @@ import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
         JoinRaffle,
     },
 })
-export default class MemberJoinHome extends Vue {
+export default class GroupHome extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false
-    public userPageLink: string = ''
+    public groupPageLink: string = ''
     public show: string = 'home'
+    public isAdmin: boolean = false
 
-    public get myLink() {
-        if (this.userModel) {
-            const myUserID = this.userModel.userID
-            this.userPageLink = 'user' + myUserID
-            console.log(this.userPageLink)
-            return this.userPageLink
+    public created() {
+        this.isAdminFunc()
+    }
+
+    public isAdminFunc() {
+        if (this.userModel.role !== 'admin') {
+            this.isAdmin = false
+        } else {
+            this.isAdmin = true
         }
     }
+
+    // public get myLink() {
+    //     if (this.userModel) {
+    //         const myGroupID = this.groupModel.groupID
+    //         this.groupPageLink = 'group' + myGroupID
+    //         console.log(this.groupPageLink)
+    //         return this.groupPageLink
+    //     }
+    // }
 
     public get iSAdmin() {
         if (this.userModel.role === 'admin') {

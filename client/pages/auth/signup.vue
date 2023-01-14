@@ -24,7 +24,11 @@
                     >
                 </div>
                 <div class="link_container">
-                    <link-button :to="{ name: 'auth-signin' }"
+                    <link-button
+                        :to="{
+                            name: 'auth-signin',
+                            query: { groupID: groupID },
+                        }"
                         >アカウントをお持ちの方はこちら</link-button
                     >
                 </div>
@@ -33,7 +37,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
 import AuthTitle from '@/components/Organisms/Auth/AuthTitle.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
@@ -58,6 +62,7 @@ import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 export default class SignUpPage extends Vue {
     public email: string = ''
     public password: string = ''
+    public groupID: string = ''
 
     public get disabled() {
         return !this.email || !this.password
@@ -74,8 +79,20 @@ export default class SignUpPage extends Vue {
             query: {
                 email: this.email,
                 password: this.password,
+                groupID: this.groupID,
             },
         })
+    }
+
+    public created() {
+        console.log('signup.vueです')
+        console.log(
+            'signup内のthis.$route.query.groupID',
+            this.$route.query.groupID
+        )
+        const groupID = this.$route.query.groupID
+        console.log('signup内のgroupID', groupID)
+        this.groupID = (typeof groupID === 'string' && groupID) || ''
     }
 }
 </script>
