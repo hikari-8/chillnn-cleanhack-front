@@ -31,7 +31,6 @@
                     >
                 </div>
             </div>
-            <div>テストGroupID→:{{ groupID }}</div>
         </div>
     </div>
 </template>
@@ -75,7 +74,7 @@ export default class VerifyPage extends Vue {
     public async verifyAndSignIn() {
         await authInteractor.signUpConfirmed(this.email, this.verifyCode)
         await authInteractor.signIn(this.email, this.password)
-        if (this.groupID === '' || this.groupID == undefined) {
+        if (this.groupID === '') {
             this.$router.push({
                 name: 'index',
             })

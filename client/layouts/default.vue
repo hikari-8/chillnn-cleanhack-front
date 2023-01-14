@@ -46,11 +46,7 @@ export default class DefaultLayout extends Vue {
             })
         } else {
             this.userModel = await userInteractor.fetchMyUserModel()
-            if (
-                this.userModel.groupID ||
-                this.groupID !== '' ||
-                this.groupID !== undefined
-            ) {
+            if (this.userModel.groupID || this.groupID !== '') {
                 console.log('第二段階目に分岐しました')
                 this.$router.push({
                     // name: 'group',
