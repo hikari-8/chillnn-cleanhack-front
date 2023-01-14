@@ -1,7 +1,7 @@
 <template>
     <div v-if="userModel">
         <div>グループの部屋だよん</div>
-        <group-home
+        <app-home
             :userModel="userModel"
             :groupModel="groupModel"
             :taskMasterObjectModel="taskMasterObjectModel"
@@ -19,7 +19,8 @@ import {
 import { Component, Vue } from 'nuxt-property-decorator'
 import { userInteractor } from '~/api'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
-import GroupHome from '~/components/Organisms/Home/groupHome.vue'
+// import GroupHome from '~/components/Organisms/Home/groupHome.vue'
+import AppHome from '@/components/Organisms/Home/index.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import { authInteractor } from '~/driver/amplify/auth'
 
@@ -27,7 +28,7 @@ import { authInteractor } from '~/driver/amplify/auth'
 @Component({
     components: {
         AppButton,
-        GroupHome,
+        AppHome,
     },
 })
 export default class Top extends Vue {

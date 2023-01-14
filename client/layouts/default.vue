@@ -64,26 +64,6 @@ export default class DefaultLayout extends Vue {
                 })
             }
         }
-        //  else if (this.groupID === '' || this.groupID == undefined) {
-        //     this.$router.push({
-        //         name: 'group',
-        //         params: { groupID: this.groupID },
-        //     })
-        //     console.log('push後', this.groupID)
-        //     this.userModel = await userInteractor.fetchMyUserModel()
-        // } else {
-        //     this.userModel = await userInteractor.fetchMyUserModel()
-        //     if (this.userModel.groupID) {
-        //         this.$router.push({
-        //             name: 'group',
-        //             params: { groupID: this.userModel.groupID },
-        //         })
-        //     } else {
-        //         this.$router.push({
-        //             name: 'index',
-        //         })
-        //     }
-        // }
         this.userModel = await userInteractor.fetchMyUserModel()
     }
 }
