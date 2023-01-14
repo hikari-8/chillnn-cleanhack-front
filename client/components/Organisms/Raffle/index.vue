@@ -1,20 +1,29 @@
 <template>
-    <div
-        class="mx-auto pb-32 auth_container w-600px"
-        v-if="userModel && raffleObjectModel"
-    >
-        <!-- くじ -->
-        <div class="mb-20">
-            <make-raffle
+    <div>
+        <div
+            class="mx-auto pb-32 auth_container w-600px"
+            v-if="userModel && raffleObjectModel"
+        >
+            <!-- くじ -->
+            <div class="mb-20">
+                <make-raffle
+                    :raffleObjectModel="raffleObjectModel"
+                    :taskMasterObjectModel="taskMasterObjectModel"
+                    :groupModel="groupModel"
+                />
+            </div>
+            <join-raffle
                 :raffleObjectModel="raffleObjectModel"
                 :taskMasterObjectModel="taskMasterObjectModel"
-                :groupModel="groupModel"
             />
         </div>
-        <join-raffle
-            :raffleObjectModel="raffleObjectModel"
-            :taskMasterObjectModel="taskMasterObjectModel"
-        />
+        <div v-else>
+            <div class="mx-auto pb-32 auth_container w-600px text-gray-700">
+                <div class="font-semibold mb-8 text-sm mt-20">
+                    💡くじを実行するには、グループの作成とくじの設定を完了する必要があります。
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -57,6 +66,13 @@ export default class AppRaffleEdit extends Vue {
             console.log(this.raffleObjectModel.tasks, 'tasksです')
         }
     }
+
+    //    @AsyncLoadingAndErrorHandle()
+    // public async registered() {
+    //     this.raffleObjectModel = null
+    //     this.postModels = await this.userModel!.fetchMyPosts()
+    //     this.isShowModal = false
+    // }
 }
 </script>
 <style lang="stylus" scoped>

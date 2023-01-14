@@ -13,6 +13,8 @@ import {
     UpdateRaffleObjectMutationVariables,
     FetchRaffleObjectQueryVariables,
     FetchRaffleObjectQuery,
+    FetchRafflesByGroupIDQueryVariables,
+    FetchRafflesByGroupIDQuery,
 } from '~/driver/amplify/graphql/API'
 
 class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
@@ -60,20 +62,16 @@ class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
         ).fetchRaffleObject
     }
 
-    // async fetchRaffleObjectByRaffleObjectID(
-    //     RaffleObjectID: string
-    // ): Promise<RaffleObject | null> {
-    //     return (
-    //         (
-    //             await callApi<
-    //                 FetchRaffleObjectByRaffleObjectIDQuery,
-    //                 FetchRaffleObjectByRaffleObjectIDQueryVariables
-    //             >(query.fetchRaffleObjectByRaffleObjectID, {
-    //                 RaffleObjectID,
-    //             })
-    //         ).fetchRaffleObjectByRaffleObjectID || null
-    //     )
-    // }
+    async fetchRafflesByGroupID(groupID: string): Promise<RaffleObject[]> {
+        return (
+            await callApi<
+                FetchRafflesByGroupIDQuery,
+                FetchRafflesByGroupIDQueryVariables
+            >(query.fetchRafflesByGroupID, {
+                groupID,
+            })
+        ).fetchRafflesByGroupID
+    }
 }
 
 export const raffleObjectRepository = new RaffleObjectRepositoryCacheAdaptor(

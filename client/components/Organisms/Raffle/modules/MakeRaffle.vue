@@ -5,9 +5,22 @@
             <div class="font-semibold text-2xl">くじの発行 🌞</div>
             <!-- ボタン -->
             <div class="flex justify-end items-center">
-                <app-button @click="createRaffle" class="text-sm w-44 h-16 p-1"
+                <app-button @click="createRaffle" class="text-sm h-16 p-1"
                     >くじを発行する</app-button
                 >
+                <!-- テストボタン -->
+                <app-button>
+                    <nuxt-link
+                        :to="{
+                            name: 'group-groupID',
+                            params: { groupID: groupModel.groupID },
+                        }"
+                        tag="div"
+                        class="link"
+                        :groupModel="groupModel"
+                        >URLを取得する(テスト)
+                    </nuxt-link>
+                </app-button>
             </div>
         </div>
 
@@ -17,8 +30,8 @@
         </div>
 
         <div class="mt-2 mb-12 text-sm text-gray-500">
-            ＊この時間になると、くじの参加を締切ります。<br />
-            　これ以降に、参加者の合計人数と掃除場所に割り当てた人数の合計が<br />　等しくなるように調整して、くじを実行してください。
+            <!-- ＊この時間になると、くじの参加を締切ります。<br /> -->
+            <!-- 　これ以降に、参加者の合計人数と掃除場所に割り当てた人数の合計が<br />　等しくなるように調整して、くじを実行してください。 -->
         </div>
         <div></div>
         <div class="label font-semibold mb-10">発行するくじの内容</div>
@@ -33,6 +46,7 @@ import {
     RaffleObjectModel,
     TaskMasterObjectModel,
     GroupModel,
+    RaffleStatus,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -59,26 +73,36 @@ export default class MakeRaffle extends Vue {
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
     public blancRaffleObj: RaffleObjectModel | null = null
+    public raffles: RaffleObjectModel[] | null = null
+    public isLastRaffleDone: boolean = false
+
+    @AsyncLoadingAndErrorHandle()
+    public async getLastRaffleStatus() {
+        this.raffles = await this.raffleObjectModel.fetchRafflesByGroupID()
+        //最後のraffleのstatusがDONEじゃないなら追加できない
+        // console.log('raffles:', this.raffles)
+        const array = JSON.stringify(this.raffles)
+        // console.log('rafflesをJSONに変換:', array)
+        const jsonArray = JSON.parse(array)
+        // console.log('rafflesをJSONに変換:', jsonArray)
+        // console.log('rafflesの一番最後:', jsonArray.slice(-1)[0])
+        const lastRaffle = jsonArray.slice(-1)[0]
+        const lastItemStatus = lastRaffle.mast.raffleStatus
+        console.log('status:', lastItemStatus)
+        if (lastItemStatus !== RaffleStatus.DONE) {
+            this.isLastRaffleDone = false
+        }
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
-        await this.createRaffle()
-        // fetchする
-        const updatedRaffle = await this.groupModel.fetchRaffleObjectModel(
-            this.raffleObjectModel.raffleID
-        )
-        console.log('登録後fetchしたraffle:', updatedRaffle)
-        //mastに変換する
-        if (!updatedRaffle) return null
-        const updatedRaffleMast =
-            await updatedRaffle.RaffleObjectModelToGroupObject()
-        console.log('GroupDataにpushしました→', updatedRaffleMast)
-        if (this.groupModel) this.groupModel.records.push(updatedRaffleMast)
-        //アップデートする
-        if (!this.groupModel) {
-            return null
+        await this.getLastRaffleStatus()
+        if (this.isLastRaffleDone) {
+            //たまにupdateされちゃう時あるから注意
+            await this.raffleObjectModel.register()
+            this.$emit('registered')
         } else {
-            this.groupModel.updateGroupMast()
+            alert('現在進行中のくじがあります。')
         }
     }
 }

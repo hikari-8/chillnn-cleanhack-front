@@ -8,7 +8,16 @@ export type GroupMastInput = {
   deletedAt?: number | null,
   groupID: string,
   groupName?: string | null,
-  records: Array< RaffleObjectInput >,
+  updatedAt: number,
+};
+
+export type GroupMast = {
+  __typename: "GroupMast",
+  createdAt: number,
+  createdUserID: string,
+  deletedAt?: number | null,
+  groupID: string,
+  groupName?: string | null,
   updatedAt: number,
 };
 
@@ -51,17 +60,6 @@ export type RaffleMastInput = {
   taskName: string,
   updatedAt: number,
   userID?: Array< string > | null,
-};
-
-export type GroupMast = {
-  __typename: "GroupMast",
-  createdAt: number,
-  createdUserID: string,
-  deletedAt?: number | null,
-  groupID: string,
-  groupName?: string | null,
-  records:  Array<RaffleObject >,
-  updatedAt: number,
 };
 
 export type RaffleObject = {
@@ -184,38 +182,6 @@ export type AddGroupMutation = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
-    records:  Array< {
-      __typename: "RaffleObject",
-      activeMembers?:  Array< {
-        __typename: "RaffleJoinUser",
-        deletedAt?: number | null,
-        groupID: string,
-        joinAt: number,
-        userID: string,
-      } > | null,
-      createdAt: number,
-      deletedAt?: number | null,
-      groupID: string,
-      limitTime: string,
-      raffleID: string,
-      raffleStatus: RaffleStatus,
-      remindSlackTime: string,
-      remindSlackWeek: string,
-      tasks:  Array< {
-        __typename: "RaffleMast",
-        createdAt: number,
-        deletedAt?: number | null,
-        groupID: string,
-        headCount: number,
-        raffleID?: string | null,
-        raffleItemID: string,
-        taskID: string,
-        taskName: string,
-        updatedAt: number,
-        userID?: Array< string > | null,
-      } >,
-      updatedAt: number,
-    } >,
     updatedAt: number,
   },
 };
@@ -299,38 +265,6 @@ export type UpdateGroupMutation = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
-    records:  Array< {
-      __typename: "RaffleObject",
-      activeMembers?:  Array< {
-        __typename: "RaffleJoinUser",
-        deletedAt?: number | null,
-        groupID: string,
-        joinAt: number,
-        userID: string,
-      } > | null,
-      createdAt: number,
-      deletedAt?: number | null,
-      groupID: string,
-      limitTime: string,
-      raffleID: string,
-      raffleStatus: RaffleStatus,
-      remindSlackTime: string,
-      remindSlackWeek: string,
-      tasks:  Array< {
-        __typename: "RaffleMast",
-        createdAt: number,
-        deletedAt?: number | null,
-        groupID: string,
-        headCount: number,
-        raffleID?: string | null,
-        raffleItemID: string,
-        taskID: string,
-        taskName: string,
-        updatedAt: number,
-        userID?: Array< string > | null,
-      } >,
-      updatedAt: number,
-    } >,
     updatedAt: number,
   },
 };
@@ -448,38 +382,6 @@ export type FetchGroupByGroupIDQuery = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
-    records:  Array< {
-      __typename: "RaffleObject",
-      activeMembers?:  Array< {
-        __typename: "RaffleJoinUser",
-        deletedAt?: number | null,
-        groupID: string,
-        joinAt: number,
-        userID: string,
-      } > | null,
-      createdAt: number,
-      deletedAt?: number | null,
-      groupID: string,
-      limitTime: string,
-      raffleID: string,
-      raffleStatus: RaffleStatus,
-      remindSlackTime: string,
-      remindSlackWeek: string,
-      tasks:  Array< {
-        __typename: "RaffleMast",
-        createdAt: number,
-        deletedAt?: number | null,
-        groupID: string,
-        headCount: number,
-        raffleID?: string | null,
-        raffleItemID: string,
-        taskID: string,
-        taskName: string,
-        updatedAt: number,
-        userID?: Array< string > | null,
-      } >,
-      updatedAt: number,
-    } >,
     updatedAt: number,
   },
 };
@@ -536,6 +438,45 @@ export type FetchRaffleObjectQuery = {
     } >,
     updatedAt: number,
   },
+};
+
+export type FetchRafflesByGroupIDQueryVariables = {
+  groupID: string,
+};
+
+export type FetchRafflesByGroupIDQuery = {
+  fetchRafflesByGroupID:  Array< {
+    __typename: "RaffleObject",
+    activeMembers?:  Array< {
+      __typename: "RaffleJoinUser",
+      deletedAt?: number | null,
+      groupID: string,
+      joinAt: number,
+      userID: string,
+    } > | null,
+    createdAt: number,
+    deletedAt?: number | null,
+    groupID: string,
+    limitTime: string,
+    raffleID: string,
+    raffleStatus: RaffleStatus,
+    remindSlackTime: string,
+    remindSlackWeek: string,
+    tasks:  Array< {
+      __typename: "RaffleMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount: number,
+      raffleID?: string | null,
+      raffleItemID: string,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+      userID?: Array< string > | null,
+    } >,
+    updatedAt: number,
+  } >,
 };
 
 export type FetchTaskMasterObjectQueryVariables = {

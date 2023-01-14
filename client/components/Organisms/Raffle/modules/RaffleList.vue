@@ -14,7 +14,7 @@
                 class="w-[10%] text-center"
             />
         </div>
-        <div class="mb-[20px]">
+        <div class="">
             <div v-if="raffleObjectModel.tasks" class="tasks">
                 <div
                     v-for="raffle in raffleObjectModel.tasks"

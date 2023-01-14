@@ -1,18 +1,22 @@
 <template>
     <div class="mx-auto py-32 auth_container w-600px" v-if="userModel">
         <div class="font-semibold mb-8 text-2xl">ユーザー設定 👤</div>
-        <div class="input_container">
+        <div class="label font-semibold mb-4">ユーザー名</div>
+
+        <div class="input_container flex">
             <!-- ユーザー名変更 -->
             <user-edit
                 :user-model="userModel"
-                label="ユーザー名"
                 :description="true"
-                class="mb-4"
+                class="mb-4 w-72 mr-4"
             />
-            <div class="button_container">
+            <div class="">
                 <!-- button -->
                 <app-button @click="register">更新</app-button>
             </div>
+        </div>
+        <div class="mt-2 text-sm text-gray-500">
+            ＊メンバーに表示される自分の名前です。
         </div>
     </div>
 </template>

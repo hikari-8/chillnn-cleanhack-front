@@ -25,7 +25,7 @@
         </div>
 
         <!-- 追加するタスク -->
-        <add-item-area v-model="isShowModal" class="mb-[20px]">
+        <add-item-area v-model="isShowModal" class="">
             <add-task
                 v-if="taskMastItem"
                 :task-master-obj-model="taskMasterObjectModel"
@@ -34,13 +34,24 @@
                 @registered="registered"
             />
         </add-item-area>
-        <div class="mb-[20px]">
+        <div class="">
             <div v-if="taskMasterObjectModel" class="tasks">
                 <div
                     v-for="task in taskMasterObjectModel.tasks"
                     :key="task.taskID"
                 >
                     <task-item :task="task" />
+                </div>
+            </div>
+            <div class="flex items-center py-[15px]">
+                <!-- 空白 -->
+                <div class="w-[70%] text-center flex-grow-0"></div>
+                <!-- 人数 -->
+                <div class="w-[10%] text-center flex-grow-0">
+                    <template>
+                        計{{ headCountSum }}人
+                        <!-- <span>{{  }}</span> -->
+                    </template>
                 </div>
                 <div class="mt-7 text-center" v-show="!taskMasterObjectModel">
                     くじを作成するために、掃除場所データを登録してください。
@@ -93,6 +104,7 @@ export default class TaskList extends Vue {
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public isShowModal: boolean = false
     public orderChange: boolean = false
+    public headCountSum: number = 0
     public taskMastItem: TaskMastModel | null = null
     public taskModel: TaskMastModel | null = null
     public taskArrayFixed: TaskMast[] = [
@@ -106,11 +118,17 @@ export default class TaskList extends Vue {
         },
     ]
 
-    //deleteを実装しないといけない
-    // public created() {
-    //   //
+    public created() {
+        this.headCountSumFunc
+    }
 
-    // }
+    public get headCountSumFunc() {
+        this.headCountSum = 0
+        for (const task of this.taskMasterObjectModel.tasks) {
+            this.headCountSum += task.headCount
+        }
+        return this.headCountSum
+    }
 
     public openModal() {
         if (this.taskMasterObjectModel) {
@@ -124,6 +142,7 @@ export default class TaskList extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         this.$emit('registered')
+        this.headCountSumFunc
         this.taskMastItem = null
         this.isShowModal = false
     }

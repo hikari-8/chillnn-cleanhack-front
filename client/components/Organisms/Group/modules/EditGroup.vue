@@ -1,9 +1,15 @@
 <template>
     <div class="name_input_container" v-if="groupModel">
         <div class="label font-semibold mb-4">{{ label }}</div>
-        <!-- name -->
-        <div class="flex gap-x-3 items-center">
-            <app-base-input v-model="groupModel.groupName" class="w-4/5" />
+        <div class="flex">
+            <!-- name -->
+            <div class="flex gap-x-3 items-center w-72 mr-4">
+                <app-base-input v-model="groupModel.groupName" class="w-full" />
+            </div>
+            <!-- button -->
+            <div class="">
+                <app-button @click="registerGroup">更新</app-button>
+            </div>
         </div>
         <div class="mt-2 text-sm text-gray-500" v-if="description">
             ＊くじを割り当てるメンバーが所属するグループの名前です。
@@ -11,23 +17,38 @@
     </div>
 </template>
 <script lang="ts">
-import { GroupModel } from 'chillnn-cleanhack-abr'
+import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
+import AppButton from '@/components/Atom/Button/AppButton.vue'
+import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
         AppBaseInput,
+        AppButton,
     },
 })
 export default class EditGroup extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) label!: string | number
     //ユーザー名の説明をつけるかどうか(ここ、注意文言の赤文字に設定し直してもいいかも ex.)ユーザー名は必須です)
     @Prop({ required: false }) public description!: boolean
 
     get groupName() {
         return this.groupModel
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        if (!this.userModel) {
+            return console.error('registerGroupメソッドで、userModelがnullです')
+        } else {
+            await this.groupModel!.updateGroupMast()
+            await this.userModel.fetchGroupDataByGroupID()
+            this.$emit('registered')
+        }
     }
 }
 </script>

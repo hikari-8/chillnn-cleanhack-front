@@ -25,35 +25,6 @@ export const fetchGroupByGroupID = /* GraphQL */ `
       deletedAt
       groupID
       groupName
-      records {
-        activeMembers {
-          deletedAt
-          groupID
-          joinAt
-          userID
-        }
-        createdAt
-        deletedAt
-        groupID
-        limitTime
-        raffleID
-        raffleStatus
-        remindSlackTime
-        remindSlackWeek
-        tasks {
-          createdAt
-          deletedAt
-          groupID
-          headCount
-          raffleID
-          raffleItemID
-          taskID
-          taskName
-          updatedAt
-          userID
-        }
-        updatedAt
-      }
       updatedAt
     }
   }
@@ -76,6 +47,39 @@ export const fetchMyUserMast = /* GraphQL */ `
 export const fetchRaffleObject = /* GraphQL */ `
   query FetchRaffleObject($raffleID: ID!) {
     fetchRaffleObject(raffleID: $raffleID) {
+      activeMembers {
+        deletedAt
+        groupID
+        joinAt
+        userID
+      }
+      createdAt
+      deletedAt
+      groupID
+      limitTime
+      raffleID
+      raffleStatus
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        raffleID
+        raffleItemID
+        taskID
+        taskName
+        updatedAt
+        userID
+      }
+      updatedAt
+    }
+  }
+`;
+export const fetchRafflesByGroupID = /* GraphQL */ `
+  query FetchRafflesByGroupID($groupID: ID!) {
+    fetchRafflesByGroupID(groupID: $groupID) {
       activeMembers {
         deletedAt
         groupID

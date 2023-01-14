@@ -8,16 +8,18 @@
             <span class="text-gray-600">⚫︎</span>
         </div>
         <!-- 掃除場所名 -->
-        <div class="w-[55%] text-black flex-grow h-auto w-auto">
+        <div class="w-[50%] text-black flex-grow h-auto w-auto">
             <app-base-input
                 v-model="taskMastItem.taskName"
                 class="input_taskname"
             ></app-base-input>
         </div>
         <!-- 人数 -->
-        <div class="w-[10%] text-center flex-grow-0">
+        <div class="w-[15%] text-center flex-grow-0">
             <template>
-                <span>
+                <span
+                    class="flex text-center justify-center flex-grow-0 align-center gap-x-1"
+                >
                     <!-- セレクトボックス -->
                     <select
                         id="headCount"
@@ -33,7 +35,7 @@
                             {{ selectedHeadCount.key }}
                         </option>
                     </select>
-                    <div class="text-sm font-medium text-gray-900">
+                    <div class="text-sm font-medium text-gray-900 py-2">
                         人
                     </div></span
                 >
@@ -43,24 +45,24 @@
         <div class="w-[20%] flex-grow-0">
             <div class="flex justify-center gap-[10px]">
                 <!-- ボタン -->
-                <table-button @click="registered" explanation="オプション">
+                <div class="button">
+                    <app-button
+                        :disabled="!taskMastItem"
+                        @click="registered"
+                        class="mx-auto"
+                        >追加</app-button
+                    >
+                </div>
+                <!-- ボタン -->
+                <!-- <table-button @click="registered" explanation="追加">
                     <img class="w-4" src="@/assets/img/icon/plus.svg" />
-                </table-button>
+                </table-button> -->
                 <!-- <table-button @click="showModal = true" explanation="オプション">
                     <img
                         class="w-4"
                         src="@/assets/img/icon/trash-alt-regular.svg"
                     />
                 </table-button> -->
-                <!-- ボタン -->
-                <!-- <div class="button">
-            <app-button
-                :disabled="!taskMastItem"
-                @click="registered"
-                class="mx-auto mt-8"
-                >追加</app-button
-            >
-        </div> -->
             </div>
         </div>
     </div>

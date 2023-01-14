@@ -1,14 +1,23 @@
 <template>
-    <div
-        class="mx-auto pb-32 auth_container w-600px"
-        v-if="userModel && taskMasterObjectModel"
-    >
-        <!-- 掃除場所のマスターデータ -->
-        <div class="mb-20">
-            <edit-task
-                :user-model="userModel"
-                :taskMasterObjectModel="taskMasterObjectModel"
-            />
+    <div>
+        <div
+            class="mx-auto pb-32 auth_container w-600px"
+            v-if="userModel && taskMasterObjectModel"
+        >
+            <!-- 掃除場所のマスターデータ -->
+            <div class="mb-20">
+                <edit-task
+                    :user-model="userModel"
+                    :taskMasterObjectModel="taskMasterObjectModel"
+                />
+            </div>
+        </div>
+        <div v-else>
+            <div class="mx-auto pb-32 auth_container w-600px text-gray-700">
+                <div class="font-semibold mb-8 text-sm mt-20">
+                    💡くじを設定するには、グループを作成する必要があります。
+                </div>
+            </div>
         </div>
     </div>
 </template>

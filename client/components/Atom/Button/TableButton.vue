@@ -24,10 +24,10 @@ import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
 
 @Component({})
 export default class TableButton extends Vue {
-    // @Prop() public explanation!: string
+    @Prop() public explanation!: string
     public isShow: boolean = false
 
-    // @Emit() public click() {}
+    @Emit() public click() {}
 }
 </script>
 

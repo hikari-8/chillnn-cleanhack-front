@@ -114,32 +114,23 @@
                             <!-- **************************************************************** -->
 
                             <!-- ユーザー設定 -->
-                            <nuxt-link
-                                :to="{
-                                    name: 'user-userID',
-                                    params: { userID: userModel.userID },
-                                }"
-                                class="link"
-                                :userModel="userModel"
+                            <div
+                                class="flex"
+                                v-if="userModel"
+                                @click="showBody('user')"
+                                v-bind:class="{ active: show == 'user' }"
                             >
-                                <div
-                                    class="flex"
-                                    v-if="userModel"
-                                    @click="showBody('user')"
-                                    v-bind:class="{ active: show == 'user' }"
-                                >
-                                    <div class="icon mr-2">
-                                        <img
-                                            class="w-6 h-6 flex-shrink-0"
-                                            src="@/assets/img/icon/user-circle.svg"
-                                        />
-                                    </div>
-                                    <app-side-menu-content
-                                        title="ユーザー設定"
-                                        text="ユーザー設定"
+                                <div class="icon mr-2">
+                                    <img
+                                        class="w-6 h-6 flex-shrink-0"
+                                        src="@/assets/img/icon/user-circle.svg"
                                     />
                                 </div>
-                            </nuxt-link>
+                                <app-side-menu-content
+                                    title="ユーザー設定"
+                                    text="ユーザー設定"
+                                />
+                            </div>
 
                             <!-- Signin -->
                             <div class="content-menu flex">
@@ -182,35 +173,15 @@
             >
                 <div class="z-0">
                     <!-- これ以降編集: ナブバーで切り替わる -->
-                    <home-body
-                        v-if="show == 'home'"
-                        :userModel="userModel"
-                        :groupModel="groupModel"
-                    />
+                    <home-body v-if="show == 'home'" :userModel="userModel" />
                     <app-user-edit
                         v-if="show == 'user'"
-                        :userModel="userModel"
-                    />
-                    <app-group-edit
-                        v-if="show == 'group'"
-                        :groupModel="groupModel"
                         :userModel="userModel"
                     />
                     <!-- <join-raffle
                         v-if="show == 'rJoin'"
                         :taskMasterObjectModel="taskMasterObjectModel"
                     /> -->
-                    <app-task-edit
-                        v-if="show == 'rSettings'"
-                        :userModel="userModel"
-                        :taskMasterObjectModel="taskMasterObjectModel"
-                    />
-                    <app-raffle-edit
-                        v-if="show == 'rEffective'"
-                        :userModel="userModel"
-                        :taskMasterObjectModel="taskMasterObjectModel"
-                        :groupModel="groupModel"
-                    />
                 </div>
             </div>
         </div>
@@ -250,10 +221,9 @@ import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
         JoinRaffle,
     },
 })
-export default class AppHome extends Vue {
+export default class MemberJoinHome extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
-    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false

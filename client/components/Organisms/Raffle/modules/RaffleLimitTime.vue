@@ -17,9 +17,16 @@
                     <select
                         id="time"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-2.5"
-                        v-model="raffleObjectModel.remindSlackTime"
+                        v-model="raffleObjectModel.limitTime"
                     >
-                        <option disabled selected value="">時間</option>
+                        <option
+                            disabled
+                            selected
+                            class="text-gray-600"
+                            value=""
+                        >
+                            時間
+                        </option>
                         <option
                             v-for="selectedTime in limitTimesList"
                             :value="selectedTime.value"
@@ -33,8 +40,8 @@
                 <div
                     class="flex items-center gap-x-3 justify-center flex-shrink-0"
                 >
-                    <div class="text-sm font-medium text-gray-900 w-32">
-                        にくじを締め切る
+                    <div class="text-sm font-medium text-gray-900 w-48">
+                        にくじの参加を締め切る
                     </div>
                 </div>
             </div>
@@ -106,25 +113,33 @@ export default class RaffleLimitTime extends Vue {
         { key: '20:30', value: '30 20' },
     ]
 
-    public async created() {
-        const weekValue = await this.raffleObjectModel.remindSlackWeek
+    public created() {
+        const weekValue = this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
                 this.week = '日'
+                break
             case '1':
                 this.week = '月'
+                break
             case '2':
                 this.week = '火'
+                break
             case '3':
                 this.week = '水'
+                break
             case '4':
                 this.week = '木'
+                break
             case '5':
                 this.week = '金'
+                break
             case '6':
                 this.week = '土'
+                break
             case '':
                 this.week = ''
+                break
         }
     }
 

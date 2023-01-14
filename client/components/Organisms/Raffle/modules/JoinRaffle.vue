@@ -1,6 +1,19 @@
 <template>
     <div class="mx-auto pb-32 auth_container w-600px" v-if="raffleObjectModel">
         <div class="mb-20">くじにJoinするbodyです</div>
+        <div>参加者へ招待を送る</div>
+        <!-- <app-button @click="test">
+            <nuxt-link
+                :to="{
+                    name: 'group-groupID',
+                    params: { groupID: groupModel.groupID },
+                }"
+                tag="div"
+                class="link"
+                :userModel="userModel"
+                >URLを取得する(テスト)
+            </nuxt-link></app-button
+        > -->
         <app-button @click="test">取得する(テスト)</app-button>
     </div>
 </template>
@@ -19,16 +32,21 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class JoinRaffle extends Vue {
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) raffleObjectModel!: RaffleObjectModel
+    public raffles: RaffleObjectModel[] | null = null
     // public raffleObjectModel: RaffleObjectModel | null = null
 
     public async test() {
-        console.log('raffleID', this.raffleObjectModel.raffleID)
-        console.log('raffleOBJ', this.raffleObjectModel)
-        const testFetchRaffle =
-            await this.taskMasterObjectModel.fetchRaffleItemByRaffleID(
-                this.raffleObjectModel.raffleID
-            )
-        console.log(testFetchRaffle)
+        //一回のみ有効↓、２回目になるとエラーが出る
+        this.raffles = await this.raffleObjectModel.fetchRafflesByGroupID()
+        // console.log('raffles:', this.raffles)
+        const array = JSON.stringify(this.raffles)
+        // console.log('rafflesをJSONに変換:', array)
+        const jsonArray = JSON.parse(array)
+        // console.log('rafflesをJSONに変換:', jsonArray)
+        // console.log('rafflesの一番最後:', jsonArray.slice(-1)[0])
+        const lastRaffle = jsonArray.slice(-1)[0]
+        const lastItemStatus = lastRaffle.mast.raffleStatus
+        console.log('status:', lastItemStatus)
     }
 }
 </script>
