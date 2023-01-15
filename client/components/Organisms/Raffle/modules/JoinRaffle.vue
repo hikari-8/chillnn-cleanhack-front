@@ -1,20 +1,8 @@
 <template>
     <div class="mx-auto pb-32 auth_container w-600px" v-if="raffleObjectModel">
         <div class="mb-20">くじにJoinするbodyです</div>
-        <div>参加者へ招待を送る</div>
-        <!-- <app-button @click="test">
-            <nuxt-link
-                :to="{
-                    name: 'group-groupID',
-                    params: { groupID: groupModel.groupID },
-                }"
-                tag="div"
-                class="link"
-                :userModel="userModel"
-                >URLを取得する(テスト)
-            </nuxt-link></app-button
-        > -->
-        <app-button @click="sendToSlack"
+        <div>参加者へ時間指定で招待を送る</div>
+        <app-button @click="makeRaffle"
             >Slackにメッセージを送る(テスト)</app-button
         >
     </div>
@@ -44,6 +32,9 @@ export default class JoinRaffle extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     public raffles: RaffleObjectModel[] | null = null
     public myGroupURL: string = ''
+    public week: string = ''
+    public hh: string = ''
+    public mm: string = ''
     // public raffleObjectModel: RaffleObjectModel | null = null
 
     async created() {
@@ -57,11 +48,57 @@ export default class JoinRaffle extends Vue {
         this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
     }
 
+    public cronToLng() {
+        //cronで保存されている値を、日本語に直してslackに送ります。
+        const weekValue = this.taskMasterObjectModel.remindSlackWeek
+        switch (weekValue) {
+            case '0':
+                this.week = '日'
+                break
+            case '1':
+                this.week = '月'
+                break
+            case '2':
+                this.week = '火'
+                break
+            case '3':
+                this.week = '水'
+                break
+            case '4':
+                this.week = '木'
+                break
+            case '5':
+                this.week = '金'
+                break
+            case '6':
+                this.week = '土'
+                break
+            case '':
+                this.week = ''
+                break
+        }
+        //後で、ここをlimittimeに変更する
+        const timeValue = this.raffleObjectModel.limitTime
+        this.hh = timeValue.substr(3, 5)
+        this.mm = timeValue.substr(0, 2)
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async makeRaffle() {
+        if (!this.raffleObjectModel.limitTime) {
+            alert('制限時間を設定してください')
+        }
+        {
+            this.cronToLng()
+            this.sendToSlack()
+        }
+    }
+
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = {
-            text: `${this.taskMasterObjectModel.remindSlackWeek}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.taskMasterObjectModel.remindSlackTime} 時までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
+            text: `${this.week}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
         let slackUrl =
             'https://hooks.slack.com/services/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'

@@ -74,6 +74,10 @@ export default class RaffleLimitTime extends Vue {
     @Prop({ required: true }) raffleObjectModel!: RaffleObjectModel
     public slackURL: string = ''
     public week: string = ''
+    public myGroupURL: string = ''
+    public ww: string = ''
+    public hh: string = ''
+    public mm: string = ''
     public limitWeekdaysList: { key: string; value: number }[] = [
         { key: '日', value: 0 },
         { key: '月', value: 1 },
@@ -85,31 +89,31 @@ export default class RaffleLimitTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '20:06', value: '06 20' },
-        { key: '09:00', value: '00 9' },
-        { key: '09:30', value: '00 9' },
-        { key: '10:00', value: '00 10' },
+        { key: '15:50', value: '50 15' },
+        { key: '09:00', value: '0 9' },
+        { key: '09:30', value: '30 9' },
+        { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
-        { key: '11:00', value: '00 11' },
+        { key: '11:00', value: '0 11' },
         { key: '11:30', value: '30 11' },
-        { key: '12:00', value: '00 12' },
+        { key: '12:00', value: '0 12' },
         { key: '12:30', value: '30 12' },
-        { key: '13:00', value: '00 13' },
+        { key: '13:00', value: '0 13' },
         { key: '13:30', value: '30 13' },
-        { key: '14:00', value: '00 14' },
+        { key: '14:00', value: '0 14' },
         { key: '14:30', value: '30 14' },
-        { key: '15:00', value: '00 15' },
+        { key: '15:00', value: '0 15' },
         { key: '15:30', value: '30 15' },
-        { key: '16:00', value: '00 16' },
+        { key: '16:00', value: '0 16' },
         { key: '16:30', value: '30 16' },
-        { key: '17:00', value: '00 17' },
+        { key: '17:00', value: '0 17' },
         { key: '17:15', value: '15 17' },
         { key: '17:30', value: '30 17' },
-        { key: '18:00', value: '00 18' },
+        { key: '18:00', value: '0 18' },
         { key: '18:30', value: '30 18' },
-        { key: '19:00', value: '00 19' },
+        { key: '19:00', value: '0 19' },
         { key: '19:30', value: '30 19' },
-        { key: '20:00', value: '00 20' },
+        { key: '20:00', value: '0 20' },
         { key: '20:30', value: '30 20' },
     ]
 
@@ -141,6 +145,8 @@ export default class RaffleLimitTime extends Vue {
                 this.week = ''
                 break
         }
+        this.getMyGroupURL()
+        console.log('mygroupURL: ', this.myGroupURL)
     }
 
     public get isWeekBlank() {
@@ -150,12 +156,52 @@ export default class RaffleLimitTime extends Vue {
             return true
         }
     }
+    public getMyGroupURL() {
+        const myGroupID = this.raffleObjectModel.groupID
+        // this.myGroupURL = `https://localhost:3000/group/${myGroupID}`
+        this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
+    }
+
+    public cronToLng() {
+        //cronで保存されている値を、日本語に直してslackに送ります。
+        const weekValue = this.raffleObjectModel.remindSlackWeek
+        switch (weekValue) {
+            case '0':
+                this.ww = '日'
+                break
+            case '1':
+                this.ww = '月'
+                break
+            case '2':
+                this.ww = '火'
+                break
+            case '3':
+                this.ww = '水'
+                break
+            case '4':
+                this.ww = '木'
+                break
+            case '5':
+                this.ww = '金'
+                break
+            case '6':
+                this.ww = '土'
+                break
+            case '':
+                this.ww = ''
+                break
+        }
+        //後で、ここをlimittimeに変更する
+        const timeValue = this.raffleObjectModel.limitTime
+        this.hh = timeValue.substr(3, 5)
+        this.mm = timeValue.substr(0, 2)
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = {
-            text: `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}時間にくじの参加が締め切られました。くじを実行してください🧼`,
+            text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
         let slackUrl =
             'https://hooks.slack.com/services/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'

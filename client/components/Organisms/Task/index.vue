@@ -9,6 +9,7 @@
                 <edit-task
                     :user-model="userModel"
                     :taskMasterObjectModel="taskMasterObjectModel"
+                    :groupModel="groupModel"
                 />
             </div>
         </div>
@@ -22,7 +23,11 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel, TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
+import {
+    UserModel,
+    GroupModel,
+    TaskMasterObjectModel,
+} from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import EditTask from '@/components/Organisms/Task/Edit/EditTask.vue'
@@ -38,6 +43,7 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 export default class AppTaskEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) groupModel!: GroupModel
     public get isShowLink() {
         return this.$route.params.userID !== this.userModel.userID
     }

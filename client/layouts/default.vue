@@ -48,6 +48,12 @@ export default class DefaultLayout extends Vue {
             this.userModel = await userInteractor.fetchMyUserModel()
             if (this.userModel.groupID || this.groupID !== '') {
                 console.log('第二段階目に分岐しました')
+                //groupをuserが持っていないかつ、groupIDがpraramsからとってこれるときのみuserのアップデートをかける
+                if (!this.userModel.groupID && this.groupID !== '') {
+                    this.userModel.groupID = this.groupID
+                    await this.userModel.register()
+                    console.log(this.userModel, 'update後のuserModel')
+                }
                 this.$router.push({
                     // name: 'group',
                     path: '/group/:groupID',

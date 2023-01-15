@@ -29,11 +29,16 @@
         <slack-remind-time
             :user-model="userModel"
             :taskMasterObjectModel="taskMasterObjectModel"
+            :groupModel="groupModel"
         />
     </div>
 </template>
 <script lang="ts">
-import { UserModel, TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
+import {
+    UserModel,
+    TaskMasterObjectModel,
+    GroupModel,
+} from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import TaskList from '@/components/Organisms/Task/modules/TaskList.vue'
@@ -57,6 +62,7 @@ const schedule = require('node-schedule')
 export default class EditTask extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) groupModel!: GroupModel
     public updatedMasterObjModel: TaskMasterObjectModel | null = null
     // public taskMasterObjectModel: TaskMasterObjectModel | null = null
     // public async created() {

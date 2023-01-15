@@ -64,7 +64,7 @@
         <!-- マスターデータ: リマインド時間の編集 -->
 
         <div class="mb-8 text-sm text-gray-500 mt-2">
-            ＊この時間に、自動的にくじ引きのURLが添付された通知が指定されたSlackに届きます。<br />
+            ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackに届きます。<br />
             　再度リマインド日時を変更すると、最後に登録された日時でリマインドされます。
         </div>
         <!-- ボタン -->
@@ -74,7 +74,11 @@
     </div>
 </template>
 <script lang="ts">
-import { UserModel, TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
+import {
+    UserModel,
+    TaskMasterObjectModel,
+    GroupModel,
+} from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import TaskList from '~/components/Organisms/Task/modules/TaskList.vue'
@@ -96,20 +100,25 @@ const schedule = require('node-schedule')
 export default class SlackRemindTime extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) groupModel!: GroupModel
     public slackURL: string = ''
+    public myGroupURL: string = ''
+    public week: string = ''
+    public hh: string = ''
+    public mm: string = ''
 
-    public limitWeekdaysList: { key: string; value: number }[] = [
-        { key: '日', value: 0 },
-        { key: '月', value: 1 },
-        { key: '火', value: 2 },
-        { key: '水', value: 3 },
-        { key: '木', value: 4 },
-        { key: '金', value: 5 },
-        { key: '土', value: 6 },
+    public limitWeekdaysList: { key: string; value: string }[] = [
+        { key: '日', value: '0' },
+        { key: '月', value: '1' },
+        { key: '火', value: '2' },
+        { key: '水', value: '3' },
+        { key: '木', value: '4' },
+        { key: '金', value: '5' },
+        { key: '土', value: '6' },
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '16:23', value: '23 16' },
+        { key: '15:50', value: '16 50' },
         { key: '09:00', value: '0 9' },
         { key: '09:30', value: '30 9' },
         { key: '10:00', value: '0 10' },
@@ -137,21 +146,68 @@ export default class SlackRemindTime extends Vue {
         { key: '20:30', value: '30 20' },
     ]
 
+    async created() {
+        this.getMyGroupURL()
+        console.log('mygroupURL: ', this.myGroupURL)
+    }
+
+    public cronToLng() {
+        //cronで保存されている値を、日本語に直してslackに送ります。
+        const weekValue = this.taskMasterObjectModel.remindSlackWeek
+        switch (weekValue) {
+            case '0':
+                this.week = '日'
+                break
+            case '1':
+                this.week = '月'
+                break
+            case '2':
+                this.week = '火'
+                break
+            case '3':
+                this.week = '水'
+                break
+            case '4':
+                this.week = '木'
+                break
+            case '5':
+                this.week = '金'
+                break
+            case '6':
+                this.week = '土'
+                break
+            case '':
+                this.week = ''
+                break
+        }
+        //後で、ここをlimittimeに変更する
+        const timeValue = this.taskMasterObjectModel.remindSlackTime
+        this.hh = timeValue.substr(3, 5)
+        this.mm = timeValue.substr(0, 2)
+    }
+
     @AsyncLoadingAndErrorHandle()
     public async registered() {
-        this.taskMasterObjectModel.updateTaskMasterObj()
+        await this.taskMasterObjectModel.updateTaskMasterObj()
         const groupID = this.userModel.groupID
         if (groupID) {
             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
         }
-        await this.sendToSlack()
+        this.cronToLng()
+        //ここでは、slackのリマインド時間を設定するだけ
+        // await this.sendToSlack()
+    }
+    public getMyGroupURL() {
+        const myGroupID = this.groupModel.groupID
+        // this.myGroupURL = `https://localhost:3000/group/${myGroupID}`
+        this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
     }
 
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = {
-            text: `${this.taskMasterObjectModel.remindSlackTime} * * ${this.taskMasterObjectModel.remindSlackWeek}時間指定のメッセージです。頑張って！！`,
+            text: `${this.week}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
         let slackUrl =
             'https://hooks.slack.com/services/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'

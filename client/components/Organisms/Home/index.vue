@@ -61,6 +61,7 @@
                                             />
                                         </div>
                                         <div
+                                            v-if="isAdmin"
                                             @click="showBody('rEffective')"
                                             v-bind:class="{
                                                 active: show == 'rEffective',
@@ -72,6 +73,7 @@
                                             />
                                         </div>
                                         <div
+                                            v-if="isAdmin"
                                             @click="showBody('rSettings')"
                                             v-bind:class="{
                                                 active: show == 'rSettings',
@@ -88,6 +90,7 @@
 
                             <!-- グループ -->
                             <div
+                                v-if="isAdmin"
                                 class="content-menu flex"
                                 @click="showBody('group')"
                                 v-bind:class="{ active: show == 'group' }"
@@ -204,6 +207,7 @@
                         v-if="show == 'rSettings'"
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
+                        :groupModel="groupModel"
                     />
                     <app-raffle-edit
                         v-if="show == 'rEffective'"
@@ -259,13 +263,18 @@ export default class AppHome extends Vue {
     public loaded: boolean = false
     public userPageLink: string = ''
     public show: string = 'home'
+    public isAdmin: boolean = false
 
-    public get myLink() {
-        if (this.userModel) {
-            const myUserID = this.userModel.userID
-            this.userPageLink = 'user' + myUserID
-            console.log(this.userPageLink)
-            return this.userPageLink
+    public created() {
+        this.isAdminFunc()
+        console.log(this.isAdmin, 'adminですか？')
+    }
+
+    public isAdminFunc() {
+        if (this.userModel.role !== 'admin') {
+            this.isAdmin = false
+        } else {
+            this.isAdmin = true
         }
     }
 
