@@ -199,10 +199,6 @@
                         :groupModel="groupModel"
                         :userModel="userModel"
                     />
-                    <!-- <join-raffle
-                        v-if="show == 'rJoin'"
-                        :taskMasterObjectModel="taskMasterObjectModel"
-                    /> -->
                     <app-task-edit
                         v-if="show == 'rSettings'"
                         :userModel="userModel"
@@ -238,7 +234,6 @@ import AppGroupEdit from '@/components/Organisms/Group/index.vue'
 import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
 import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
-import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -251,7 +246,6 @@ import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
         HomeBody,
         AppTaskEdit,
         AppRaffleEdit,
-        JoinRaffle,
     },
 })
 export default class AppHome extends Vue {

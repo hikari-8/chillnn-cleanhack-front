@@ -12,11 +12,6 @@
                     :groupModel="groupModel"
                 />
             </div>
-            <join-raffle
-                :raffleObjectModel="raffleObjectModel"
-                :taskMasterObjectModel="taskMasterObjectModel"
-                :groupModel="groupModel"
-            />
         </div>
         <div v-else>
             <div class="mx-auto pb-32 auth_container w-600px text-gray-700">
@@ -38,14 +33,12 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import MakeRaffle from '@/components/Organisms/Raffle/modules/MakeRaffle.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
-import JoinRaffle from '@/components/Organisms/Raffle/modules/JoinRaffle.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 
 @Component({
     components: {
         MakeRaffle,
         AppButton,
-        JoinRaffle,
     },
 })
 export default class AppRaffleEdit extends Vue {

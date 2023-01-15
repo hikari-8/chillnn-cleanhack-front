@@ -29,6 +29,39 @@ export const fetchGroupByGroupID = /* GraphQL */ `
     }
   }
 `;
+export const fetchLastRaffleByGroupID = /* GraphQL */ `
+  query FetchLastRaffleByGroupID($groupID: ID!) {
+    fetchLastRaffleByGroupID(groupID: $groupID) {
+      activeMembers {
+        deletedAt
+        groupID
+        joinAt
+        userID
+      }
+      createdAt
+      deletedAt
+      groupID
+      limitTime
+      raffleID
+      raffleStatus
+      remindSlackTime
+      remindSlackWeek
+      tasks {
+        createdAt
+        deletedAt
+        groupID
+        headCount
+        raffleID
+        raffleItemID
+        taskID
+        taskName
+        updatedAt
+        userID
+      }
+      updatedAt
+    }
+  }
+`;
 export const fetchMyUserMast = /* GraphQL */ `
   query FetchMyUserMast {
     fetchMyUserMast {

@@ -1,44 +1,39 @@
 <template>
     <div class="slack_rimind_edit_container h-full mb-8 mt-20">
-        <!-- マスターデータ: くじの編集 -->
-        <div class="flex justify-between">
+        <!-- くじが作成できない場合 -->
+        <div v-if="this.isLastRaffleActive || !this.lastRaffleItem">
             <div class="font-semibold text-2xl">くじの発行 🌞</div>
-            <!-- ボタン -->
-            <div class="flex justify-end items-center">
-                <app-button @click="createRaffle" class="text-sm h-16 p-1"
-                    >くじを発行する</app-button
-                >
-                <!-- テストボタン -->
-                <app-button>
-                    <nuxt-link
-                        :to="{
-                            path: '/group/:groupID',
-                            params: { groupID: groupModel.groupID },
-                        }"
-                        tag="div"
-                        class="link"
-                        :groupModel="groupModel"
-                    >
-                        URLを取得する(テスト)
-                    </nuxt-link>
-                </app-button>
+            <div class="mt-2 mb-12 text-sm text-gray-500 mt-12">
+                現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
             </div>
         </div>
+        <!-- くじが作成できる場合 -->
+        <div v-else>
+            <div class="flex justify-between">
+                <div class="font-semibold text-2xl">くじの発行 🌞</div>
+                <!-- ボタン -->
+                <div class="flex justify-end items-center">
+                    <app-button @click="createRaffle" class="text-sm h-16 p-1"
+                        >くじを発行する</app-button
+                    >
+                </div>
+            </div>
 
-        <div class="flex mb-2">
-            <!-- 制限時間 -->
-            <raffle-limit-time :raffleObjectModel="raffleObjectModel" />
-        </div>
+            <div class="flex mb-2">
+                <!-- 制限時間 -->
+                <raffle-limit-time :raffleObjectModel="raffleObjectModel" />
+            </div>
 
-        <div class="mt-2 mb-12 text-sm text-gray-500">
-            <!-- ＊この時間になると、くじの参加を締切ります。<br /> -->
-            <!-- 　これ以降に、参加者の合計人数と掃除場所に割り当てた人数の合計が<br />　等しくなるように調整して、くじを実行してください。 -->
-        </div>
-        <div></div>
-        <div class="label font-semibold mb-10">発行するくじの内容</div>
-        <div class="task_edit_container">
-            <!-- task edit -->
-            <raffle-list :raffleObjectModel="raffleObjectModel" />
+            <div class="mt-2 mb-12 text-sm text-gray-500">
+                <!-- ＊この時間になると、くじの参加を締切ります。<br /> -->
+                <!-- 　これ以降に、参加者の合計人数と掃除場所に割り当てた人数の合計が<br />　等しくなるように調整して、くじを実行してください。 -->
+            </div>
+            <div></div>
+            <div class="label font-semibold mb-10">発行するくじの内容</div>
+            <div class="task_edit_container">
+                <!-- task edit -->
+                <raffle-list :raffleObjectModel="raffleObjectModel" />
+            </div>
         </div>
     </div>
 </template>
@@ -75,46 +70,26 @@ export default class MakeRaffle extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     public blancRaffleObj: RaffleObjectModel | null = null
     public raffles: RaffleObjectModel[] | null = null
-    public isLastRaffleDone: boolean = false
     public myGroupURL: string = ''
     public ww: string = ''
     public hh: string = ''
     public mm: string = ''
     public week: string = ''
-
-    @AsyncLoadingAndErrorHandle()
-    public async getLastRaffleStatus() {
-        this.raffles = await this.raffleObjectModel.fetchRafflesByGroupID()
-        //最後のraffleのstatusがDONEじゃないなら追加できない
-        // console.log('raffles:', this.raffles)
-        const array = JSON.stringify(this.raffles)
-        // console.log('rafflesをJSONに変換:', array)
-        const jsonArray = JSON.parse(array)
-        // console.log('rafflesをJSONに変換:', jsonArray)
-        // console.log('rafflesの一番最後:', jsonArray.slice(-1)[0])
-        const lastRaffle = jsonArray.slice(-1)[0]
-        const lastItemStatus = lastRaffle.mast.raffleStatus
-        console.log('status:', lastItemStatus)
-        if (lastItemStatus !== RaffleStatus.DONE) {
-            this.isLastRaffleDone = false
-        }
-    }
+    public lastRaffleItem: RaffleObjectModel | null = null
+    public isLastRaffleActive: boolean = false
 
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
-        await this.raffleObjectModel.register()
-        await this.sendRemindToSlack()
-        //後で、limitTime設定してなかったら追加させないロジック追加
-        // await this.getLastRaffleStatus()
-        // if (this.isLastRaffleDone) {
-        //     //たまにupdateされちゃう時あるから注意
-        //     await this.raffleObjectModel.register()
-        //     this.$emit('registered')
-        //     //slackに通知を送る
-        //     await this.sendRemindToSlack()
-        // } else {
-        //     alert('現在進行中のくじがあります。')
-        // }
+        //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
+        if (
+            this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
+            !this.lastRaffleItem
+        ) {
+            await this.raffleObjectModel.register()
+            await this.sendRemindToSlack()
+        } else {
+            alert('実行中のくじがあります。')
+        }
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -123,7 +98,8 @@ export default class MakeRaffle extends Vue {
         await this.sendToSlack()
     }
 
-    public created() {
+    @AsyncLoadingAndErrorHandle()
+    public async created() {
         const weekValue = this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
@@ -153,6 +129,12 @@ export default class MakeRaffle extends Vue {
         }
         this.getMyGroupURL()
         console.log('mygroupURL: ', this.myGroupURL)
+        //テスト/lastraffleをfetchして、statusを調べる
+        this.lastRaffleItem =
+            await this.raffleObjectModel.fetchLastRaffleItemByGroupID()
+        if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
+            this.isLastRaffleActive = true
+        }
     }
 
     public getMyGroupURL() {

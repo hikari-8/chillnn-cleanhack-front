@@ -386,6 +386,45 @@ export type FetchGroupByGroupIDQuery = {
   },
 };
 
+export type FetchLastRaffleByGroupIDQueryVariables = {
+  groupID: string,
+};
+
+export type FetchLastRaffleByGroupIDQuery = {
+  fetchLastRaffleByGroupID:  {
+    __typename: "RaffleObject",
+    activeMembers?:  Array< {
+      __typename: "RaffleJoinUser",
+      deletedAt?: number | null,
+      groupID: string,
+      joinAt: number,
+      userID: string,
+    } > | null,
+    createdAt: number,
+    deletedAt?: number | null,
+    groupID: string,
+    limitTime: string,
+    raffleID: string,
+    raffleStatus: RaffleStatus,
+    remindSlackTime: string,
+    remindSlackWeek: string,
+    tasks:  Array< {
+      __typename: "RaffleMast",
+      createdAt: number,
+      deletedAt?: number | null,
+      groupID: string,
+      headCount: number,
+      raffleID?: string | null,
+      raffleItemID: string,
+      taskID: string,
+      taskName: string,
+      updatedAt: number,
+      userID?: Array< string > | null,
+    } >,
+    updatedAt: number,
+  },
+};
+
 export type FetchMyUserMastQuery = {
   fetchMyUserMast?:  {
     __typename: "UserMast",

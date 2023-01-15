@@ -15,6 +15,8 @@ import {
     FetchRaffleObjectQuery,
     FetchRafflesByGroupIDQueryVariables,
     FetchRafflesByGroupIDQuery,
+    FetchLastRaffleByGroupIDQueryVariables,
+    FetchLastRaffleByGroupIDQuery,
 } from '~/driver/amplify/graphql/API'
 
 class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
@@ -71,6 +73,19 @@ class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
                 groupID,
             })
         ).fetchRafflesByGroupID
+    }
+
+    async fetchLastRaffleByGroupID(
+        groupID: string
+    ): Promise<RaffleObject | null> {
+        return (
+            await callApi<
+                FetchLastRaffleByGroupIDQuery,
+                FetchLastRaffleByGroupIDQueryVariables
+            >(query.fetchLastRaffleByGroupID, {
+                groupID,
+            })
+        ).fetchLastRaffleByGroupID
     }
 }
 
