@@ -1,7 +1,7 @@
 <template>
     <div class="slack_rimind_edit_container h-full mb-8 mt-20">
         <!-- くじが作成できない場合 -->
-        <div v-if="this.isLastRaffleActive || !this.lastRaffleItem">
+        <div v-if="isLastRaffleActive || !isLastRaffleNull">
             <div class="font-semibold text-2xl">くじの発行 🌞</div>
             <div class="mt-2 mb-12 text-sm text-gray-500 mt-12">
                 現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
@@ -76,7 +76,9 @@ export default class MakeRaffle extends Vue {
     public mm: string = ''
     public week: string = ''
     public lastRaffleItem: RaffleObjectModel | null = null
+    public blancRaffleItem: RaffleObjectModel | null = null
     public isLastRaffleActive: boolean = false
+    public isLastRaffleNull: boolean = false
 
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
@@ -87,6 +89,7 @@ export default class MakeRaffle extends Vue {
         ) {
             await this.raffleObjectModel.register()
             await this.sendRemindToSlack()
+            this.isLastRaffleNull = false
         } else {
             alert('実行中のくじがあります。')
         }
@@ -132,7 +135,9 @@ export default class MakeRaffle extends Vue {
         //テスト/lastraffleをfetchして、statusを調べる
         this.lastRaffleItem =
             await this.raffleObjectModel.fetchLastRaffleItemByGroupID()
-        if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
+        if (!this.lastRaffleItem) {
+            this.isLastRaffleNull = true
+        } else if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
             this.isLastRaffleActive = true
         }
     }

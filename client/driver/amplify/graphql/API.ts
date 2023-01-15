@@ -375,7 +375,7 @@ export type FetchGroupByGroupIDQueryVariables = {
 };
 
 export type FetchGroupByGroupIDQuery = {
-  fetchGroupByGroupID:  {
+  fetchGroupByGroupID?:  {
     __typename: "GroupMast",
     createdAt: number,
     createdUserID: string,
@@ -383,7 +383,7 @@ export type FetchGroupByGroupIDQuery = {
     groupID: string,
     groupName?: string | null,
     updatedAt: number,
-  },
+  } | null,
 };
 
 export type FetchLastRaffleByGroupIDQueryVariables = {
@@ -391,7 +391,7 @@ export type FetchLastRaffleByGroupIDQueryVariables = {
 };
 
 export type FetchLastRaffleByGroupIDQuery = {
-  fetchLastRaffleByGroupID:  {
+  fetchLastRaffleByGroupID?:  {
     __typename: "RaffleObject",
     activeMembers?:  Array< {
       __typename: "RaffleJoinUser",
@@ -422,7 +422,7 @@ export type FetchLastRaffleByGroupIDQuery = {
       userID?: Array< string > | null,
     } >,
     updatedAt: number,
-  },
+  } | null,
 };
 
 export type FetchMyUserMastQuery = {

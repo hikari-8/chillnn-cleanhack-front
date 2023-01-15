@@ -97,7 +97,9 @@ export default class UserPage extends Vue {
         const userID = this.$route.params.userID
         this.myUserModel = await userInteractor.fetchMyUserModel()
         this.userModel = await userInteractor.fetchUserModelByUserID(userID)
-        this.groupModel = await this.myUserModel.fetchGroupDataByGroupID()
+        if (this.myUserModel.groupID) {
+            this.groupModel = await this.myUserModel.fetchGroupDataByGroupID()
+        }
         console.log('groupModel', this.groupModel)
         console.log('userModel', this.userModel)
     }

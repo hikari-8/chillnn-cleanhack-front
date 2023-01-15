@@ -1,10 +1,10 @@
 <template>
     <div v-if="userModel">
-        <div>グループの部屋だよん</div>
         <app-home
             :userModel="userModel"
             :groupModel="groupModel"
             :taskMasterObjectModel="taskMasterObjectModel"
+            :lastRaffle="lastRaffle"
         />
     </div>
 </template>
@@ -37,10 +37,14 @@ export default class Top extends Vue {
     public blancRaffleObjectModel: RaffleObjectModel | null = null
     public raffleObjectModel: RaffleObjectModel | null = null
     public groupID: string = ''
+    public lastRaffle: RaffleObjectModel | null = null
+    public blancLastRaffle: RaffleObjectModel | null = null
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
-        this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        if (this.userModel.groupID) {
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        }
         //taskMasterObjectModelをgroupIDでfetchしてくる
         if (this.userModel) {
             this.taskMasterObjectModel =
@@ -48,6 +52,13 @@ export default class Top extends Vue {
                     this.userModel.groupID!
                 )
             console.log('Attention', this.taskMasterObjectModel)
+        }
+        if (this.groupModel) {
+            this.blancLastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+            }
         }
     }
 

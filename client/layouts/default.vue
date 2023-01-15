@@ -46,16 +46,24 @@ export default class DefaultLayout extends Vue {
             })
         } else {
             this.userModel = await userInteractor.fetchMyUserModel()
-            if (this.userModel.groupID || this.groupID !== '') {
-                console.log('第二段階目に分岐しました')
-                //groupをuserが持っていないかつ、groupIDがpraramsからとってこれるときのみuserのアップデートをかける
-                if (!this.userModel.groupID && this.groupID !== '') {
-                    this.userModel.groupID = this.groupID
-                    await this.userModel.register()
-                    console.log(this.userModel, 'update後のuserModel')
-                }
+            //グループID持ってたら、グループページに誘導
+            if (this.userModel.groupID) {
                 this.$router.push({
-                    // name: 'group',
+                    path: '/group/:groupID',
+                    params: { groupID: this.groupID },
+                })
+            } else if (!this.userModel.groupID && this.groupID === ':groupID') {
+                //groupIDを持ってない、かつparamsにもgroupidがなかったとき
+                this.$router.push({
+                    name: 'index',
+                })
+            } else if (!this.userModel.groupID && this.groupID !== ':groupID') {
+                //groupIDを持ってない、かつparamsにgroupidがあった時
+                //groupIDをuserに持たせて、userのアップデートをかける
+                this.userModel.groupID = this.groupID
+                await this.userModel.register()
+                console.log(this.userModel, 'update後のuserModel')
+                this.$router.push({
                     path: '/group/:groupID',
                     params: { groupID: this.groupID },
                 })
@@ -66,7 +74,6 @@ export default class DefaultLayout extends Vue {
                 })
             }
         }
-        this.userModel = await userInteractor.fetchMyUserModel()
     }
 }
 </script>

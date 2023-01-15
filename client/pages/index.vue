@@ -4,22 +4,8 @@
             :userModel="userModel"
             :groupModel="groupModel"
             :taskMasterObjectModel="taskMasterObjectModel"
+            :lastRaffle="lastRaffle"
         />
-        <!--ナブバーの実装が完了するまで残す -->
-        <!-- <div v-if="userModel">
-            <app-button class="mt-2">
-                <nuxt-link
-                    :to="{
-                        name: 'user-userID',
-                        params: { userID: userModel.userID },
-                    }"
-                    tag="div"
-                    class="link"
-                    :userModel="userModel"
-                    >Go to your user settings
-                </nuxt-link>
-            </app-button>
-        </div> -->
     </div>
 </template>
 <script lang="ts">
@@ -50,10 +36,14 @@ export default class Top extends Vue {
     public taskMasterObjectModel: TaskMasterObjectModel | null = null
     public blancRaffleObjectModel: RaffleObjectModel | null = null
     public raffleObjectModel: RaffleObjectModel | null = null
+    public groupID: string = ''
+    public lastRaffle: RaffleObjectModel | null = null
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
-        this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        if (this.userModel.groupID) {
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        }
         //taskMasterObjectModelをgroupIDでfetchしてくる
         if (this.userModel) {
             this.taskMasterObjectModel =
@@ -61,6 +51,11 @@ export default class Top extends Vue {
                     this.userModel.groupID!
                 )
             console.log('Attention', this.taskMasterObjectModel)
+        }
+        if (this.groupModel) {
+            this.lastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            console.log(this.lastRaffle, 'lastItem')
         }
     }
 

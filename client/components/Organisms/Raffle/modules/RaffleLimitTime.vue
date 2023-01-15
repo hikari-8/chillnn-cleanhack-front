@@ -89,7 +89,7 @@ export default class RaffleLimitTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '15:50', value: '50 15' },
+        { key: '00:15', value: '15 0' },
         { key: '09:00', value: '0 9' },
         { key: '09:30', value: '30 9' },
         { key: '10:00', value: '0 10' },

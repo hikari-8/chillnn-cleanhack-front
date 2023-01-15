@@ -79,13 +79,15 @@ class GraphqlRaffleObjectRepository implements IRaffleObjectRepository {
         groupID: string
     ): Promise<RaffleObject | null> {
         return (
-            await callApi<
-                FetchLastRaffleByGroupIDQuery,
-                FetchLastRaffleByGroupIDQueryVariables
-            >(query.fetchLastRaffleByGroupID, {
-                groupID,
-            })
-        ).fetchLastRaffleByGroupID
+            (
+                await callApi<
+                    FetchLastRaffleByGroupIDQuery,
+                    FetchLastRaffleByGroupIDQueryVariables
+                >(query.fetchLastRaffleByGroupID, {
+                    groupID,
+                })
+            ).fetchLastRaffleByGroupID || null
+        )
     }
 }
 

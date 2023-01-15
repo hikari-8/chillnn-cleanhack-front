@@ -117,32 +117,23 @@
                             <!-- **************************************************************** -->
 
                             <!-- ユーザー設定 -->
-                            <nuxt-link
-                                :to="{
-                                    name: 'user-userID',
-                                    params: { userID: userModel.userID },
-                                }"
-                                class="link"
-                                :userModel="userModel"
+                            <div
+                                class="flex"
+                                v-if="userModel"
+                                @click="showBody('user')"
+                                v-bind:class="{ active: show == 'user' }"
                             >
-                                <div
-                                    class="flex"
-                                    v-if="userModel"
-                                    @click="showBody('user')"
-                                    v-bind:class="{ active: show == 'user' }"
-                                >
-                                    <div class="icon mr-2">
-                                        <img
-                                            class="w-6 h-6 flex-shrink-0"
-                                            src="@/assets/img/icon/user-circle.svg"
-                                        />
-                                    </div>
-                                    <app-side-menu-content
-                                        title="ユーザー設定"
-                                        text="ユーザー設定"
+                                <div class="icon mr-2">
+                                    <img
+                                        class="w-6 h-6 flex-shrink-0"
+                                        src="@/assets/img/icon/user-circle.svg"
                                     />
                                 </div>
-                            </nuxt-link>
+                                <app-side-menu-content
+                                    title="ユーザー設定"
+                                    text="ユーザー設定"
+                                />
+                            </div>
 
                             <!-- Signin -->
                             <div class="content-menu flex">
@@ -189,6 +180,7 @@
                         v-if="show == 'home'"
                         :userModel="userModel"
                         :groupModel="groupModel"
+                        :lastRaffle="lastRaffle"
                     />
                     <app-user-edit
                         v-if="show == 'user'"
@@ -211,6 +203,12 @@
                         :taskMasterObjectModel="taskMasterObjectModel"
                         :groupModel="groupModel"
                     />
+                    <join-raffle
+                        v-if="show == 'rJoin'"
+                        :userModel="userModel"
+                        :groupModel="groupModel"
+                        :lastRaffle="lastRaffle"
+                    />
                 </div>
             </div>
         </div>
@@ -222,6 +220,7 @@ import {
     GroupModel,
     UserModel,
     TaskMasterObjectModel,
+    RaffleObjectModel,
 } from 'chillnn-cleanhack-abr'
 // components
 import AppSideMenuSummary from '@/components/Organisms/Common/SideMenu/AppSideMenuSummary.vue'
@@ -234,6 +233,7 @@ import AppGroupEdit from '@/components/Organisms/Group/index.vue'
 import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
 import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
+import JoinRaffle from '@/components/Organisms/Raffle/JoinRaffle.vue'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -246,12 +246,14 @@ import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
         HomeBody,
         AppTaskEdit,
         AppRaffleEdit,
+        JoinRaffle,
     },
 })
 export default class AppHome extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false
@@ -265,7 +267,7 @@ export default class AppHome extends Vue {
     }
 
     public isAdminFunc() {
-        if (this.userModel.role !== 'admin') {
+        if (this.userModel.role !== 'admin' && this.userModel.groupID !== '') {
             this.isAdmin = false
         } else {
             this.isAdmin = true

@@ -114,10 +114,11 @@ export default class AddTask extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         //Modelからmastへ変更
-        const mastOfTaskMastItem = this.taskMastItem.taskMastModelToTaskMast()
+        const mastOfTaskMastItem =
+            await this.taskMastItem.taskMastModelToTaskMast()
         if (this.taskMasterObjModel)
             // tasksの配列に新しいデータ(mast)をpush
-            this.taskMasterObjModel.tasks.push(await mastOfTaskMastItem)
+            this.taskMasterObjModel.tasks.push(mastOfTaskMastItem)
         console.log('push後', this.taskMastItem)
         console.log('push後', this.taskMasterObjModel)
         console.log('push後', this.taskMasterObjModel.tasks.length)
@@ -125,7 +126,7 @@ export default class AddTask extends Vue {
         if (!this.taskMasterObjModel) {
             return null
         } else {
-            this.taskMasterObjModel.updateTaskMasterObj()
+            await this.taskMasterObjModel.updateTaskMasterObj()
             this.$emit('registered')
         }
     }

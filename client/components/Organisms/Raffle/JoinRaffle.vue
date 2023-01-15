@@ -1,25 +1,7 @@
 <template>
     <div class="mx-auto py-32 auth_container w-600px" v-if="userModel">
-        <div class="font-semibold mb-8 text-2xl">Home 🏠</div>
-        <div
-            v-if="!isNameUpdated"
-            class="input_container flex font-semibold mb-4"
-        >
-            <div class="mt-12">
-                ようこそCLEAN HACKへ　🎉
-                <br />
-                ユーザー設定からお名前を登録してください！
-            </div>
-        </div>
-        <div v-else class="input_container font-semibold mb-4">
-            <div>
-                <div>
-                    おかえりなさい！
-                    {{ userModel.name }}
-                    さん！🎉
-                </div>
-            </div>
-        </div>
+        <div class="font-semibold mb-8 text-2xl">くじに参加する ✋</div>
+
         <div v-if="lastRaffle && isNameUpdated" class="mt-24">
             <div
                 class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex"
@@ -56,7 +38,7 @@ import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
         AppButton,
     },
 })
-export default class HomeBody extends Vue {
+export default class JoinRaffle extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
     isNameUpdated: boolean = false
