@@ -22,7 +22,7 @@ export type GroupMast = {
 };
 
 export type RaffleObjectInput = {
-  activeMembers?: Array< RaffleJoinUserInput > | null,
+  activeMembers: Array< RaffleJoinUserInput >,
   createdAt: number,
   deletedAt?: number | null,
   groupID: string,
@@ -64,7 +64,7 @@ export type RaffleMastInput = {
 
 export type RaffleObject = {
   __typename: "RaffleObject",
-  activeMembers?:  Array<RaffleJoinUser > | null,
+  activeMembers:  Array<RaffleJoinUser >,
   createdAt: number,
   deletedAt?: number | null,
   groupID: string,
@@ -201,13 +201,13 @@ export type AddRaffleObjectMutationVariables = {
 export type AddRaffleObjectMutation = {
   addRaffleObject:  {
     __typename: "RaffleObject",
-    activeMembers?:  Array< {
+    activeMembers:  Array< {
       __typename: "RaffleJoinUser",
       deletedAt?: number | null,
       groupID: string,
       joinAt: number,
       userID: string,
-    } > | null,
+    } >,
     createdAt: number,
     deletedAt?: number | null,
     groupID: string,
@@ -285,13 +285,13 @@ export type UpdateRaffleObjectMutationVariables = {
 export type UpdateRaffleObjectMutation = {
   updateRaffleObject:  {
     __typename: "RaffleObject",
-    activeMembers?:  Array< {
+    activeMembers:  Array< {
       __typename: "RaffleJoinUser",
       deletedAt?: number | null,
       groupID: string,
       joinAt: number,
       userID: string,
-    } > | null,
+    } >,
     createdAt: number,
     deletedAt?: number | null,
     groupID: string,
@@ -403,13 +403,13 @@ export type FetchLastRaffleByGroupIDQueryVariables = {
 export type FetchLastRaffleByGroupIDQuery = {
   fetchLastRaffleByGroupID?:  {
     __typename: "RaffleObject",
-    activeMembers?:  Array< {
+    activeMembers:  Array< {
       __typename: "RaffleJoinUser",
       deletedAt?: number | null,
       groupID: string,
       joinAt: number,
       userID: string,
-    } > | null,
+    } >,
     createdAt: number,
     deletedAt?: number | null,
     groupID: string,
@@ -457,13 +457,13 @@ export type FetchRaffleObjectQueryVariables = {
 export type FetchRaffleObjectQuery = {
   fetchRaffleObject:  {
     __typename: "RaffleObject",
-    activeMembers?:  Array< {
+    activeMembers:  Array< {
       __typename: "RaffleJoinUser",
       deletedAt?: number | null,
       groupID: string,
       joinAt: number,
       userID: string,
-    } > | null,
+    } >,
     createdAt: number,
     deletedAt?: number | null,
     groupID: string,
@@ -496,13 +496,13 @@ export type FetchRafflesByGroupIDQueryVariables = {
 export type FetchRafflesByGroupIDQuery = {
   fetchRafflesByGroupID:  Array< {
     __typename: "RaffleObject",
-    activeMembers?:  Array< {
+    activeMembers:  Array< {
       __typename: "RaffleJoinUser",
       deletedAt?: number | null,
       groupID: string,
       joinAt: number,
       userID: string,
-    } > | null,
+    } >,
     createdAt: number,
     deletedAt?: number | null,
     groupID: string,

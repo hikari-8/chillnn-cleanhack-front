@@ -45,6 +45,7 @@ import {
     RaffleObject,
     RaffleObjectModel,
     RaffleJoinUserModel,
+    RaffleJoinUser,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -63,6 +64,7 @@ export default class HomeBody extends Vue {
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
+    public blancJoinUserArray: RaffleJoinUser[] = []
 
     public async created() {
         //名前を登録してあるかどうか
@@ -91,9 +93,10 @@ export default class HomeBody extends Vue {
             await this.joinUserModel!.raffleJoinUserModelToMast()
         if (this.lastRaffle) {
             this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-                this.lastRaffle.activeMembers.shift()
-            }
+            // this.lastRaffle.activeMembers.push(mastOfJoinUser)
+            // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
+            //     this.lastRaffle.activeMembers.shift()
+            // }
         }
         //updateする
         if (!this.lastRaffle) {

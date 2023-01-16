@@ -15,7 +15,7 @@
             <app-caption
                 value="掃除場所名"
                 :boldCenter="true"
-                class="w-[55%]"
+                class="w-[45%]"
             />
             <app-caption
                 value="人数"
@@ -34,8 +34,8 @@
                 @registered="registered"
             />
         </add-item-area>
-        <div class="">
-            <div v-if="taskMasterObjectModel" class="tasks">
+        <div v-if="taskMasterObjectModel" class="">
+            <div class="tasks">
                 <div v-for="task in activeTasks" :key="task.taskID">
                     <task-item
                         :task="task"
@@ -50,7 +50,7 @@
             </div>
             <div class="flex items-center py-[15px]">
                 <!-- 空白 -->
-                <div class="w-[70%] text-center flex-grow-0"></div>
+                <div class="w-[60%] text-center flex-grow-0"></div>
                 <!-- 人数 -->
                 <div class="w-[10%] text-center flex-grow-0">
                     <template>

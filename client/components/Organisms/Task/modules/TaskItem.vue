@@ -8,7 +8,7 @@
             <span class="text-gray-600">⚫︎</span>
         </div>
         <!-- 掃除場所名 -->
-        <div class="w-[55%] text-black flex-grow">
+        <div class="w-[45%] text-black flex-grow">
             <app-text :bold="true" :value="task.taskName" />
             <!-- <app-text :bold="true" :value="plan.name.default" /> -->
         </div>
@@ -19,15 +19,19 @@
             </template>
         </div>
 
-        <div class="w-[20%] flex-grow-0">
+        <div class="w-[30%] flex-grow-0">
             <div class="flex justify-center gap-[10px]">
                 <!-- ボタン -->
+                <table-button>
+                    <img class="w-4" src="@/assets/img/icon/edit-regular.svg" />
+                </table-button>
                 <table-button @click="deleteRaffle" explanation="削除">
                     <img
                         class="w-4"
                         src="@/assets/img/icon/trash-alt-regular.svg"
                     />
                 </table-button>
+
                 <!-- <table-button @click="showModal = true" explanation="削除">
                     <img
                         class="w-4"

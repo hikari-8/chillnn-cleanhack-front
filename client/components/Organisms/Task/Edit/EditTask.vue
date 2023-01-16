@@ -1,15 +1,25 @@
 <template>
     <div class="slack_rimind_edit_container h-full">
         <!-- マスターデータ: くじの編集 -->
-        <div class="font-semibold mb-8 text-2xl mt-20">掃除場所設定 🧹</div>
-        <div class="label font-semibold mb-4">掃除場所のマスターデータ</div>
+        <div class="font-semibold mb-8 text-2xl mt-20 mb-16">
+            掃除場所設定 🧹
+        </div>
+
         <div class="task_edit_container">
+            <div
+                class="px-12 py-8 bg-white border border-gray-200 rounded-lg shadow-md"
+            >
+                <div class="label font-semibold mb-4">
+                    掃除場所のマスターデータ
+                </div>
+                <task-list
+                    :user-model="userModel"
+                    :taskMasterObjectModel="taskMasterObjectModel"
+                    @registered="registerTask"
+                />
+            </div>
             <!-- task edit -->
-            <task-list
-                :user-model="userModel"
-                :taskMasterObjectModel="taskMasterObjectModel"
-                @registered="registerTask"
-            />
+
             <div class="mb-8 text-sm text-gray-500 mt-4">
                 ＊くじの基盤となるデータです。これを元に、各回のくじを作成します。
             </div>

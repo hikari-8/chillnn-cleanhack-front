@@ -8,30 +8,78 @@
 
             <div class="font-semibold mt-12 mb-10">現在進行中のくじ</div>
             <div>
+                <!-- カード部分 -->
                 <div
-                    class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
+                    class="px-12 py-8 bg-white border border-gray-200 rounded-lg shadow-md"
                 >
-                    <div
-                        class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
-                    >
-                        {{ hh }} 時{{
-                            mm
-                        }}
-                        分に締切りの進行中の掃除くじを<br />削除しますか？
+                    <div class="flex justify-between">
+                        <!-- 文言 -->
+                        <div>
+                            <div
+                                class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                            >
+                                <!-- Activeマーク -->
+                                <span
+                                    class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full"
+                                >
+                                    <span
+                                        class="w-2 h-2 mr-1 bg-green-500 rounded-full"
+                                    ></span>
+                                    Active
+                                </span>
+                                {{ week }}曜日{{ hh }} 時{{ mm }} 分<span
+                                    class="text-sm font-medium ml-2"
+                                    >締切り</span
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <app-button
+                                @click="runRaffle"
+                                class="text-sm h-16 p-1"
+                                >くじを実行する</app-button
+                            >
+                        </div>
                     </div>
-                    <app-button class="my-3 ml-4" @click="deleteRaffle"
-                        >削除する</app-button
-                    >
+                    <!-- 発行したくじの内容 -->
+                    <div>
+                        <div class="flex justify-between">
+                            <div class="label font-semibold">
+                                発行したくじの内容
+                            </div>
+                            <div class="mb-8 mt-8">
+                                <span class="text-sm font-medium">
+                                    現在の参加人数
+                                </span>
+                                <span
+                                    class="text-pink-600 text-lg font-semibold"
+                                >
+                                    {{ lastRaffleItem.activeMembers.length }}
+                                </span>
+                                <span class="text-sm font-medium"> 人</span>
+                            </div>
+                        </div>
+
+                        <div class="task_edit_container">
+                            <!-- task edit -->
+                            <effective-raffle-list
+                                :raffleObjectModel="lastRaffleItem"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="mt-2 mb-12 text-sm text-gray-500 mt-12">
-                現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
+
+            <div class="flex justify-between mt-14 mb-12">
+                <div class="text-sm text-gray-500 py-2">
+                    現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
+                </div>
+                <app-button class="" @click="deleteRaffle">削除する</app-button>
             </div>
         </div>
         <!-- くじが作成できる場合(1番最初に参加 || lastRaffleのstatusがdone) -->
         <!-- <div
             v-if="
-                !lastRaffleItem ||
                 lastRaffleItem.raffleStatus === RaffleStatus.DONE
             "
         > -->
@@ -62,24 +110,21 @@
                 <raffle-list :raffleObjectModel="raffleObjectModel" />
             </div>
         </div>
-        <div>
-            くじのテストエリア
-            <app-button @click="doRaffle" class="text-sm h-16 p-1"
-                >くじを実行する</app-button
-            >
-        </div>
     </div>
 </template>
 <script lang="ts">
 import {
+    UserModel,
     RaffleObjectModel,
     TaskMasterObjectModel,
     GroupModel,
     RaffleStatus,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { userInteractor } from '~/api'
 // component
 import RaffleList from '@/components/Organisms/Raffle/modules/RaffleList.vue'
+import EffectiveRaffleList from '@/components/Organisms/Raffle/modules/EffectiveRaffleList.vue'
 import RaffleLimitTime from '@/components/Organisms/Raffle/modules/RaffleLimitTime.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
@@ -95,6 +140,7 @@ const schedule = require('node-schedule')
         AppTitle,
         AppText,
         RaffleLimitTime,
+        EffectiveRaffleList,
     },
 })
 export default class MakeRaffle extends Vue {
@@ -116,13 +162,69 @@ export default class MakeRaffle extends Vue {
     public ramdumMemberList: string[] = []
     public ramdumMemberListCopy: string[] = []
     public taskList: string[] = []
+    public resultMessage: string = ''
+    public blackUserModel: UserModel | null = null
+    public userNameArray: string = ''
+    public headCountSum: number = 0
+    public isEarlierThanLimitTime: boolean = true
+
+    @AsyncLoadingAndErrorHandle()
+    public async runRaffle() {
+        this.headCountSumFunc()
+        if (this.lastRaffleItem?.activeMembers.length !== this.headCountSum) {
+            alert(
+                '掃除場所に割り当てた合計人数とくじの参加人数を同じにしてください !'
+            )
+        } else {
+            this.compareTime()
+            if (this.isEarlierThanLimitTime) {
+                const result = window.confirm(
+                    '設定した締切り時間よりも早い時刻ですが、本当にくじを実行しますか？'
+                )
+                if (result) {
+                    await this.doRaffle()
+                    //slackに結果を送る
+                    await this.sendToSlackResult()
+                } else return
+            } else {
+                await this.doRaffle()
+                //slackに結果を送る
+                await this.sendToSlackResult()
+            }
+        }
+    }
+
+    // 時間比較を行うためのメソッドです
+    public compareTime() {
+        const now = new Date()
+        // 現在の時間と分です
+        const nowhh = now.getHours()
+        const nowmm = now.getMinutes()
+        if (nowhh == parseInt(this.hh)) {
+            if (nowmm == parseInt(this.mm)) {
+                return
+            } else if (nowmm < parseInt(this.mm)) {
+                this.isEarlierThanLimitTime = true
+            } else {
+                return
+            }
+        } else if (nowhh < parseInt(this.hh)) {
+            this.isEarlierThanLimitTime = true
+        } else {
+            return
+        }
+    }
+
+    public headCountSumFunc() {
+        this.headCountSum = 0
+        for (const task of this.lastRaffleItem?.tasks!) {
+            this.headCountSum += task.headCount
+        }
+        return this.headCountSum
+    }
 
     //statusがeffective and fixed → doneまで
-    public doRaffle() {
-        //参加者がいないとalartで
-        if (!this.lastRaffleItem!.activeMembers) {
-            alert('参加者がいません！')
-        }
+    public async doRaffle() {
         //memberの配列を作成
         for (const member of this.lastRaffleItem!.activeMembers) {
             const memberID = member.userID
@@ -158,7 +260,7 @@ export default class MakeRaffle extends Vue {
         //statusを変更する
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
         //updateする
-        this.lastRaffleItem!.register()
+        // await this.lastRaffleItem!.register() //一時的にコメントアウトして確認
         console.log(this.lastRaffleItem, '確認')
     }
 
@@ -171,6 +273,7 @@ export default class MakeRaffle extends Vue {
         ) {
             await this.raffleObjectModel.register()
             await this.sendRemindToSlack()
+            await this.sendToSlackRemindRunRaffle()
             this.isLastRaffleNull = false
             this.isLastRaffleActive = true
         } else {
@@ -178,7 +281,6 @@ export default class MakeRaffle extends Vue {
         }
     }
 
-    //みかん
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
@@ -251,12 +353,15 @@ export default class MakeRaffle extends Vue {
             this.isLastRaffleNull,
             'isLastRaffleNull'
         )
+        // userを取得するために自分のuserModelをfetchしてきます
+        this.blackUserModel = await userInteractor.fetchMyUserModel()
     }
 
     public getMyGroupURL() {
         const myGroupID = this.raffleObjectModel.groupID
         // this.myGroupURL = `https://localhost:3000/group/${myGroupID}`
         this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
+        console.log(this.myGroupURL)
     }
 
     public cronToLng() {
@@ -305,6 +410,89 @@ export default class MakeRaffle extends Vue {
         }
     }
 
+    @AsyncLoadingAndErrorHandle()
+    public async makeMessage() {
+        if (this.lastRaffleItem) {
+            for (const task of this.lastRaffleItem!.tasks) {
+                if (task.headCount > 0) {
+                    //taskName: userIDからfetchした名前
+                    for (const userID of task.joinUserIDArray) {
+                        console.log(userID, 'userID')
+                        const userModel =
+                            await this.blackUserModel!.fetchUserDataByUserID(
+                                userID
+                            )
+                        const plusHonolific = userModel!.name + 'さん,　'
+                        this.userNameArray += plusHonolific
+                    }
+
+                    this.resultMessage +=
+                        task.taskName + ' : ' + this.userNameArray + '\n'
+                }
+                this.userNameArray = ''
+            }
+            console.log(this.resultMessage, 'resultMessageです')
+        }
+    }
+
+    //結果を送信
+    @AsyncLoadingAndErrorHandle()
+    public async sendToSlackResult() {
+        let params = new URLSearchParams()
+        await this.makeMessage()
+        let message = {
+            text: `本日のお掃除場所担当が決定しました！🎉\n参加できる方は各自、清掃をよろしくお願いします！🛀 🧼 \n\n${this.resultMessage}`,
+        }
+        let slackUrl =
+            'https://hooks.slack.com/services/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'
+        //times-hikari
+        // let slackUrlTimesHikari =
+        //     'https://hooks.slack.com/services/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'
+
+        params.append('payload', JSON.stringify(message))
+        const res = axios
+            .post(slackUrl, params)
+            .then((res: any) => {
+                console.log(res)
+            })
+            .catch((err: any) => {
+                console.log(err)
+            })
+    }
+
+    //制限時間になったら、管理者にリマインドを送信
+    @AsyncLoadingAndErrorHandle()
+    public async sendToSlackRemindRunRaffle() {
+        let params = new URLSearchParams()
+        let message = {
+            text: `${this.hh} 時${this.mm} 分になりました！\n管理者の方は下記のリンク、またはアプリから掃除場所の人数を調整し、くじを実行してください！\n${this.myGroupURL}`,
+        }
+        let slackUrl =
+            'https://hooks.slack.com/services/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'
+        //times-hikari
+        // let slackUrlTimesHikari =
+        //     'https://hooks.slack.com/services/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'
+
+        //時間指定 (分、時、日、月、曜日)
+        const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
+        console.log('時間指定→', setTime)
+
+        const sendAtSchedule = schedule.scheduleJob(setTime, () => {
+            params.append('payload', JSON.stringify(message))
+            const res = axios
+                .post(slackUrl, params)
+                .then((res: any) => {
+                    console.log(res)
+                })
+                .catch((err: any) => {
+                    console.log(err)
+                })
+        })
+        //アラート
+        alert(`通知がスケジュールされました`)
+    }
+
+    //リマインドを全員に送信
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()

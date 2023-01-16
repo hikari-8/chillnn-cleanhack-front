@@ -38,6 +38,7 @@ import {
     RaffleObject,
     RaffleObjectModel,
     RaffleJoinUserModel,
+    RaffleJoinUser,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -56,6 +57,7 @@ export default class JoinRaffle extends Vue {
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
+    public blancJoinUserArray: RaffleJoinUser[] = []
 
     public async created() {
         //名前を登録してあるかどうか
@@ -82,13 +84,16 @@ export default class JoinRaffle extends Vue {
         //Modelからmastへ変更
         const mastOfJoinUser =
             await this.joinUserModel!.raffleJoinUserModelToMast()
-        console.log(mastOfJoinUser, 'joinuserのmast')
         if (this.lastRaffle) {
-            this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-                this.lastRaffle.activeMembers.shift()
-                console.log(this.lastRaffle.activeMembers, '削除後')
-            }
+            this.blancJoinUserArray = this.lastRaffle.activeMembers
+            // vuewarnを回避するため、一旦定数に入れています。
+            this.blancJoinUserArray.push(mastOfJoinUser)
+            this.lastRaffle.activeMembers = this.blancJoinUserArray
+            // this.lastRaffle.activeMembers.push(mastOfJoinUser)
+            // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
+            //     this.lastRaffle.activeMembers.shift()
+            //     console.log(this.lastRaffle.activeMembers, '削除後')
+            // }
         }
         //updateする
         if (!this.lastRaffle) {
