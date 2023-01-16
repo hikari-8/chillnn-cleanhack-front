@@ -51,7 +51,7 @@ export default class Top extends Vue {
                 await this.userModel.fetchTaskMasterDataObjByGroupID(
                     this.userModel.groupID!
                 )
-            console.log('Attention', this.taskMasterObjectModel)
+            // console.log('Attention', this.taskMasterObjectModel)
         }
         if (this.groupModel) {
             this.blancLastRaffle =

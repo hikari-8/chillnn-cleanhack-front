@@ -87,7 +87,6 @@ export default class VerifyPage extends Vue {
     }
 
     public created() {
-        console.log('verify.vueです')
         const email = this.$route.query.email
         const password = this.$route.query.password
         const groupID = this.$route.query.groupID

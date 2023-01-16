@@ -85,13 +85,7 @@ export default class SignUpPage extends Vue {
     }
 
     public created() {
-        console.log('signup.vueです')
-        console.log(
-            'signup内のthis.$route.query.groupID',
-            this.$route.query.groupID
-        )
         const groupID = this.$route.query.groupID
-        console.log('signup内のgroupID', groupID)
         this.groupID = (typeof groupID === 'string' && groupID) || ''
     }
 }
