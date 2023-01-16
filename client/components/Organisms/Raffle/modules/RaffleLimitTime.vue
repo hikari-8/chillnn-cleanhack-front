@@ -90,8 +90,6 @@ export default class RaffleLimitTime extends Vue {
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
         { key: '00:15', value: '15 0' },
-        { key: '09:00', value: '0 9' },
-        { key: '09:30', value: '30 9' },
         { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
         { key: '11:00', value: '0 11' },
@@ -146,7 +144,6 @@ export default class RaffleLimitTime extends Vue {
                 break
         }
         this.getMyGroupURL()
-        console.log('mygroupURL: ', this.myGroupURL)
     }
 
     public get isWeekBlank() {

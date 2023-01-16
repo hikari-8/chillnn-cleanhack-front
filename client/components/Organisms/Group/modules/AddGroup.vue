@@ -42,12 +42,6 @@ export default class AddGroup extends Vue {
     @Prop({ required: false }) public description!: boolean
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
-    // public groupModel: GroupModel | null = null
-
-    // public async created() {
-    //     this.groupModel = this.userModel.createNewGroup()
-    //     console.log('AppGroupEditのgroupModelです', this.groupModel)
-    // }
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {

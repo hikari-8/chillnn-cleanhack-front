@@ -22,7 +22,7 @@
         <div class="w-[20%] flex-grow-0">
             <div class="flex justify-center gap-[10px]">
                 <!-- ボタン -->
-                <table-button>
+                <table-button @click="deleteRaffle" explanation="削除">
                     <img
                         class="w-4"
                         src="@/assets/img/icon/trash-alt-regular.svg"
@@ -51,7 +51,11 @@ import ButtonBase from '@/components/Atom/Button/button_base.vue'
 import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 import TableButton from '@/components/Atom/Button/TableButton.vue'
-import { TaskMasterObjectModel } from 'chillnn-cleanhack-abr'
+import {
+    TaskMasterObjectModel,
+    TaskStatus,
+    TaskMastModel,
+} from 'chillnn-cleanhack-abr'
 
 export const planTableHeader = ['プラン名', '残在庫', '単価', '']
 
@@ -65,7 +69,8 @@ export const planTableHeader = ['プラン名', '残在庫', '単価', '']
     },
 })
 export default class TaskItem extends Vue {
-    @Prop({ default: false }) public task!: TaskMasterObjectModel
+    @Prop({ default: false }) public task!: TaskMastModel
+    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     // @Prop({ default: false }) public task!: Object
     // @Prop({ default: false }) public index!: number
     public taskIndex: number = 0
@@ -78,6 +83,13 @@ export default class TaskItem extends Vue {
 
     public get getTask() {
         return (this.exampleTaskObj = this.task)
+    }
+
+    public deleteRaffle() {
+        this.task.taskStatus = TaskStatus.DELETED
+        console.log('Deleting')
+        this.taskMasterObjectModel.updateTaskMasterObj()
+        this.$emit('filterTasks')
     }
 }
 </script>

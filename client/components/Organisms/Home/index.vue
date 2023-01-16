@@ -68,8 +68,8 @@
                                             }"
                                         >
                                             <app-side-menu-sub-content
-                                                title="くじを発行する"
-                                                text="くじを発行する"
+                                                title="くじを発行/削除する"
+                                                text="くじを発行/削除する"
                                             />
                                         </div>
                                         <div

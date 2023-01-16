@@ -15,13 +15,6 @@
             </div>
         </div>
 
-        <div>テストボタン</div>
-        <!-- 全ての掃除場所設定を登録する -->
-        <div class="button_container">
-            <!-- button -->
-            <app-button @click="updateTaskMasterObj">更新する</app-button>
-        </div>
-
         <!-- マスターデータ: リマインド時間の編集 -->
         <div class="font-semibold mb-8 text-2xl mt-14">
             くじ引きリマインド時間設定 ⏰
@@ -96,17 +89,6 @@ export default class EditTask extends Vue {
             'registered後のthis.taskMasterObjectModel',
             this.taskMasterObjectModel
         )
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async updateTaskMasterObj() {
-        if (this.taskMasterObjectModel)
-            this.taskMasterObjectModel.updateTaskMasterObj()
-        const groupID = this.userModel.groupID
-        if (groupID) {
-            await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
-        }
-        console.log('テストです')
     }
 }
 </script>

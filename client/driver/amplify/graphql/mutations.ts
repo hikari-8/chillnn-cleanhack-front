@@ -36,12 +36,12 @@ export const addRaffleObject = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        joinUserIDArray
         raffleID
         raffleItemID
         taskID
         taskName
         updatedAt
-        userID
       }
       updatedAt
     }
@@ -64,6 +64,7 @@ export const addTaskMasterObject = /* GraphQL */ `
         headCount
         taskID
         taskName
+        taskStatus
         updatedAt
       }
       updatedAt
@@ -104,12 +105,12 @@ export const updateRaffleObject = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        joinUserIDArray
         raffleID
         raffleItemID
         taskID
         taskName
         updatedAt
-        userID
       }
       updatedAt
     }
@@ -132,6 +133,7 @@ export const updateTaskMasterObject = /* GraphQL */ `
         headCount
         taskID
         taskName
+        taskStatus
         updatedAt
       }
       updatedAt

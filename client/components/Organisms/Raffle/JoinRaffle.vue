@@ -4,7 +4,7 @@
 
         <div v-if="lastRaffle && isNameUpdated" class="mt-24">
             <div
-                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex"
+                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
             >
                 <div
                     class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
@@ -16,6 +16,17 @@
                 <app-button class="my-3 ml-4" @click="joinGroup"
                     >参加する</app-button
                 >
+            </div>
+        </div>
+        <div v-else class="mt-24">
+            <div
+                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex"
+            >
+                <div
+                    class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                >
+                    現在、参加できるくじはありません🙇‍♀️
+                </div>
             </div>
         </div>
     </div>

@@ -53,7 +53,6 @@ export default class AppGroupEdit extends Vue {
         if (!this.userModel.groupID) {
             this.isGroupIDNull = true
             this.blancGroupModel = this.userModel.createNewGroup()
-            console.log('AppGroupEditのgroupModelです', this.groupModel)
         } else {
             this.isGroupIDNull = false
             this.blancGroupModel = await this.groupModel.fetchGroupMast()

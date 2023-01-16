@@ -5,17 +5,9 @@
     >
         <div
             class="relative flex h-full items-center justify-center"
-            @mouseover="isShow = true"
-            @mouseleave="isShow = false"
+            @click="click"
         >
             <slot />
-        </div>
-        <div>
-            <transition name="tablebutton">
-                <!-- <span class="relative text-xs" v-show="isShow">{{
-                    explanation
-                }}</span> -->
-            </transition>
         </div>
     </div>
 </template>
@@ -25,9 +17,11 @@ import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
 @Component({})
 export default class TableButton extends Vue {
     @Prop() public explanation!: string
-    public isShow: boolean = false
+    // public isShow: boolean = false
 
-    @Emit() public click() {}
+    public click() {
+        this.$emit('click')
+    }
 }
 </script>
 

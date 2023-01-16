@@ -22,7 +22,7 @@
         </div>
         <div v-if="lastRaffle && isNameUpdated" class="mt-24">
             <div
-                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex"
+                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
             >
                 <div
                     class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
@@ -89,12 +89,10 @@ export default class HomeBody extends Vue {
         //Modelからmastへ変更
         const mastOfJoinUser =
             await this.joinUserModel!.raffleJoinUserModelToMast()
-        console.log(mastOfJoinUser, 'joinuserのmast')
         if (this.lastRaffle) {
             this.lastRaffle.activeMembers.push(mastOfJoinUser)
             if (this.lastRaffle.activeMembers[0].userID === 'blank') {
                 this.lastRaffle.activeMembers.shift()
-                console.log(this.lastRaffle.activeMembers, '削除後')
             }
         }
         //updateする
@@ -102,7 +100,6 @@ export default class HomeBody extends Vue {
             return null
         } else {
             await this.lastRaffle.register()
-            console.log(this.lastRaffle, 'register後のthis.lastRaffle')
         }
     }
 }

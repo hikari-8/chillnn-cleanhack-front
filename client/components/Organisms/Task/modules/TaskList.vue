@@ -36,11 +36,16 @@
         </add-item-area>
         <div class="">
             <div v-if="taskMasterObjectModel" class="tasks">
-                <div
-                    v-for="task in taskMasterObjectModel.tasks"
-                    :key="task.taskID"
-                >
-                    <task-item :task="task" />
+                <div v-for="task in activeTasks" :key="task.taskID">
+                    <task-item
+                        :task="task"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                    />
+                    <!-- <task-item
+                        :task="task"
+                        :taskMasterObjectModel="taskMasterObjectModel"
+                        @filterTasks="filterTasks"
+                    /> -->
                 </div>
             </div>
             <div class="flex items-center py-[15px]">
@@ -66,6 +71,7 @@ import {
     TaskMast,
     TaskMasterObjectModel,
     TaskMastModel,
+    TaskStatus,
     UserModel,
 } from 'chillnn-cleanhack-abr'
 // component
@@ -79,7 +85,10 @@ import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import TaskItem from '@/components/Organisms/Task/modules/TaskItem.vue'
 import AppModal from '@/components/Organisms/Common/AppModal/index.vue'
 import AddTask from '@/components/Organisms/Task/modules/AddTask.vue'
-import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import {
+    AsyncErrorHandle,
+    AsyncLoadingAndErrorHandle,
+} from '~/util/decorator/baseDecorator'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AddItemArea from '@/components/Organisms/Common/AddItemArea/index.vue'
 
@@ -107,6 +116,7 @@ export default class TaskList extends Vue {
     public headCountSum: number = 0
     public taskMastItem: TaskMastModel | null = null
     public taskModel: TaskMastModel | null = null
+    public activeTasks: TaskMastModel[] = []
     public taskArrayFixed: TaskMast[] = [
         {
             createdAt: 0,
@@ -115,19 +125,29 @@ export default class TaskList extends Vue {
             taskID: 'blanc',
             taskName: 'blanc',
             updatedAt: 0,
+            taskStatus: TaskStatus.ACTIVE,
         },
     ]
 
-    public created() {
+    public get getActiveTasks() {
+        return this.activeTasks
+    }
+
+    public async created() {
+        await this.filterActiveTasks()
         this.headCountSumFunc
     }
 
     public get headCountSumFunc() {
         this.headCountSum = 0
-        for (const task of this.taskMasterObjectModel.tasks) {
+        for (const task of this.activeTasks) {
             this.headCountSum += task.headCount
         }
         return this.headCountSum
+    }
+
+    public async filterActiveTasks() {
+        this.activeTasks = await this.taskMasterObjectModel.filterActiveTasks()
     }
 
     public openModal() {
@@ -137,6 +157,12 @@ export default class TaskList extends Vue {
             console.log('TaskMast作成', this.taskMastItem)
             this.isShowModal = true
         }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async filterTasks() {
+        await this.filterActiveTasks()
+        this.headCountSumFunc
     }
 
     @AsyncLoadingAndErrorHandle()

@@ -51,12 +51,12 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        joinUserIDArray
         raffleID
         raffleItemID
         taskID
         taskName
         updatedAt
-        userID
       }
       updatedAt
     }
@@ -99,12 +99,12 @@ export const fetchRaffleObject = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        joinUserIDArray
         raffleID
         raffleItemID
         taskID
         taskName
         updatedAt
-        userID
       }
       updatedAt
     }
@@ -132,12 +132,12 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        joinUserIDArray
         raffleID
         raffleItemID
         taskID
         taskName
         updatedAt
-        userID
       }
       updatedAt
     }
@@ -160,6 +160,7 @@ export const fetchTaskMasterObject = /* GraphQL */ `
         headCount
         taskID
         taskName
+        taskStatus
         updatedAt
       }
       updatedAt

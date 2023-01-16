@@ -1,14 +1,41 @@
 <template>
     <div class="slack_rimind_edit_container h-full mb-8 mt-20">
         <!-- くじが作成できない場合 -->
-        <div v-if="isLastRaffleActive || !isLastRaffleNull">
-            <div class="font-semibold text-2xl">くじの発行 🌞</div>
+        <!-- v-if=""は""の中身がtrueの時に表示される -->
+        <!-- <div v-if="isLastRaffleActive || !isLastRaffleNull"> -->
+        <div v-if="isLastRaffleActive">
+            <div class="font-semibold text-2xl">くじの発行/削除 🌞</div>
+
+            <div class="font-semibold mt-12 mb-10">現在進行中のくじ</div>
+            <div>
+                <div
+                    class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
+                >
+                    <div
+                        class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                    >
+                        {{ hh }} 時{{
+                            mm
+                        }}
+                        分に締切りの進行中の掃除くじを<br />削除しますか？
+                    </div>
+                    <app-button class="my-3 ml-4" @click="deleteRaffle"
+                        >削除する</app-button
+                    >
+                </div>
+            </div>
             <div class="mt-2 mb-12 text-sm text-gray-500 mt-12">
                 現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
             </div>
         </div>
-        <!-- くじが作成できる場合 -->
-        <div v-else>
+        <!-- くじが作成できる場合(1番最初に参加 || lastRaffleのstatusがdone) -->
+        <!-- <div
+            v-if="
+                !lastRaffleItem ||
+                lastRaffleItem.raffleStatus === RaffleStatus.DONE
+            "
+        > -->
+        <div v-if="!lastRaffleItem || !isLastRaffleActive">
             <div class="flex justify-between">
                 <div class="font-semibold text-2xl">くじの発行 🌞</div>
                 <!-- ボタン -->
@@ -34,6 +61,12 @@
                 <!-- task edit -->
                 <raffle-list :raffleObjectModel="raffleObjectModel" />
             </div>
+        </div>
+        <div>
+            くじのテストエリア
+            <app-button @click="doRaffle" class="text-sm h-16 p-1"
+                >くじを実行する</app-button
+            >
         </div>
     </div>
 </template>
@@ -79,6 +112,55 @@ export default class MakeRaffle extends Vue {
     public blancRaffleItem: RaffleObjectModel | null = null
     public isLastRaffleActive: boolean = false
     public isLastRaffleNull: boolean = false
+    public memberList: string[] = []
+    public ramdumMemberList: string[] = []
+    public ramdumMemberListCopy: string[] = []
+    public taskList: string[] = []
+
+    //statusがeffective and fixed → doneまで
+    public doRaffle() {
+        //参加者がいないとalartで
+        if (!this.lastRaffleItem!.activeMembers) {
+            alert('参加者がいません！')
+        }
+        //memberの配列を作成
+        for (const member of this.lastRaffleItem!.activeMembers) {
+            const memberID = member.userID
+            this.memberList.push(memberID)
+        }
+        //memberの配列をシャッフルする
+        while (this.memberList.length > 0) {
+            //ランダムな数字rumdumNumを求める
+            const arrayLength = this.memberList.length
+            const ramdumNum = Math.floor(Math.random() * arrayLength)
+            //残っている数字から、ramdumNumの数字を削除、別の場所にその数字を書き出す
+            this.ramdumMemberList.push(this.memberList[ramdumNum])
+            this.memberList.splice(ramdumNum, 1)
+        }
+        console.log(this.ramdumMemberList)
+        // taskの配列の中でthis.ramdumMemberListをheadCount分回しながら、idを持たせていく
+        // const copyRaffleItemTasks = this.lastRaffleItem!.tasks
+        for (const task of this.lastRaffleItem!.tasks) {
+            this.ramdumMemberListCopy = this.ramdumMemberList
+            if (task.headCount > 0) {
+                //最初のメンバーを取ってきて、追加したら配列から削除する
+                const firstMember = this.ramdumMemberListCopy[0]
+                //headCountの数だけ回す
+                for (var i = 0; i < task.headCount; i++) {
+                    task.joinUserIDArray?.push(firstMember)
+                    console.log(firstMember, 'ramdumMemberListの最初のメンバー')
+                    this.ramdumMemberListCopy.shift()
+                    console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
+                    // this.taskList.push(task.taskName)
+                }
+            }
+        }
+        //statusを変更する
+        this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+        //updateする
+        this.lastRaffleItem!.register()
+        console.log(this.lastRaffleItem, '確認')
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
@@ -90,9 +172,18 @@ export default class MakeRaffle extends Vue {
             await this.raffleObjectModel.register()
             await this.sendRemindToSlack()
             this.isLastRaffleNull = false
+            this.isLastRaffleActive = true
         } else {
             alert('実行中のくじがあります。')
         }
+    }
+
+    //みかん
+    @AsyncLoadingAndErrorHandle()
+    public async deleteRaffle() {
+        this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+        await this.lastRaffleItem!.register()
+        this.isLastRaffleActive = false
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -131,7 +222,6 @@ export default class MakeRaffle extends Vue {
                 break
         }
         this.getMyGroupURL()
-        console.log('mygroupURL: ', this.myGroupURL)
         //テスト/lastraffleをfetchして、statusを調べる
         this.lastRaffleItem =
             await this.raffleObjectModel.fetchLastRaffleItemByGroupID()
@@ -139,7 +229,28 @@ export default class MakeRaffle extends Vue {
             this.isLastRaffleNull = true
         } else if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
             this.isLastRaffleActive = true
+            const timeValue = this.lastRaffleItem.limitTime
+            //○○時0分の時→4桁
+            if (timeValue.length == 4) {
+                this.hh = timeValue.substr(2, 4)
+                this.mm = timeValue.substr(0, 1)
+                if (this.mm == '0') {
+                    this.mm = ' 00' //見やすくするため空白開ける
+                }
+            } else {
+                this.hh = timeValue.substr(3, 5)
+                this.mm = timeValue.substr(0, 2)
+                if (this.mm == '0') {
+                    this.mm = '00'
+                }
+            }
         }
+        console.log(
+            this.isLastRaffleActive,
+            'isLastRaffleActive',
+            this.isLastRaffleNull,
+            'isLastRaffleNull'
+        )
     }
 
     public getMyGroupURL() {
@@ -178,10 +289,19 @@ export default class MakeRaffle extends Vue {
                 break
         }
         const timeValue = this.raffleObjectModel.limitTime
-        this.hh = timeValue.substr(3, 5)
-        this.mm = timeValue.substr(0, 2)
-        if (this.mm == '0') {
-            this.mm = '00'
+        //○○時0分の時→4桁
+        if (timeValue.length == 4) {
+            this.hh = timeValue.substr(2, 4)
+            this.mm = timeValue.substr(0, 1)
+            if (this.mm == '0') {
+                this.mm = ' 00' //見やすくするため空白開ける
+            }
+        } else {
+            this.hh = timeValue.substr(3, 5)
+            this.mm = timeValue.substr(0, 2)
+            if (this.mm == '0') {
+                this.mm = '00'
+            }
         }
     }
 

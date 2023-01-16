@@ -148,7 +148,6 @@ export default class SlackRemindTime extends Vue {
 
     async created() {
         this.getMyGroupURL()
-        console.log('mygroupURL: ', this.myGroupURL)
     }
 
     public cronToLng() {
