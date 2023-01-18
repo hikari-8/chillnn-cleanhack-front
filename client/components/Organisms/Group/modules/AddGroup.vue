@@ -1,25 +1,30 @@
 <template>
-    <div class="name_input_container" v-if="!userModel.groupID && groupModel">
-        <div class="label font-semibold mb-4">{{ label }}</div>
-        <div class="flex">
-            <div>
-                <!-- name -->
-                <div class="flex gap-x-3 items-center w-72 mr-4">
-                    <app-base-input
-                        v-model="groupModel.groupName"
-                        class="w-full"
-                    />
+    <div v-if="groupModel && userModel">
+        <div
+            class="name_input_container"
+            v-if="!userModel.groupID && groupModel"
+        >
+            <div class="label font-semibold mb-4">{{ label }}</div>
+            <div class="flex">
+                <div>
+                    <!-- name -->
+                    <div class="flex gap-x-3 items-center w-72 mr-4">
+                        <app-base-input
+                            v-model="groupModel.groupName"
+                            class="w-full"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <div class="">
+                        <!-- button -->
+                        <app-button @click="registerGroup">作成</app-button>
+                    </div>
                 </div>
             </div>
-            <div>
-                <div class="">
-                    <!-- button -->
-                    <app-button @click="registerGroup">作成</app-button>
-                </div>
+            <div class="mt-2 text-sm text-gray-500" v-if="description">
+                ＊くじを作成するには、グループ名を設定してグループを作成してください。
             </div>
-        </div>
-        <div class="mt-2 text-sm text-gray-500" v-if="description">
-            ＊くじを作成するには、グループ名を設定してグループを作成してください。
         </div>
     </div>
 </template>

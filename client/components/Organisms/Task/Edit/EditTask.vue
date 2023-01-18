@@ -15,6 +15,8 @@
                 <task-list
                     :user-model="userModel"
                     :taskMasterObjectModel="taskMasterObjectModel"
+                    :activeTasks="activeTasks"
+                    :headCountSum="headCountSum"
                     @registered="registerTask"
                 />
             </div>
@@ -41,6 +43,7 @@ import {
     UserModel,
     TaskMasterObjectModel,
     GroupModel,
+    TaskMastModel,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -66,18 +69,21 @@ export default class EditTask extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) activeTasks!: TaskMastModel[]
+    @Prop({ required: true }) headCountSum!: number
     public updatedMasterObjModel: TaskMasterObjectModel | null = null
     // public taskMasterObjectModel: TaskMasterObjectModel | null = null
-    // public async created() {
-    //     //taskMasterObjectModelをgroupIDでfetchしてくる
-    //     if (this.userModel) {
-    //         this.taskMasterObjectModel =
-    //             await this.userModel.fetchTaskMasterDataObjByGroupID(
-    //                 this.userModel.groupID!
-    //             )
-    //         console.log('Attention', this.taskMasterObjectModel)
-    //     }
-    // }
+
+    public async fetchUpdatedTask() {
+        //アップデートしたものをfetchしてくる
+        const groupID = this.userModel.groupID
+        this.updatedMasterObjModel =
+            await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+        if (this.updatedMasterObjModel) {
+            console.log('アップデートしたものをfetchしてるよ')
+            this.taskMasterObjectModel = this.updatedMasterObjModel
+        }
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async registerTask() {
@@ -92,9 +98,11 @@ export default class EditTask extends Vue {
             this.updatedMasterObjModel =
                 await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
             if (this.updatedMasterObjModel) {
+                console.log('アップデートしたものをfetchしてるよ')
                 this.taskMasterObjectModel = this.updatedMasterObjModel
             }
         }
+        this.$emit('registered')
         console.log(
             'registered後のthis.taskMasterObjectModel',
             this.taskMasterObjectModel

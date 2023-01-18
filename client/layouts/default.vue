@@ -34,8 +34,8 @@ export default class DefaultLayout extends Vue {
             const groupID = this.$route.query.groupID
             this.groupID = (typeof groupID === 'string' && groupID) || ''
         }
-        console.log('paramsから取得したgroupID', this.groupID)
-        console.log('delaftの中を通っています')
+        // console.log('paramsから取得したgroupID', this.groupID)
+        // console.log('delaftの中を通っています')
         const isSignIn = await authInteractor.isSignIn()
         if (!isSignIn) {
             this.$router.push({

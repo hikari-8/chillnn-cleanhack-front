@@ -31,13 +31,6 @@
                         src="@/assets/img/icon/trash-alt-regular.svg"
                     />
                 </table-button>
-
-                <!-- <table-button @click="showModal = true" explanation="削除">
-                    <img
-                        class="w-4"
-                        src="@/assets/img/icon/trash-alt-regular.svg"
-                    />
-                </table-button> -->
             </div>
         </div>
     </div>
@@ -75,11 +68,8 @@ export const planTableHeader = ['プラン名', '残在庫', '単価', '']
 export default class TaskItem extends Vue {
     @Prop({ default: false }) public task!: TaskMastModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
-    // @Prop({ default: false }) public task!: Object
-    // @Prop({ default: false }) public index!: number
     public taskIndex: number = 0
     public exampleTaskObj: Object = []
-    // @Prop({ default: false }) public orderChange!: number
     public showModal: boolean = false
     public outDate: boolean = false
     public outStock: boolean = false
@@ -91,9 +81,8 @@ export default class TaskItem extends Vue {
 
     public deleteRaffle() {
         this.task.taskStatus = TaskStatus.DELETED
-        console.log('Deleting')
         this.taskMasterObjectModel.updateTaskMasterObj()
-        this.$emit('filterTasks')
+        this.$emit('registered')
     }
 }
 </script>

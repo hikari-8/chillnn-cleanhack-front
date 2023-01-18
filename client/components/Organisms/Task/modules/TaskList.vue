@@ -41,12 +41,8 @@
                     <task-item
                         :task="task"
                         :taskMasterObjectModel="taskMasterObjectModel"
+                        @registered="registered"
                     />
-                    <!-- <task-item
-                        :task="task"
-                        :taskMasterObjectModel="taskMasterObjectModel"
-                        @filterTasks="filterTasks"
-                    /> -->
                 </div>
             </div>
             <div class="flex items-center py-[15px]">
@@ -54,10 +50,7 @@
                 <div class="w-[60%] text-center flex-grow-0"></div>
                 <!-- 人数 -->
                 <div class="w-[10%] text-center flex-grow-0">
-                    <template>
-                        計{{ headCountSum }}人
-                        <!-- <span>{{  }}</span> -->
-                    </template>
+                    <template> 計{{ headCountSum }}人 </template>
                 </div>
                 <div class="mt-7 text-center" v-show="!taskMasterObjectModel">
                     くじを作成するために、掃除場所データを登録してください。
@@ -112,12 +105,12 @@ import AddItemArea from '@/components/Organisms/Common/AddItemArea/index.vue'
 export default class TaskList extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
+    @Prop({ required: true }) activeTasks!: TaskMastModel[]
+    @Prop({ required: true }) headCountSum!: number
     public isShowModal: boolean = false
     public orderChange: boolean = false
-    public headCountSum: number = 0
     public taskMastItem: TaskMastModel | null = null
     public taskModel: TaskMastModel | null = null
-    public activeTasks: TaskMastModel[] = []
     public taskArrayFixed: TaskMast[] = [
         {
             createdAt: 0,
@@ -130,27 +123,6 @@ export default class TaskList extends Vue {
         },
     ]
 
-    public get getActiveTasks() {
-        return this.activeTasks
-    }
-
-    public async created() {
-        await this.filterActiveTasks()
-        this.headCountSumFunc
-    }
-
-    public get headCountSumFunc() {
-        this.headCountSum = 0
-        for (const task of this.activeTasks) {
-            this.headCountSum += task.headCount
-        }
-        return this.headCountSum
-    }
-
-    public async filterActiveTasks() {
-        this.activeTasks = await this.taskMasterObjectModel.filterActiveTasks()
-    }
-
     public openModal() {
         if (this.taskMasterObjectModel) {
             //taskMastを新規作成している
@@ -161,15 +133,8 @@ export default class TaskList extends Vue {
     }
 
     @AsyncLoadingAndErrorHandle()
-    public async filterTasks() {
-        await this.filterActiveTasks()
-        this.headCountSumFunc
-    }
-
-    @AsyncLoadingAndErrorHandle()
     public async registered() {
         this.$emit('registered')
-        this.headCountSumFunc
         this.taskMastItem = null
         this.isShowModal = false
     }

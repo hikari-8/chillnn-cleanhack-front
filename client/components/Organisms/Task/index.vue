@@ -2,7 +2,7 @@
     <div>
         <div
             class="mx-auto pb-32 auth_container w-600px"
-            v-if="userModel && taskMasterObjectModel"
+            v-if="userModel && taskMasterObjectModel && groupModel"
         >
             <!-- 掃除場所のマスターデータ -->
             <div class="mb-20">
@@ -10,6 +10,9 @@
                     :user-model="userModel"
                     :taskMasterObjectModel="taskMasterObjectModel"
                     :groupModel="groupModel"
+                    :activeTasks="activeTasks"
+                    :headCountSum="headCountSum"
+                    @registered="registered"
                 />
             </div>
         </div>
@@ -27,6 +30,7 @@ import {
     UserModel,
     GroupModel,
     TaskMasterObjectModel,
+    TaskMastModel,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
@@ -44,8 +48,34 @@ export default class AppTaskEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
+    public activeTasks: TaskMastModel[] = []
+    public headCountSum: number = 0
     public get isShowLink() {
         return this.$route.params.userID !== this.userModel.userID
+    }
+
+    public async created() {
+        await this.filterActiveTasks()
+        this.headCountSumFunc
+    }
+
+    public get headCountSumFunc() {
+        this.headCountSum = 0
+        for (const task of this.activeTasks) {
+            this.headCountSum += task.headCount
+        }
+        return this.headCountSum
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async filterActiveTasks() {
+        this.activeTasks = await this.taskMasterObjectModel.filterActiveTasks()
+    }
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        await this.filterActiveTasks()
+        this.headCountSumFunc
+        this.$emit('registered')
     }
 }
 </script>
