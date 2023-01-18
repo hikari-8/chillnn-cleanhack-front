@@ -209,6 +209,7 @@
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
                         :isAlreadyJoined="isAlreadyJoined"
+                        @joinGroup="joinGroup"
                     />
                 </div>
             </div>
@@ -222,6 +223,7 @@ import {
     UserModel,
     TaskMasterObjectModel,
     RaffleObjectModel,
+    RaffleJoinUserModel,
 } from 'chillnn-cleanhack-abr'
 // components
 import AppSideMenuSummary from '@/components/Organisms/Common/SideMenu/AppSideMenuSummary.vue'
@@ -258,6 +260,8 @@ export default class AppHome extends Vue {
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
+    @Prop({ required: true }) joinUserModel!: RaffleJoinUserModel
+    @Prop({ required: true }) memberList!: string[]
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false
@@ -286,6 +290,10 @@ export default class AppHome extends Vue {
 
     public showBody(num: string) {
         this.show = num
+    }
+    @AsyncLoadingAndErrorHandle()
+    public async joinGroup() {
+        this.$emit('joinGroup')
     }
 
     @AsyncLoadingAndErrorHandle()

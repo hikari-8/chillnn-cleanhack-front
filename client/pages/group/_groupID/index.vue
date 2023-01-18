@@ -6,7 +6,10 @@
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            :joinUserModel="joinUserModel"
+            :memberList="memberList"
             @registered="registered"
+            @joinGroup="joinGroup"
         />
     </div>
 </template>
@@ -16,6 +19,7 @@ import {
     UserModel,
     TaskMasterObjectModel,
     RaffleObject,
+    RaffleJoinUserModel,
     RaffleObjectModel,
 } from 'chillnn-cleanhack-abr'
 import { Component, Vue } from 'nuxt-property-decorator'
@@ -43,6 +47,7 @@ export default class Top extends Vue {
     public blancLastRaffle: RaffleObjectModel | null = null
     public memberList: string[] = []
     public isAlreadyJoined: boolean = false
+    public joinUserModel: RaffleJoinUserModel | null = null
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
@@ -71,6 +76,12 @@ export default class Top extends Vue {
                 //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
                 this.isAlreadyJoined = this.memberList.includes(myUserID)
                 console.log(this.isAlreadyJoined, 'is already joined?')
+                if (this.isAlreadyJoined) {
+                    return
+                } else {
+                    //joinするuserのインスタンス作成
+                    this.joinUserModel = this.userModel.createRaffleJoinUser()
+                }
             }
         }
     }
@@ -80,6 +91,35 @@ export default class Top extends Vue {
         for (const member of this.lastRaffle!.activeMembers) {
             const memberID = member.userID
             this.memberList.push(memberID)
+        }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async joinGroup() {
+        if (this.isAlreadyJoined) {
+            alert('すでに参加済みのくじです！リロードしてください！')
+        } else {
+            //Modelからmastへ変更
+            const mastOfJoinUser =
+                await this.joinUserModel!.raffleJoinUserModelToMast()
+            if (this.lastRaffle) {
+                this.lastRaffle.activeMembers.push(mastOfJoinUser)
+                // this.lastRaffle.activeMembers.push(mastOfJoinUser)
+                // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
+                //     this.lastRaffle.activeMembers.shift()
+                // }
+            }
+            //updateする
+            if (!this.lastRaffle) {
+                return null
+            } else {
+                await this.lastRaffle.register()
+                this.isAlreadyJoined = true
+                this.$emit('registered')
+                alert(
+                    'くじに参加しました！くじが実行されるまでお待ちください！'
+                )
+            }
         }
     }
 

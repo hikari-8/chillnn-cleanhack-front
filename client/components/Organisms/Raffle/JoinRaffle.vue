@@ -8,6 +8,7 @@
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
             :isRaffleNavPushed="isRaffleNavPushed"
+            @joinGroup="joinGroup"
             @registered="registered"
         />
     </div>
@@ -39,8 +40,9 @@ export default class JoinRaffle extends Vue {
     isNameUpdated: boolean = false
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
+    // @Prop({ required: true }) joinUserModel!: RaffleJoinUserModel
+    // @Prop({ required: true }) memberList!: string[]
     public blancLastraffle: RaffleObjectModel | null = null
-    public joinUserModel: RaffleJoinUserModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []
     public isRaffleNavPushed: boolean = false
 
@@ -49,20 +51,6 @@ export default class JoinRaffle extends Vue {
         if (this.userModel.name !== '名無し') {
             this.isNameUpdated = true
         }
-        //参加可能なくじがあるかどうか(あとでstatusわけしないと)
-        if (this.groupModel) {
-            this.blancLastraffle =
-                await this.groupModel.fetchLastRaffleItemByGroupID()
-            if (!this.blancLastraffle) {
-                return
-            } else {
-                this.lastRaffle = this.blancLastraffle
-            }
-            console.log(this.lastRaffle, 'lastItem')
-        }
-        //joinするuserのインスタンス作成
-        this.joinUserModel = this.userModel.createRaffleJoinUser()
-        this.isRaffleNavPushed = true
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -72,20 +60,7 @@ export default class JoinRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
-        //Modelからmastへ変更
-        const mastOfJoinUser =
-            await this.joinUserModel!.raffleJoinUserModelToMast()
-        if (this.lastRaffle) {
-            this.lastRaffle.activeMembers.push(mastOfJoinUser)
-        }
-        //updateする
-        if (!this.lastRaffle) {
-            return null
-        } else {
-            await this.lastRaffle.register()
-            this.$emit('registered')
-            console.log(this.lastRaffle, 'register後のthis.lastRaffle')
-        }
+        this.$emit('joinGroup')
     }
 }
 </script>

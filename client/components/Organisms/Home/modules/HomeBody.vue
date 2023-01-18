@@ -25,6 +25,7 @@
             :groupModel="groupModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            @joinGroup="joinGroup"
         />
     </div>
 </template>
@@ -66,6 +67,11 @@ export default class HomeBody extends Vue {
         if (this.userModel.name !== '名無し') {
             this.isNameUpdated = true
         }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async joinGroup() {
+        this.$emit('joinGroup')
     }
 }
 </script>
