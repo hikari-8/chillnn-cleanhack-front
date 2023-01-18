@@ -95,6 +95,7 @@ export default class EditTask extends Vue {
             return console.error('Task Master Object Model or GroupID is null')
         } else {
             //アップデートしたものをfetchしてくる
+            await this.taskMasterObjectModel.updateTaskMasterObj()
             this.updatedMasterObjModel =
                 await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
             if (this.updatedMasterObjModel) {

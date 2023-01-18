@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="task"
+        v-if="raffle"
         class="flex items-center border-b border-solid border-chillnn-border-base py-[15px]"
     >
         <!-- ポチ -->
@@ -9,10 +9,7 @@
         </div>
         <!-- 掃除場所名 -->
         <div class="w-[50%] text-black flex-grow h-auto w-auto mr-4">
-            <app-base-input
-                v-model="copiedTask.taskName"
-                class="input_taskname"
-            ></app-base-input>
+            {{ copiedRaffle.taskName }}
         </div>
         <!-- 人数 -->
         <div class="w-[15%] text-center flex-grow-0">
@@ -24,7 +21,7 @@
                     <select
                         id="headCount"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        v-model="copiedTask.headCount"
+                        v-model="copiedRaffle.headCount"
                     >
                         <option disabled selected value=""></option>
                         <option
@@ -48,7 +45,7 @@
             <div class="flex justify-center gap-[10px]">
                 <!-- 追加ボタン -->
                 <span title="更新する">
-                    <table-button :disabled="!task" @click="registered">
+                    <table-button :disabled="!raffle" @click="registered">
                         <img
                             class="w-5"
                             src="@/assets/img/icon/plus-edit.svg"
@@ -64,7 +61,7 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 // component
 import AppButton from '@/components/Atom/Button/AppButton.vue'
-import { TaskMasterObjectModel, TaskMastModel } from 'chillnn-cleanhack-abr'
+import { TaskMasterObjectModel, RaffleMastModel } from 'chillnn-cleanhack-abr'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 import TableButton from '@/components/Atom/Button/TableButton.vue'
@@ -76,10 +73,9 @@ import TableButton from '@/components/Atom/Button/TableButton.vue'
         TableButton,
     },
 })
-export default class EditTaskDetails extends Vue {
-    @Prop({ default: true }) public task!: TaskMastModel
-    @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
-    public copiedTask: TaskMastModel | null = null
+export default class EditRaffleHeadCount extends Vue {
+    @Prop({ default: true }) public raffle!: RaffleMastModel
+    public copiedRaffle: RaffleMastModel | null = null
     public isTaskNameNull: boolean = false
     public isHeadCountNull: boolean = false
     public headCountList: { key: number; value: number }[] = [
@@ -95,14 +91,14 @@ export default class EditTaskDetails extends Vue {
         { key: 10, value: 10 },
     ]
     public created() {
-        this.copiedTask = this.task
+        this.copiedRaffle = this.raffle
     }
 
     public isInputNull() {
-        if (this.copiedTask?.taskName == null) {
+        if (this.copiedRaffle?.taskName == null) {
             this.isTaskNameNull = true
             console.log('Task name is null')
-        } else if (this.copiedTask?.headCount == null) {
+        } else if (this.copiedRaffle?.headCount == null) {
             this.isHeadCountNull = true
             console.log('Task head count is null')
         } else {
@@ -111,21 +107,26 @@ export default class EditTaskDetails extends Vue {
     }
 
     @AsyncLoadingAndErrorHandle()
+    public async undoRegister() {
+        // this.copiedRaffle = null
+        this.$emit('undoRegister')
+    }
+
+    @AsyncLoadingAndErrorHandle()
     public async registered() {
-        // 名前だけ
-        if (!this.copiedTask?.taskName) {
-            alert('掃除場所名を設定してください 🙇‍♀️')
+        //掃除場所名と人数がnullならalertを飛ばす
+        this.isInputNull()
+        if (this.isTaskNameNull || this.isHeadCountNull) {
+            console.log(this.isTaskNameNull, '名前')
+            console.log(this.isHeadCountNull, '人数')
+            alert('掃除場所名と割り当てる人数の両方を設定してください 🙇‍♀️')
         } else {
             //コピーしたアイテムをもとに戻す
-            if (this.copiedTask) {
-                this.task = this.copiedTask
+            if (this.copiedRaffle) {
+                this.raffle = this.copiedRaffle
             }
-            //ここでアップデートする
-            if (!this.taskMasterObjectModel) {
-                return null
-            } else {
-                this.$emit('registered')
-            }
+            //アップデート(registerするとくじが発行されてしまうので、しない)
+            this.$emit('registered')
         }
     }
 }

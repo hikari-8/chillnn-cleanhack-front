@@ -64,6 +64,7 @@
                             <!-- task edit -->
                             <effective-raffle-list
                                 :raffleObjectModel="lastRaffleItem"
+                                @registered="registered"
                             />
                         </div>
                     </div>
@@ -159,6 +160,13 @@ export default class MakeRaffle extends Vue {
     public userNameArray: string = ''
     public headCountSum: number = 0
     public isEarlierThanLimitTime: boolean = false
+
+    public async registered() {
+        // console.log
+        // await this.lastRaffleItem?.register()
+        // this.headCountSumFunc()
+        this.$emit('registered')
+    }
 
     @AsyncLoadingAndErrorHandle()
     public async runRaffle() {

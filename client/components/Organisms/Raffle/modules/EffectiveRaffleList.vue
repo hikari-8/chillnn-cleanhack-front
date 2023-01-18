@@ -20,7 +20,10 @@
                     v-for="raffle in raffleObjectModel.tasks"
                     :key="raffle.raffleItemID"
                 >
-                    <effective-raffle-item :raffle="raffle" />
+                    <effective-raffle-item
+                        :raffle="raffle"
+                        @registered="registered"
+                    />
                 </div>
                 <div class="flex items-center py-[15px]">
                     <!-- 空白 -->
@@ -83,6 +86,13 @@ export default class EffectiveRaffleList extends Vue {
     public async created() {
         this.headCountSumFunc
     }
+
+    public async registered() {
+        await this.raffleObjectModel?.register()
+        this.headCountSumFunc
+        this.$emit('registered')
+    }
+
     public get headCountSumFunc() {
         this.headCountSum = 0
         for (const task of this.raffleObjectModel.tasks) {
