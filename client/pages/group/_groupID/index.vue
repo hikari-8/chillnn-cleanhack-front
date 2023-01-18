@@ -5,6 +5,7 @@
             :groupModel="groupModel"
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
+            :isAlreadyJoined="isAlreadyJoined"
         />
     </div>
 </template>
@@ -39,6 +40,8 @@ export default class Top extends Vue {
     public groupID: string = ''
     public lastRaffle: RaffleObjectModel | null = null
     public blancLastRaffle: RaffleObjectModel | null = null
+    public memberList: string[] = []
+    public isAlreadyJoined: boolean = false
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
@@ -58,7 +61,22 @@ export default class Top extends Vue {
                 await this.groupModel.fetchLastRaffleItemByGroupID()
             if (this.blancLastRaffle) {
                 this.lastRaffle = this.blancLastRaffle
+                //Effectiveかつ、自分もまだ参加していなかったら参加できる
+                //memberの配列を作成
+                this.createMembersArray()
+                const myUserID = this.userModel.userID
+                //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
+                this.isAlreadyJoined = this.memberList.includes(myUserID)
+                console.log(this.isAlreadyJoined, 'is already joined?')
             }
+        }
+    }
+
+    public createMembersArray() {
+        //memberの配列を作成
+        for (const member of this.lastRaffle!.activeMembers) {
+            const memberID = member.userID
+            this.memberList.push(memberID)
         }
     }
 

@@ -5,31 +5,10 @@
     >
         <!-- ポチ -->
         <div class="w-[15%] text-center flex-grow-0">
-            <!-- モーダルを閉じる -->
-            <button
-                type="button"
-                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                @click="undoRegister"
-            >
-                <svg
-                    aria-hidden="true"
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                    ></path>
-                </svg>
-                <span class="sr-only">Close modal</span>
-            </button>
-            <!-- <span class="text-gray-600">⚫︎</span> -->
+            <span class="text-gray-600">⚫︎</span>
         </div>
         <!-- 掃除場所名 -->
-        <div class="w-[50%] text-black flex-grow h-auto w-auto mr-4">
+        <div class="w-[50%] text-black flex-grow h-auto w-auto">
             <app-base-input
                 v-model="taskMastItem.taskName"
                 class="input_taskname"
@@ -56,9 +35,7 @@
                             {{ selectedHeadCount.key }}
                         </option>
                     </select>
-                    <div
-                        class="text-center text-sm font-medium text-gray-900 pb-2 pt-3"
-                    >
+                    <div class="text-sm font-medium text-gray-900 py-2">
                         人
                     </div></span
                 >
@@ -67,15 +44,25 @@
 
         <div class="w-[20%] flex-grow-0">
             <div class="flex justify-center gap-[10px]">
-                <!-- 追加ボタン -->
-                <span title="追加">
-                    <table-button :disabled="!taskMastItem" @click="registered">
-                        <img
-                            class="w-5"
-                            src="@/assets/img/icon/plus-edit.svg"
-                        />
-                    </table-button>
-                </span>
+                <!-- ボタン -->
+                <div class="button">
+                    <app-button
+                        :disabled="!taskMastItem"
+                        @click="registered"
+                        class="mx-auto"
+                        >追加</app-button
+                    >
+                </div>
+                <!-- ボタン -->
+                <!-- <table-button @click="registered" explanation="追加">
+                    <img class="w-4" src="@/assets/img/icon/plus.svg" />
+                </table-button> -->
+                <!-- <table-button @click="showModal = true" explanation="オプション">
+                    <img
+                        class="w-4"
+                        src="@/assets/img/icon/trash-alt-regular.svg"
+                    />
+                </table-button> -->
             </div>
         </div>
     </div>
@@ -101,13 +88,11 @@ import TableButton from '@/components/Atom/Button/TableButton.vue'
         TableButton,
     },
 })
-export default class AddTask extends Vue {
+export default class EditTaskDetails extends Vue {
     @Prop({ default: true }) public taskMastItem!: TaskMastModel
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ default: true }) public taskMasterObjModel!: TaskMasterObjectModel
     public updatedMasterModel: TaskMasterObjectModel | null = null
-    public isTaskNameNull: boolean = false
-    public isHeadCountNull: boolean = false
     public headCountList: { key: number; value: number }[] = [
         { key: 1, value: 1 },
         { key: 2, value: 2 },
@@ -126,45 +111,23 @@ export default class AddTask extends Vue {
         return this.taskMastItem.taskName
     }
 
-    public isInputNull() {
-        if (this.taskMastItem.taskName == null) {
-            this.isTaskNameNull = true
-            console.log('Task name is null')
-        } else if (this.taskMastItem.headCount == null) {
-            this.isHeadCountNull = true
-            console.log('Task head count is null')
-        } else {
-            return
-        }
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async undoRegister() {
-        this.$emit('undoRegister')
-    }
-
     @AsyncLoadingAndErrorHandle()
     public async registered() {
-        //掃除場所名と人数がnullならalertを飛ばす
-        this.isInputNull()
-        if (this.isTaskNameNull || this.isHeadCountNull) {
-            console.log(this.isTaskNameNull, '名前')
-            console.log(this.isHeadCountNull, '人数')
-            alert('掃除場所名と割り当てる人数の両方を設定してください 🙇‍♀️')
+        //Modelからmastへ変更
+        const mastOfTaskMastItem =
+            await this.taskMastItem.taskMastModelToTaskMast()
+        if (this.taskMasterObjModel)
+            // tasksの配列に新しいデータ(mast)をpush
+            this.taskMasterObjModel.tasks.push(mastOfTaskMastItem)
+        console.log('push後', this.taskMastItem)
+        console.log('push後', this.taskMasterObjModel)
+        console.log('push後', this.taskMasterObjModel.tasks.length)
+        //ここでアップデートする
+        if (!this.taskMasterObjModel) {
+            return null
         } else {
-            //Modelからmastへ変更
-            const mastOfTaskMastItem =
-                await this.taskMastItem.taskMastModelToTaskMast()
-            if (this.taskMasterObjModel)
-                // tasksの配列に新しいデータ(mast)をpush
-                this.taskMasterObjModel.tasks.push(mastOfTaskMastItem)
-            //ここでアップデートする
-            if (!this.taskMasterObjModel) {
-                return null
-            } else {
-                await this.taskMasterObjModel.updateTaskMasterObj()
-                this.$emit('registered')
-            }
+            await this.taskMasterObjModel.updateTaskMasterObj()
+            this.$emit('registered')
         }
     }
 }

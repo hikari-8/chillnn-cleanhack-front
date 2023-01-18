@@ -2,33 +2,12 @@
     <div class="mx-auto py-32 auth_container w-600px" v-if="userModel">
         <div class="font-semibold mb-8 text-2xl">くじに参加する ✋</div>
 
-        <div v-if="lastRaffle && isNameUpdated" class="mt-24">
-            <div
-                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
-            >
-                <div
-                    class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
-                >
-                    {{ groupModel.groupName }}のお掃除くじに招待されています。
-                    <br />
-                    参加しますか？🧼 🧹
-                </div>
-                <app-button class="my-3 ml-4" @click="joinGroup"
-                    >参加する</app-button
-                >
-            </div>
-        </div>
-        <div v-else class="mt-24">
-            <div
-                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex"
-            >
-                <div
-                    class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
-                >
-                    現在、参加できるくじはありません🙇‍♀️
-                </div>
-            </div>
-        </div>
+        <raffle-join-card
+            :userModel="userModel"
+            :groupModel="groupModel"
+            :lastRaffle="lastRaffle"
+            :isAlreadyJoined="isAlreadyJoined"
+        />
     </div>
 </template>
 <script lang="ts">
@@ -44,10 +23,12 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import RaffleJoinCard from '@/components/Organisms/Raffle/modules/RaffleJoinCard.vue'
 
 @Component({
     components: {
         AppButton,
+        RaffleJoinCard,
     },
 })
 export default class JoinRaffle extends Vue {
@@ -55,6 +36,7 @@ export default class JoinRaffle extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     isNameUpdated: boolean = false
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
+    @Prop({ required: true }) isAlreadyJoined!: boolean
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []
@@ -85,10 +67,12 @@ export default class JoinRaffle extends Vue {
         const mastOfJoinUser =
             await this.joinUserModel!.raffleJoinUserModelToMast()
         if (this.lastRaffle) {
-            this.blancJoinUserArray = this.lastRaffle.activeMembers
-            // vuewarnを回避するため、一旦定数に入れています。
-            this.blancJoinUserArray.push(mastOfJoinUser)
-            this.lastRaffle.activeMembers = this.blancJoinUserArray
+            this.lastRaffle.activeMembers.push(mastOfJoinUser)
+            // this.$set(
+            //     this.lastRaffle,
+            //     'activeMembers',
+            //     this.lastRaffle.activeMembers.push(mastOfJoinUser)
+            // )
             // this.lastRaffle.activeMembers.push(mastOfJoinUser)
             // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
             //     this.lastRaffle.activeMembers.shift()

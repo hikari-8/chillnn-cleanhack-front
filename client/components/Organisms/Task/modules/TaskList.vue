@@ -32,6 +32,7 @@
                 :task-mast-item="taskMastItem"
                 :user-model="userModel"
                 @registered="registered"
+                @undoRegister="undoRegister"
             />
         </add-item-area>
         <div v-if="taskMasterObjectModel" class="">
@@ -169,6 +170,12 @@ export default class TaskList extends Vue {
     public async registered() {
         this.$emit('registered')
         this.headCountSumFunc
+        this.taskMastItem = null
+        this.isShowModal = false
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async undoRegister() {
         this.taskMastItem = null
         this.isShowModal = false
     }

@@ -20,41 +20,33 @@
                 </div>
             </div>
         </div>
-        <div v-if="lastRaffle && isNameUpdated" class="mt-24">
-            <div
-                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
-            >
-                <div
-                    class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
-                >
-                    {{ groupModel.groupName }}のお掃除くじに招待されています。
-                    <br />
-                    参加しますか？🧼 🧹
-                </div>
-                <app-button class="my-3 ml-4" @click="joinGroup"
-                    >参加する</app-button
-                >
-            </div>
-        </div>
+        <raffle-join-card
+            :userModel="userModel"
+            :groupModel="groupModel"
+            :lastRaffle="lastRaffle"
+            :isAlreadyJoined="isAlreadyJoined"
+        />
     </div>
 </template>
 <script lang="ts">
 import {
     UserModel,
     GroupModel,
-    RaffleObject,
     RaffleObjectModel,
     RaffleJoinUserModel,
     RaffleJoinUser,
+    RaffleStatus,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import RaffleJoinCard from '@/components/Organisms/Raffle/modules/RaffleJoinCard.vue'
 
 @Component({
     components: {
         AppButton,
+        RaffleJoinCard,
     },
 })
 export default class HomeBody extends Vue {
@@ -62,47 +54,17 @@ export default class HomeBody extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     isNameUpdated: boolean = false
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
+    @Prop({ required: true }) isAlreadyJoined!: boolean
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []
+    public memberList: string[] = []
+    public justDisplay: boolean = false
 
     public async created() {
         //名前を登録してあるかどうか
         if (this.userModel.name !== '名無し') {
             this.isNameUpdated = true
-        }
-        //参加可能なくじがあるかどうか(あとでstatusわけしないと)
-        if (this.groupModel) {
-            this.blancLastraffle =
-                await this.groupModel.fetchLastRaffleItemByGroupID()
-            if (!this.blancLastraffle) {
-                return
-            } else {
-                this.lastRaffle = this.blancLastraffle
-            }
-            console.log(this.lastRaffle, 'lastItem')
-        }
-        //joinするuserのインスタンス作成
-        this.joinUserModel = this.userModel.createRaffleJoinUser()
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async joinGroup() {
-        //Modelからmastへ変更
-        const mastOfJoinUser =
-            await this.joinUserModel!.raffleJoinUserModelToMast()
-        if (this.lastRaffle) {
-            this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            // this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-            //     this.lastRaffle.activeMembers.shift()
-            // }
-        }
-        //updateする
-        if (!this.lastRaffle) {
-            return null
-        } else {
-            await this.lastRaffle.register()
         }
     }
 }

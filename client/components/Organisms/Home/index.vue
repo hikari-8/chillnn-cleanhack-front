@@ -13,9 +13,7 @@
                                 </div>
                             </div>
                             <div class="side-menu__logo">
-                                <nuxt-link :to="{ name: 'index' }">
-                                    <img src="~/assets/img/icon.png" />
-                                </nuxt-link>
+                                <img src="~/assets/img/icon.png" />
                             </div>
 
                             <!-- ホーム -->
@@ -181,6 +179,7 @@
                         :userModel="userModel"
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
+                        :isAlreadyJoined="isAlreadyJoined"
                     />
                     <app-user-edit
                         v-if="show == 'user'"
@@ -208,6 +207,7 @@
                         :userModel="userModel"
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
+                        :isAlreadyJoined="isAlreadyJoined"
                     />
                 </div>
             </div>
@@ -254,6 +254,7 @@ export default class AppHome extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
+    @Prop({ required: true }) isAlreadyJoined!: boolean
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false
