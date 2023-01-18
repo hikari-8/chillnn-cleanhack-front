@@ -72,12 +72,12 @@ const schedule = require('node-schedule')
 })
 export default class RaffleLimitTime extends Vue {
     @Prop({ required: true }) raffleObjectModel!: RaffleObjectModel
-    public slackURL: string = ''
     public week: string = ''
     public myGroupURL: string = ''
     public ww: string = ''
     public hh: string = ''
     public mm: string = ''
+    public slackURL: string = ''
     public limitWeekdaysList: { key: string; value: number }[] = [
         { key: '日', value: 0 },
         { key: '月', value: 1 },
@@ -89,7 +89,7 @@ export default class RaffleLimitTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '4:26', value: '26 4' },
+        { key: '7:42', value: '42 7' },
         { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
         { key: '11:00', value: '0 11' },
@@ -116,6 +116,7 @@ export default class RaffleLimitTime extends Vue {
     ]
 
     public created() {
+        this.slackURL = this.raffleObjectModel.slackURL
         const weekValue = this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
@@ -200,11 +201,6 @@ export default class RaffleLimitTime extends Vue {
         let message = {
             text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
-        let slackUrl =
-            'https://hooks.slack.com/services/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'
-        //times-hikari
-        // let slackUrlTimesHikari =
-        //     'https://hooks.slack.com/services/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'
 
         //時間指定 (分、時、日、月、曜日)
         const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
@@ -213,7 +209,7 @@ export default class RaffleLimitTime extends Vue {
         const sendAtSchedule = schedule.scheduleJob(setTime, () => {
             params.append('payload', JSON.stringify(message))
             const res = axios
-                .post(slackUrl, params)
+                .post(this.slackURL, params)
                 .then((res: any) => {
                     console.log(res)
                 })

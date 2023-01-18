@@ -32,6 +32,7 @@ export const addRaffleObject = /* GraphQL */ `
       raffleStatus
       remindSlackTime
       remindSlackWeek
+      slackURL
       tasks {
         createdAt
         deletedAt
@@ -57,6 +58,7 @@ export const addTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      slackURL
       taskMasterObjectID
       tasks {
         createdAt
@@ -102,6 +104,7 @@ export const updateRaffleObject = /* GraphQL */ `
       raffleStatus
       remindSlackTime
       remindSlackWeek
+      slackURL
       tasks {
         createdAt
         deletedAt
@@ -127,6 +130,7 @@ export const updateTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      slackURL
       taskMasterObjectID
       tasks {
         createdAt

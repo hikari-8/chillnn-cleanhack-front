@@ -33,6 +33,7 @@ export type RaffleObjectInput = {
   raffleStatus: RaffleStatus,
   remindSlackTime: string,
   remindSlackWeek: string,
+  slackURL: string,
   tasks: Array< RaffleMastInput >,
   updatedAt: number,
 };
@@ -75,6 +76,7 @@ export type RaffleObject = {
   raffleStatus: RaffleStatus,
   remindSlackTime: string,
   remindSlackWeek: string,
+  slackURL: string,
   tasks:  Array<RaffleMast >,
   updatedAt: number,
 };
@@ -108,6 +110,7 @@ export type TaskMasterObjectInput = {
   limitTime?: string | null,
   remindSlackTime?: string | null,
   remindSlackWeek?: string | null,
+  slackURL?: string | null,
   taskMasterObjectID: string,
   tasks: Array< TaskMastInput >,
   updatedAt: number,
@@ -138,6 +141,7 @@ export type TaskMasterObject = {
   limitTime?: string | null,
   remindSlackTime?: string | null,
   remindSlackWeek?: string | null,
+  slackURL?: string | null,
   taskMasterObjectID: string,
   tasks:  Array<TaskMast >,
   updatedAt: number,
@@ -219,6 +223,7 @@ export type AddRaffleObjectMutation = {
     raffleStatus: RaffleStatus,
     remindSlackTime: string,
     remindSlackWeek: string,
+    slackURL: string,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -249,6 +254,7 @@ export type AddTaskMasterObjectMutation = {
     limitTime?: string | null,
     remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
+    slackURL?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",
@@ -304,6 +310,7 @@ export type UpdateRaffleObjectMutation = {
     raffleStatus: RaffleStatus,
     remindSlackTime: string,
     remindSlackWeek: string,
+    slackURL: string,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -334,6 +341,7 @@ export type UpdateTaskMasterObjectMutation = {
     limitTime?: string | null,
     remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
+    slackURL?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",
@@ -423,6 +431,7 @@ export type FetchLastRaffleByGroupIDQuery = {
     raffleStatus: RaffleStatus,
     remindSlackTime: string,
     remindSlackWeek: string,
+    slackURL: string,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -477,6 +486,7 @@ export type FetchRaffleObjectQuery = {
     raffleStatus: RaffleStatus,
     remindSlackTime: string,
     remindSlackWeek: string,
+    slackURL: string,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -516,6 +526,7 @@ export type FetchRafflesByGroupIDQuery = {
     raffleStatus: RaffleStatus,
     remindSlackTime: string,
     remindSlackWeek: string,
+    slackURL: string,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -546,6 +557,7 @@ export type FetchTaskMasterObjectQuery = {
     limitTime?: string | null,
     remindSlackTime?: string | null,
     remindSlackWeek?: string | null,
+    slackURL?: string | null,
     taskMasterObjectID: string,
     tasks:  Array< {
       __typename: "TaskMast",

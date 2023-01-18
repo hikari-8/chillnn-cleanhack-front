@@ -47,6 +47,7 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
       raffleStatus
       remindSlackTime
       remindSlackWeek
+      slackURL
       tasks {
         createdAt
         deletedAt
@@ -95,6 +96,7 @@ export const fetchRaffleObject = /* GraphQL */ `
       raffleStatus
       remindSlackTime
       remindSlackWeek
+      slackURL
       tasks {
         createdAt
         deletedAt
@@ -128,6 +130,7 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
       raffleStatus
       remindSlackTime
       remindSlackWeek
+      slackURL
       tasks {
         createdAt
         deletedAt
@@ -153,6 +156,7 @@ export const fetchTaskMasterObject = /* GraphQL */ `
       limitTime
       remindSlackTime
       remindSlackWeek
+      slackURL
       taskMasterObjectID
       tasks {
         createdAt

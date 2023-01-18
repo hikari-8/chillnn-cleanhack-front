@@ -1,9 +1,9 @@
 <template>
     <div v-if="taskMasterObjectModel" class="user_edit_container h-full mb-8">
         <!-- 時間設定と、ボタンのコンテナ -->
-        <div class="flex mt-8 gap-x-3">
+        <div class="flex mt-8 gap-x-3 justify-between">
             <div
-                class="app_select_weekday flex text-center items-center gap-x-2 justify-center flex-shrink-0"
+                class="app_select_weekday flex text-center items-center gap-x-2"
             >
                 <!-- 週の予定 -->
                 <div class="text-sm font-medium text-gray-900 w-10">毎週</div>
@@ -31,15 +31,6 @@
                     v-model="taskMasterObjectModel.remindSlackTime"
                 >
                     <option disabled selected value="">時間</option>
-                    <!-- 選択肢にありさえすれば、リロードしても表示されている。inputで入力できるようにした時には、使えるかも、今だとcronの値が入っているので表示してもよくわからない -->
-                    <!-- <option
-                        v-if="taskMasterObjectModel.remindSlackTime"
-                        disabled
-                        selected
-                        :value="taskMasterObjectModel.remindSlackTime"
-                    >
-                        {{ taskMasterObjectModel.remindSlackTime }}
-                    </option> -->
                     <option
                         v-for="selectedTime in limitTimesList"
                         :value="selectedTime.value"
@@ -48,29 +39,34 @@
                         {{ selectedTime.key }}
                     </option>
                 </select>
-            </div>
-
-            <div class="flex items-center gap-x-3 justify-center flex-shrink-0">
-                <div class="text-sm font-medium text-gray-900 w-32">
-                    にSlackに送信する
+                <div
+                    class="flex items-center gap-x-3 justify-center flex-shrink-0"
+                >
+                    <div class="text-sm font-medium text-gray-900 w-32">
+                        にSlackに送信する
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-x-3 justify-center flex-shrink-0">
+
+            <div class="flex flex-end items-center gap-x-3 flex-shrink-0">
                 <div class="button">
                     <app-button @click="registered">更新</app-button>
                 </div>
             </div>
         </div>
+        <div class="text-sm font-medium text-gray-900 mt-4 mb-2">
+            <span>SlackのWEBhookURL</span>
+        </div>
+        <app-base-input
+            v-model="taskMasterObjectModel.slackURL"
+            class="input_taskname w-82"
+        ></app-base-input>
         <!-- マスターデータ: リマインド時間の編集 -->
 
         <div class="mb-8 text-sm text-gray-500 mt-2">
             ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackに届きます。<br />
             　再度リマインド日時を変更すると、最後に登録された日時でリマインドされます。
         </div>
-        <!-- ボタン -->
-        <!-- <div class="button">
-            <app-button @click="sendToSlack">Slackにテスト送信</app-button>
-        </div> -->
     </div>
 </template>
 <script lang="ts">
@@ -86,8 +82,7 @@ import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppText from '@/components/Atom/Text/AppText.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
-import axios from 'axios'
-const schedule = require('node-schedule')
+import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 
 @Component({
     components: {
@@ -95,14 +90,13 @@ const schedule = require('node-schedule')
         AppButton,
         AppTitle,
         AppText,
+        AppBaseInput,
     },
 })
 export default class SlackRemindTime extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
-    public slackURL: string = ''
-    public myGroupURL: string = ''
     public week: string = ''
     public hh: string = ''
     public mm: string = ''
@@ -118,7 +112,7 @@ export default class SlackRemindTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '4:25', value: '25 4' },
+        { key: '7:41', value: '41 7' },
         { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
         { key: '11:00', value: '0 11' },
@@ -143,10 +137,6 @@ export default class SlackRemindTime extends Vue {
         { key: '20:00', value: '0 20' },
         { key: '20:30', value: '30 20' },
     ]
-
-    async created() {
-        this.getMyGroupURL()
-    }
 
     public cronToLng() {
         //cronで保存されている値を、日本語に直してslackに送ります。
@@ -177,7 +167,6 @@ export default class SlackRemindTime extends Vue {
                 this.week = ''
                 break
         }
-        //後で、ここをlimittimeに変更する
         const timeValue = this.taskMasterObjectModel.remindSlackTime
         this.hh = timeValue.substr(3, 5)
         this.mm = timeValue.substr(0, 2)
@@ -192,49 +181,7 @@ export default class SlackRemindTime extends Vue {
         }
         this.cronToLng()
         //ここでは、slackのリマインド時間を設定するだけ
-        // await this.sendToSlack()
-    }
-    public getMyGroupURL() {
-        const myGroupID = this.groupModel.groupID
-        // this.myGroupURL = `https://localhost:3000/group/${myGroupID}`
-        this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async sendToSlack() {
-        let params = new URLSearchParams()
-        let message = {
-            text: `${this.week}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
-        }
-        let slackUrl =
-            'https://hooks.slack.com/services/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'
-        //times-hikari
-        // let slackUrlTimesHikari =
-        //     'https://hooks.slack.com/services/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'
-
-        //時間指定 (分、時、日、月、曜日)
-        const setTime = `${this.taskMasterObjectModel.remindSlackTime} * * ${this.taskMasterObjectModel.remindSlackWeek}`
-        console.log('時間指定→', setTime)
-
-        const sendAtSchedule = schedule.scheduleJob(setTime, () => {
-            params.append('payload', JSON.stringify(message))
-            const res = axios
-                .post(slackUrl, params)
-                .then((res: any) => {
-                    console.log(res)
-                })
-                .catch((err: any) => {
-                    console.log(err)
-                })
-        })
-        //アラート
-        alert(`通知がスケジュールされました`)
     }
 }
 </script>
-<style lang="stylus" scoped>
-.button {
-  min-width: 200px;
-  width: 200px
-}
-</style>
+<style lang="stylus" scoped></style>

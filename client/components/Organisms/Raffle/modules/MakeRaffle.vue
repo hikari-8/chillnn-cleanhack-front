@@ -160,6 +160,7 @@ export default class MakeRaffle extends Vue {
     public userNameArray: string = ''
     public headCountSum: number = 0
     public isEarlierThanLimitTime: boolean = false
+    public slackURL: string = ''
 
     public async registered() {
         // console.log
@@ -308,6 +309,7 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async created() {
+        this.slackURL = this.raffleObjectModel.slackURL
         const weekValue = this.raffleObjectModel.remindSlackWeek
         switch (weekValue) {
             case '0':
@@ -455,15 +457,10 @@ export default class MakeRaffle extends Vue {
         let message = {
             text: `本日のお掃除場所担当が決定しました！🎉\n参加できる方は各自、清掃をよろしくお願いします！🛀 🧼 \n\n${this.resultMessage}`,
         }
-        let slackUrl =
-            'https://hooks.slack.com/services/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'
-        //times-hikari
-        // let slackUrlTimesHikari =
-        //     'https://hooks.slack.com/services/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'
 
         params.append('payload', JSON.stringify(message))
         const res = axios
-            .post(slackUrl, params)
+            .post(this.slackURL, params)
             .then((res: any) => {
                 console.log(res)
             })
@@ -479,11 +476,6 @@ export default class MakeRaffle extends Vue {
         let message = {
             text: `${this.hh} 時${this.mm} 分になりました！\n管理者の方は下記のリンク、またはアプリから掃除場所の人数を調整し、くじを実行してください！\n${this.myGroupURL}`,
         }
-        let slackUrl =
-            'https://hooks.slack.com/services/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'
-        //times-hikari
-        // let slackUrlTimesHikari =
-        //     'https://hooks.slack.com/services/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'
 
         //時間指定 (分、時、日、月、曜日)
         const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
@@ -492,7 +484,7 @@ export default class MakeRaffle extends Vue {
         const sendAtSchedule = schedule.scheduleJob(setTime, () => {
             params.append('payload', JSON.stringify(message))
             const res = axios
-                .post(slackUrl, params)
+                .post(this.slackURL, params)
                 .then((res: any) => {
                     console.log(res)
                 })
@@ -511,11 +503,6 @@ export default class MakeRaffle extends Vue {
         let message = {
             text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
-        let slackUrl =
-            'https://hooks.slack.com/services/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'
-        //times-hikari
-        // let slackUrlTimesHikari =
-        //     'https://hooks.slack.com/services/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'
 
         //時間指定 (分、時、日、月、曜日)
         const setTime = `${this.raffleObjectModel.remindSlackTime} * * ${this.raffleObjectModel.remindSlackWeek}`
@@ -524,7 +511,7 @@ export default class MakeRaffle extends Vue {
         const sendAtSchedule = schedule.scheduleJob(setTime, () => {
             params.append('payload', JSON.stringify(message))
             const res = axios
-                .post(slackUrl, params)
+                .post(this.slackURL, params)
                 .then((res: any) => {
                     console.log(res)
                 })

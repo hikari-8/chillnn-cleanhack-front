@@ -74,15 +74,17 @@
             </div>
         </div>
         <!-- lastRaffleがない(初期の初期でグループ追加後) -->
-        <div
-            v-if="!lastRaffle && groupModel"
-            class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between mt-10"
-        >
+        <div v-if="groupModel">
             <div
-                v-if="groupModel.groupName"
-                class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                v-if="!lastRaffle && groupModel.groupName"
+                class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between mt-10"
             >
-                現在、{{ groupModel.groupName }}で参加できるくじはありません 🙇‍♀️
+                <div
+                    class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                >
+                    現在、{{ groupModel.groupName }}で参加できるくじはありません
+                    🙇‍♀️
+                </div>
             </div>
         </div>
     </div>
