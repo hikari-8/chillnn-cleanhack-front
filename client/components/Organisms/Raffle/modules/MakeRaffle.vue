@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <!-- 発行したくじの内容 -->
-                    <div>
+                    <div v-if="lastRaffleItem">
                         <div class="flex justify-between">
                             <div class="label font-semibold">
                                 発行したくじの内容
@@ -77,12 +77,6 @@
                 <app-button class="" @click="deleteRaffle">削除する</app-button>
             </div>
         </div>
-        <!-- くじが作成できる場合(1番最初に参加 || lastRaffleのstatusがdone) -->
-        <!-- <div
-            v-if="
-                lastRaffleItem.raffleStatus === RaffleStatus.DONE
-            "
-        > -->
         <div v-if="!lastRaffleItem || !isLastRaffleActive">
             <div class="flex justify-between">
                 <div class="font-semibold text-2xl">くじの発行 🌞</div>
@@ -94,20 +88,18 @@
                 </div>
             </div>
 
-            <div class="flex mb-2">
-                <!-- 制限時間 -->
-                <raffle-limit-time :raffleObjectModel="raffleObjectModel" />
-            </div>
-
-            <div class="mt-2 mb-12 text-sm text-gray-500">
-                <!-- ＊この時間になると、くじの参加を締切ります。<br /> -->
-                <!-- 　これ以降に、参加者の合計人数と掃除場所に割り当てた人数の合計が<br />　等しくなるように調整して、くじを実行してください。 -->
-            </div>
-            <div></div>
-            <div class="label font-semibold mb-10">発行するくじの内容</div>
-            <div class="task_edit_container">
-                <!-- task edit -->
-                <raffle-list :raffleObjectModel="raffleObjectModel" />
+            <div
+                class="mt-10 px-12 pt-4 pb-8 bg-white border border-gray-200 rounded-lg shadow-md"
+            >
+                <div class="flex mb-10">
+                    <!-- 制限時間 -->
+                    <raffle-limit-time :raffleObjectModel="raffleObjectModel" />
+                </div>
+                <div class="label font-semibold mb-10">発行するくじの内容</div>
+                <div class="task_edit_container">
+                    <!-- task edit -->
+                    <raffle-list :raffleObjectModel="raffleObjectModel" />
+                </div>
             </div>
         </div>
     </div>
@@ -166,7 +158,7 @@ export default class MakeRaffle extends Vue {
     public blackUserModel: UserModel | null = null
     public userNameArray: string = ''
     public headCountSum: number = 0
-    public isEarlierThanLimitTime: boolean = true
+    public isEarlierThanLimitTime: boolean = false
 
     @AsyncLoadingAndErrorHandle()
     public async runRaffle() {
@@ -202,16 +194,18 @@ export default class MakeRaffle extends Vue {
         const nowmm = now.getMinutes()
         if (nowhh == parseInt(this.hh)) {
             if (nowmm == parseInt(this.mm)) {
-                return
+                this.isEarlierThanLimitTime = false
             } else if (nowmm < parseInt(this.mm)) {
+                console.log(this.mm, nowmm)
                 this.isEarlierThanLimitTime = true
             } else {
-                return
+                this.isEarlierThanLimitTime = false
             }
         } else if (nowhh < parseInt(this.hh)) {
+            console.log(this.hh, nowhh)
             this.isEarlierThanLimitTime = true
         } else {
-            return
+            this.isEarlierThanLimitTime = false
         }
     }
 
@@ -267,7 +261,16 @@ export default class MakeRaffle extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
         //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
-        if (
+        if (!this.raffleObjectModel.tasks.length) {
+            alert('掃除場所を一つ以上登録してください!')
+        } else if (!this.raffleObjectModel.limitTime) {
+            alert('制限時間を登録してください!')
+        } else if (
+            this.raffleObjectModel.remindSlackWeek === 'blanc' ||
+            this.raffleObjectModel.remindSlackTime === 'blanc'
+        ) {
+            alert('くじの設定から、くじ引きリマインド時間を登録してください!')
+        } else if (
             this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
             !this.lastRaffleItem
         ) {
@@ -489,7 +492,7 @@ export default class MakeRaffle extends Vue {
                 })
         })
         //アラート
-        alert(`通知がスケジュールされました`)
+        alert(`管理者へのリマインドがスケジュールされました`)
     }
 
     //リマインドを全員に送信
@@ -521,7 +524,7 @@ export default class MakeRaffle extends Vue {
                 })
         })
         //アラート
-        alert(`通知がスケジュールされました`)
+        alert(`全員へのリマインドがスケジュールされました`)
     }
 }
 </script>

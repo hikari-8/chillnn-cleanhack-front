@@ -6,6 +6,7 @@
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            @registered="registered"
         />
     </div>
 </template>
@@ -47,6 +48,8 @@ export default class Top extends Vue {
         this.userModel = await userInteractor.fetchMyUserModel()
         if (this.userModel.groupID) {
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        } else {
+            this.groupModel = this.userModel.createNewGroup()
         }
         //taskMasterObjectModelをgroupIDでfetchしてくる
         if (this.userModel) {
@@ -81,11 +84,20 @@ export default class Top extends Vue {
     }
 
     @AsyncLoadingAndErrorHandle()
-    public async register() {
-        if (!this.userModel?.name) {
-            return console.error('ユーザー名を入力してください')
+    public async registered() {
+        const blancUserModel = await this.userModel?.fetchUserDataByUserID(
+            this.userModel.userID
+        )
+        // ここで、groupIDがfetchされてきてない(serverとのラグがあるかも)
+        console.log(blancUserModel, 'どうかな？blanc')
+        if (!blancUserModel) {
+            return
+        } else {
+            this.userModel = blancUserModel
         }
-        await this.userModel.register()
+        if (this.userModel.groupID) {
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        }
         this.$emit('registered')
     }
 }

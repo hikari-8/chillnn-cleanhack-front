@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto py-32 auth_container w-600px">
         <div class="font-semibold mb-8 text-2xl">グループ設定 👤</div>
-        <div class="input_container">
+        <div class="input_container" v-if="userModel">
             <!-- グループ追加 -->
             <add-group
                 v-if="isGroupIDNull"
@@ -9,16 +9,17 @@
                 :description="true"
                 :user-model="userModel"
                 :group-model="blancGroupModel"
-                class="mb-4"
                 @registered="registered"
+                class="mb-4"
             />
-            <!-- ユーザー名変更 -->
+            <!-- グループ名変更 -->
             <edit-group
-                v-else
+                v-if="!isGroupIDNull"
                 :group-model="groupModel"
                 :user-model="userModel"
                 label="グループ名"
                 :description="true"
+                @registered="registered"
                 class="mb-4"
             />
         </div>
@@ -52,35 +53,18 @@ export default class AppGroupEdit extends Vue {
         //動的に登録後、表示を分岐させるにはここの分岐を変更する必要がありそう
         if (!this.userModel.groupID) {
             this.isGroupIDNull = true
+            //ここで、そのままgorupModelに突っ込んだら怒られる(Avoid mutating prop)
             this.blancGroupModel = this.userModel.createNewGroup()
         } else {
             this.isGroupIDNull = false
-            this.blancGroupModel = await this.groupModel.fetchGroupMast()
         }
     }
-
-    public get isShowAfterRegisteredGroup() {
-        if (!this.blancGroupModel) {
-            return (this.isGroupIDNull = true)
-        } else {
-            return (this.isGroupIDNull = false)
-        }
-    }
-
-    // @Watch('isGroupIDNull')
-    // public async update() {
-    //     await this.userModel.fetchGroupDataByGroupID()
-    // }
 
     @AsyncLoadingAndErrorHandle()
     public async registered() {
-        //ここで、updateをかけると元のuserdataが入ってしまう。
-        // await this.userModel.register()
-        //ここで動的に切り替わらせたい
-        //groupをupdate
         this.isGroupIDNull = false
-        // await this.blancGroupModel?.fetchGroupMast()
-        // this.isShowAfterRegisteredGroup
+        this.$emit('registered')
+        console.log('AppGroupEditを通っています')
     }
 }
 </script>

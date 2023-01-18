@@ -55,8 +55,10 @@ export default class AppTaskEdit extends Vue {
     }
 
     public async created() {
-        await this.filterActiveTasks()
-        this.headCountSumFunc
+        if (this.taskMasterObjectModel) {
+            await this.filterActiveTasks()
+            this.headCountSumFunc
+        }
     }
 
     public get headCountSumFunc() {

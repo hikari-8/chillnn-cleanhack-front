@@ -118,7 +118,7 @@ export default class SlackRemindTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '00:03', value: '06 0' },
+        { key: '22:50', value: '50 22' },
         { key: '09:00', value: '0 9' },
         { key: '09:30', value: '30 9' },
         { key: '10:00', value: '0 10' },

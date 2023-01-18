@@ -1,7 +1,7 @@
 <template>
     <div class="name_input_container">
         <div class="label font-semibold mb-4">{{ label }}</div>
-        <div class="flex" v-if="groupModel">
+        <div class="flex" v-if="groupModel.groupName">
             <!-- name -->
             <div class="flex gap-x-3 items-center w-72 mr-4">
                 <app-base-input v-model="groupModel.groupName" class="w-full" />

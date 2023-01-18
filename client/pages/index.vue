@@ -5,6 +5,7 @@
             :groupModel="groupModel"
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
+            :isAlreadyJoined="isAlreadyJoined"
         />
     </div>
 </template>
@@ -38,11 +39,16 @@ export default class Top extends Vue {
     public raffleObjectModel: RaffleObjectModel | null = null
     public groupID: string = ''
     public lastRaffle: RaffleObjectModel | null = null
+    public blancLastRaffle: RaffleObjectModel | null = null
+    public memberList: string[] = []
+    public isAlreadyJoined: boolean = false
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
         if (this.userModel.groupID) {
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        } else {
+            this.groupModel = this.userModel.createNewGroup()
         }
         //taskMasterObjectModelをgroupIDでfetchしてくる
         if (this.userModel) {
@@ -50,22 +56,40 @@ export default class Top extends Vue {
                 await this.userModel.fetchTaskMasterDataObjByGroupID(
                     this.userModel.groupID!
                 )
-            console.log('Attention', this.taskMasterObjectModel)
+            // console.log('Attention', this.taskMasterObjectModel)
         }
         if (this.groupModel) {
-            this.lastRaffle =
+            this.blancLastRaffle =
                 await this.groupModel.fetchLastRaffleItemByGroupID()
-            console.log(this.lastRaffle, 'lastItem')
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+                //Effectiveかつ、自分もまだ参加していなかったら参加できる
+                //memberの配列を作成
+                this.createMembersArray()
+                const myUserID = this.userModel.userID
+                //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
+                this.isAlreadyJoined = this.memberList.includes(myUserID)
+                console.log(this.isAlreadyJoined, 'is already joined?')
+            }
+        }
+    }
+
+    public createMembersArray() {
+        //memberの配列を作成
+        for (const member of this.lastRaffle!.activeMembers) {
+            const memberID = member.userID
+            this.memberList.push(memberID)
         }
     }
 
     @AsyncLoadingAndErrorHandle()
-    public async register() {
-        if (!this.userModel?.name) {
-            return console.error('ユーザー名を入力してください')
+    public async registered() {
+        this.userModel = await userInteractor.fetchMyUserModel()
+        if (this.userModel.groupID) {
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
         }
-        await this.userModel.register()
         this.$emit('registered')
+        console.log('とおてますindex？')
     }
 }
 </script>

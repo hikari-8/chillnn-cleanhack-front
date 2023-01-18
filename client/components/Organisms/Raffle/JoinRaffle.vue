@@ -7,6 +7,8 @@
             :groupModel="groupModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            :isRaffleNavPushed="isRaffleNavPushed"
+            @registered="registered"
         />
     </div>
 </template>
@@ -40,6 +42,7 @@ export default class JoinRaffle extends Vue {
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []
+    public isRaffleNavPushed: boolean = false
 
     public async created() {
         //名前を登録してあるかどうか
@@ -59,6 +62,12 @@ export default class JoinRaffle extends Vue {
         }
         //joinするuserのインスタンス作成
         this.joinUserModel = this.userModel.createRaffleJoinUser()
+        this.isRaffleNavPushed = true
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        this.$emit('registered')
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -68,22 +77,13 @@ export default class JoinRaffle extends Vue {
             await this.joinUserModel!.raffleJoinUserModelToMast()
         if (this.lastRaffle) {
             this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            // this.$set(
-            //     this.lastRaffle,
-            //     'activeMembers',
-            //     this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            // )
-            // this.lastRaffle.activeMembers.push(mastOfJoinUser)
-            // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-            //     this.lastRaffle.activeMembers.shift()
-            //     console.log(this.lastRaffle.activeMembers, '削除後')
-            // }
         }
         //updateする
         if (!this.lastRaffle) {
             return null
         } else {
             await this.lastRaffle.register()
+            this.$emit('registered')
             console.log(this.lastRaffle, 'register後のthis.lastRaffle')
         }
     }

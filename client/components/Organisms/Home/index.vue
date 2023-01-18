@@ -189,6 +189,7 @@
                         v-if="show == 'group'"
                         :groupModel="groupModel"
                         :userModel="userModel"
+                        @registered="registered"
                     />
                     <app-task-edit
                         v-if="show == 'rSettings'"
@@ -234,6 +235,8 @@ import HomeBody from '@/components/Organisms/Home/modules/HomeBody.vue'
 import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
 import JoinRaffle from '@/components/Organisms/Raffle/JoinRaffle.vue'
+import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import { userInteractor } from '~/api'
 @Component({
     components: {
         AppSideMenuSummary,
@@ -283,6 +286,12 @@ export default class AppHome extends Vue {
 
     public showBody(num: string) {
         this.show = num
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        this.$emit('registered')
+        console.log('AppHomeを通っています')
     }
 }
 </script>

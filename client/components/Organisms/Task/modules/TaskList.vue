@@ -52,9 +52,9 @@
                 <div class="w-[10%] text-center flex-grow-0">
                     <template> 計{{ headCountSum }}人 </template>
                 </div>
-                <div class="mt-7 text-center" v-show="!taskMasterObjectModel">
-                    くじを作成するために、掃除場所データを登録してください。
-                </div>
+            </div>
+            <div class="mt-7 text-center" v-show="!activeTasks.length">
+                くじを作成するために、掃除場所データを登録してください。
             </div>
         </div>
     </div>

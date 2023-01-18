@@ -32,6 +32,7 @@
 import { GroupModel, UserModel } from 'chillnn-cleanhack-abr'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
+import { userInteractor } from '~/api'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 
@@ -47,6 +48,7 @@ export default class AddGroup extends Vue {
     @Prop({ required: false }) public description!: boolean
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
+    public blancGroupModel: GroupModel | null = null
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
