@@ -235,7 +235,6 @@ export default class MakeRaffle extends Vue {
         }
         console.log(this.ramdumMemberList)
         // taskの配列の中でthis.ramdumMemberListをheadCount分回しながら、idを持たせていく
-        // const copyRaffleItemTasks = this.lastRaffleItem!.tasks
         for (const task of this.lastRaffleItem!.tasks) {
             this.ramdumMemberListCopy = this.ramdumMemberList
             if (task.headCount > 0) {
@@ -244,17 +243,16 @@ export default class MakeRaffle extends Vue {
                 //headCountの数だけ回す
                 for (var i = 0; i < task.headCount; i++) {
                     task.joinUserIDArray?.push(firstMember)
-                    console.log(firstMember, 'ramdumMemberListの最初のメンバー')
+                    // console.log(firstMember, 'ramdumMemberListの最初のメンバー')
                     this.ramdumMemberListCopy.shift()
-                    console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
-                    // this.taskList.push(task.taskName)
+                    // console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
                 }
             }
         }
         //statusを変更する
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
         //updateする
-        // await this.lastRaffleItem!.register() //一時的にコメントアウトして確認
+        await this.lastRaffleItem!.register()
         console.log(this.lastRaffleItem, '確認')
     }
 
