@@ -10,6 +10,7 @@ export const addGroup = /* GraphQL */ `
       deletedAt
       groupID
       groupName
+      members
       updatedAt
     }
   }
@@ -79,6 +80,7 @@ export const updateGroup = /* GraphQL */ `
       deletedAt
       groupID
       groupName
+      members
       updatedAt
     }
   }

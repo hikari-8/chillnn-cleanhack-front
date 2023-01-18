@@ -11,7 +11,7 @@
                 ユーザー設定からお名前を登録してください！
             </div>
         </div>
-        <div v-else class="input_container font-semibold mb-4">
+        <div v-if="isNameUpdated" class="input_container font-semibold mb-4">
             <div>
                 <div>
                     おかえりなさい！
@@ -26,6 +26,7 @@
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
             @joinGroup="joinGroup"
+            @registered="registered"
         />
     </div>
 </template>
@@ -67,6 +68,11 @@ export default class HomeBody extends Vue {
         if (this.userModel.name !== '名無し') {
             this.isNameUpdated = true
         }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registered() {
+        this.$emit('registered')
     }
 
     @AsyncLoadingAndErrorHandle()

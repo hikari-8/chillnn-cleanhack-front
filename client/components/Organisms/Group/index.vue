@@ -22,6 +22,16 @@
                 @registered="registered"
                 class="mb-4"
             />
+            <!-- adminstatus付与 -->
+            <give-admin-status
+                v-if="!isGroupIDNull"
+                :group-model="groupModel"
+                :user-model="userModel"
+                label="管理者権限の付与"
+                :description="true"
+                @registered="registered"
+                class="mb-4"
+            />
         </div>
     </div>
 </template>
@@ -33,12 +43,14 @@ import EditGroup from '@/components/Organisms/Group/modules/EditGroup.vue'
 import AddGroup from '@/components/Organisms/Group/modules/AddGroup.vue'
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import GiveAdminStatus from '@/components/Organisms/Group/modules/GiveAdminStatus.vue'
 
 @Component({
     components: {
         EditGroup,
         AppButton,
         AddGroup,
+        GiveAdminStatus,
     },
 })
 export default class AppGroupEdit extends Vue {

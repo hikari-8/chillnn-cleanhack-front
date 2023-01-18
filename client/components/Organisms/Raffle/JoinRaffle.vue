@@ -44,7 +44,7 @@ export default class JoinRaffle extends Vue {
     // @Prop({ required: true }) memberList!: string[]
     public blancLastraffle: RaffleObjectModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []
-    public isRaffleNavPushed: boolean = false
+    public isRaffleNavPushed: boolean = true
 
     public async created() {
         //名前を登録してあるかどうか

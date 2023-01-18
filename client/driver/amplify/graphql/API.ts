@@ -8,6 +8,7 @@ export type GroupMastInput = {
   deletedAt?: number | null,
   groupID: string,
   groupName?: string | null,
+  members: Array< string >,
   updatedAt: number,
 };
 
@@ -18,6 +19,7 @@ export type GroupMast = {
   deletedAt?: number | null,
   groupID: string,
   groupName?: string | null,
+  members: Array< string >,
   updatedAt: number,
 };
 
@@ -190,6 +192,7 @@ export type AddGroupMutation = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
+    members: Array< string >,
     updatedAt: number,
   },
 };
@@ -274,6 +277,7 @@ export type UpdateGroupMutation = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
+    members: Array< string >,
     updatedAt: number,
   },
 };
@@ -392,6 +396,7 @@ export type FetchGroupByGroupIDQuery = {
     deletedAt?: number | null,
     groupID: string,
     groupName?: string | null,
+    members: Array< string >,
     updatedAt: number,
   } | null,
 };

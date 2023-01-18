@@ -180,6 +180,7 @@
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
                         :isAlreadyJoined="isAlreadyJoined"
+                        @joinGroup="joinGroup"
                     />
                     <app-user-edit
                         v-if="show == 'user'"

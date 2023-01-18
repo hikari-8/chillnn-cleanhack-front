@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { UserModel } from 'chillnn-cleanhack-abr'
+import { UserModel, GroupModel } from 'chillnn-cleanhack-abr'
 import AppHeader from '@/components/Organisms/Common/AppHeader/index.vue'
 import { authInteractor } from '~/driver/amplify/auth'
 import { userInteractor } from '~/api'
@@ -23,6 +23,7 @@ import { userInteractor } from '~/api'
 })
 export default class DefaultLayout extends Vue {
     public userModel: UserModel | null = null
+    public groupModel: GroupModel | null = null
     public isSignIn: boolean = false
     public groupID: string = ''
 
@@ -60,9 +61,18 @@ export default class DefaultLayout extends Vue {
             } else if (!this.userModel.groupID && this.groupID !== ':groupID') {
                 //groupIDを持ってない、かつparamsにgroupidがあった時
                 //groupIDをuserに持たせて、userのアップデートをかける
+
                 this.userModel.groupID = this.groupID
+                this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+                //groupのmembersにもpushする
+                if (this.groupModel) {
+                    await this.groupModel.pushGroupMembers(
+                        this.userModel.userID
+                    )
+                }
                 await this.userModel.register()
                 console.log(this.userModel, 'update後のuserModel')
+                console.log(this.groupModel, 'update後のgroupModel')
                 this.$router.push({
                     path: '/group/:groupID',
                     params: { groupID: this.groupID },

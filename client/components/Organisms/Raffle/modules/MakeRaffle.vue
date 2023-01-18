@@ -261,6 +261,7 @@ export default class MakeRaffle extends Vue {
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
         //updateする
         await this.lastRaffleItem!.register()
+        this.$emit('registered')
         console.log(this.lastRaffleItem, '確認')
     }
 
@@ -283,6 +284,7 @@ export default class MakeRaffle extends Vue {
             await this.raffleObjectModel.register()
             await this.sendRemindToSlack()
             await this.sendToSlackRemindRunRaffle()
+            this.$emit('registerRaffle')
             this.isLastRaffleNull = false
             this.isLastRaffleActive = true
         } else {
@@ -294,6 +296,7 @@ export default class MakeRaffle extends Vue {
     public async deleteRaffle() {
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
         await this.lastRaffleItem!.register()
+        this.$emit('registered')
         this.isLastRaffleActive = false
     }
 

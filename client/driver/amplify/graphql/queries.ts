@@ -25,6 +25,7 @@ export const fetchGroupByGroupID = /* GraphQL */ `
       deletedAt
       groupID
       groupName
+      members
       updatedAt
     }
   }

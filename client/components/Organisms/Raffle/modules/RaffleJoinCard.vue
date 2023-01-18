@@ -1,5 +1,5 @@
 <template>
-    <div v-if="lastRaffle">
+    <div>
         <!-- groupがない(くじに参加するタブが押されている時) -->
         <div
             v-if="!groupModel && isRaffleNavPushed"
@@ -75,11 +75,11 @@
         </div>
         <!-- lastRaffleがない(初期の初期でグループ追加後) -->
         <div
-            v-if="!lastRaffle"
+            v-if="!lastRaffle && groupModel"
             class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between mt-10"
         >
             <div
-                v-if="groupModel"
+                v-if="groupModel.groupName"
                 class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
             >
                 現在、{{ groupModel.groupName }}で参加できるくじはありません 🙇‍♀️
@@ -133,31 +133,6 @@ export default class RaffleJoinCard extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
         this.$emit('joinGroup')
-
-        // if (this.isAlreadyJoined) {
-        //     alert('すでに参加済みのくじです！リロードしてください！')
-        // } else {
-        //     //Modelからmastへ変更
-        //     const mastOfJoinUser =
-        //         await this.joinUserModel!.raffleJoinUserModelToMast()
-        //     if (this.lastRaffle) {
-        //         this.lastRaffle.activeMembers.push(mastOfJoinUser)
-        //         // this.lastRaffle.activeMembers.push(mastOfJoinUser)
-        //         // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-        //         //     this.lastRaffle.activeMembers.shift()
-        //         // }
-        //     }
-        //     //updateする
-        //     if (!this.lastRaffle) {
-        //         return null
-        //     } else {
-        //         await this.lastRaffle.register()
-        //         this.$emit('registered')
-        //         alert(
-        //             'くじに参加しました！くじが実行されるまでお待ちください！'
-        //         )
-        //     }
-        // }
     }
 }
 </script>
