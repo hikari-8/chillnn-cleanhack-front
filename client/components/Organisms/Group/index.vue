@@ -10,7 +10,7 @@
                 :user-model="userModel"
                 :group-model="blancGroupModel"
                 @registered="registered"
-                class="mb-4"
+                class="mb-8"
             />
             <!-- グループ名変更 -->
             <edit-group
@@ -20,7 +20,7 @@
                 label="グループ名"
                 :description="true"
                 @registered="registered"
-                class="mb-4"
+                class="mb-8"
             />
             <!-- adminstatus付与 -->
             <give-admin-status

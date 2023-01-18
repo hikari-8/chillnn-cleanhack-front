@@ -1,8 +1,8 @@
 <template>
-    <div class="name_input_container mt-14" v-if="groupModel">
+    <div class="name_input_container mt-12" v-if="groupModel">
         <div class="label font-semibold mb-4">{{ label }}</div>
         <div
-            class="w-full max-w-md p-4 bg-white border rounded-lg shadow-md sm:p-8 mt-12"
+            class="w-full max-w-md p-4 bg-white border rounded-lg shadow-md sm:p-8 mt-4"
         >
             <div class="flex items-center justify-between mb-4">
                 <div class="font-semibold mb-4 text-gray-900">
