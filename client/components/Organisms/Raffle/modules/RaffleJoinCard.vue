@@ -26,21 +26,36 @@
                 <!-- くじはあるが、joinしていない -->
                 <div
                     v-if="!isAlreadyJoined"
-                    class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between"
+                    class="p-6 bg-white border border-gray-200 rounded-lg shadow-md"
                 >
-                    <div
-                        v-if="groupModel"
-                        class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
-                    >
-                        {{
-                            groupModel.groupName
-                        }}のお掃除くじに招待されています。
-                        <br />
-                        参加しますか？🧼 🧹
+                    <div>
+                        <div class="flex justify-between">
+                            <div
+                                v-if="groupModel"
+                                class="mb-2 text-lg font-semibold tracking-tight text-gray-900"
+                            >
+                                {{
+                                    groupModel.groupName
+                                }}のお掃除くじに招待されています。
+                                <br />
+                                参加しますか？🧼 🧹
+                            </div>
+
+                            <app-button class="my-3 ml-4" @click="joinGroup"
+                                >参加する</app-button
+                            >
+                        </div>
+
+                        <div class="mb-8 text-sm text-gray-500 mt-4">
+                            ＊参加される場合は、当てはまるものにチェックをつけてください
+                        </div>
                     </div>
-                    <app-button class="my-3 ml-4" @click="joinGroup"
-                        >参加する</app-button
-                    >
+                    <div>
+                        <select-option-part
+                            :userModel="userModel"
+                            :lastRaffle="lastRaffle"
+                        />
+                    </div>
                 </div>
                 <!-- くじはあるが、すでにjoin済み -->
                 <div>
@@ -103,10 +118,12 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 // component
 import AppButton from '@/components/Atom/Button/AppButton.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import SelectOptionPart from '@/components/Organisms/Raffle/modules/SelectOptionPart.vue'
 
 @Component({
     components: {
         AppButton,
+        SelectOptionPart,
     },
 })
 export default class RaffleJoinCard extends Vue {

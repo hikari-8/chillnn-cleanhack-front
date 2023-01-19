@@ -120,6 +120,7 @@ export default class TaskList extends Vue {
             taskName: 'blanc',
             updatedAt: 0,
             taskStatus: TaskStatus.ACTIVE,
+            optionItem: '',
         },
     ]
 

@@ -12,6 +12,7 @@ export const fetchAllUserMast = /* GraphQL */ `
       name
       records
       role
+      selectedOption
       updatedAt
       userID
     }
@@ -54,6 +55,10 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
+        optionItem {
+          availableUsers
+          optionName
+        }
         raffleID
         raffleItemID
         taskID
@@ -74,6 +79,7 @@ export const fetchMyUserMast = /* GraphQL */ `
       name
       records
       role
+      selectedOption
       updatedAt
       userID
     }
@@ -103,6 +109,10 @@ export const fetchRaffleObject = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
+        optionItem {
+          availableUsers
+          optionName
+        }
         raffleID
         raffleItemID
         taskID
@@ -137,6 +147,10 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
+        optionItem {
+          availableUsers
+          optionName
+        }
         raffleID
         raffleItemID
         taskID
@@ -163,6 +177,7 @@ export const fetchTaskMasterObject = /* GraphQL */ `
         deletedAt
         groupID
         headCount
+        optionItem
         taskID
         taskName
         taskStatus
@@ -182,6 +197,7 @@ export const fetchUserMastByUserID = /* GraphQL */ `
       name
       records
       role
+      selectedOption
       updatedAt
       userID
     }

@@ -58,11 +58,17 @@ export type RaffleMastInput = {
   groupID: string,
   headCount: number,
   joinUserIDArray: Array< string >,
+  optionItem: RaffleOptionInput,
   raffleID?: string | null,
   raffleItemID: string,
   taskID: string,
   taskName: string,
   updatedAt: number,
+};
+
+export type RaffleOptionInput = {
+  availableUsers: Array< string >,
+  optionName: string,
 };
 
 export type RaffleObject = {
@@ -96,11 +102,18 @@ export type RaffleMast = {
   groupID: string,
   headCount: number,
   joinUserIDArray: Array< string >,
+  optionItem: RaffleOption,
   raffleID?: string | null,
   raffleItemID: string,
   taskID: string,
   taskName: string,
   updatedAt: number,
+};
+
+export type RaffleOption = {
+  __typename: "RaffleOption",
+  availableUsers: Array< string >,
+  optionName: string,
 };
 
 export type TaskMasterObjectInput = {
@@ -121,6 +134,7 @@ export type TaskMastInput = {
   deletedAt?: number | null,
   groupID: string,
   headCount: number,
+  optionItem: string,
   taskID: string,
   taskName: string,
   taskStatus: TaskStatus,
@@ -153,6 +167,7 @@ export type TaskMast = {
   deletedAt?: number | null,
   groupID: string,
   headCount: number,
+  optionItem: string,
   taskID: string,
   taskName: string,
   taskStatus: TaskStatus,
@@ -167,6 +182,7 @@ export type UserMastInput = {
   name: string,
   records?: Array< string > | null,
   role: string,
+  selectedOption?: Array< string > | null,
   updatedAt: number,
   userID: string,
 };
@@ -180,6 +196,7 @@ export type UserMast = {
   name: string,
   records?: Array< string > | null,
   role: string,
+  selectedOption?: Array< string > | null,
   updatedAt: number,
   userID: string,
 };
@@ -231,6 +248,11 @@ export type AddRaffleObjectMutation = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
+      optionItem:  {
+        __typename: "RaffleOption",
+        availableUsers: Array< string >,
+        optionName: string,
+      },
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -262,6 +284,7 @@ export type AddTaskMasterObjectMutation = {
       deletedAt?: number | null,
       groupID: string,
       headCount: number,
+      optionItem: string,
       taskID: string,
       taskName: string,
       taskStatus: TaskStatus,
@@ -318,6 +341,11 @@ export type UpdateRaffleObjectMutation = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
+      optionItem:  {
+        __typename: "RaffleOption",
+        availableUsers: Array< string >,
+        optionName: string,
+      },
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -349,6 +377,7 @@ export type UpdateTaskMasterObjectMutation = {
       deletedAt?: number | null,
       groupID: string,
       headCount: number,
+      optionItem: string,
       taskID: string,
       taskName: string,
       taskStatus: TaskStatus,
@@ -372,6 +401,7 @@ export type UpdateUserMastMutation = {
     name: string,
     records?: Array< string > | null,
     role: string,
+    selectedOption?: Array< string > | null,
     updatedAt: number,
     userID: string,
   },
@@ -387,6 +417,7 @@ export type FetchAllUserMastQuery = {
     name: string,
     records?: Array< string > | null,
     role: string,
+    selectedOption?: Array< string > | null,
     updatedAt: number,
     userID: string,
   } >,
@@ -439,6 +470,11 @@ export type FetchLastRaffleByGroupIDQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
+      optionItem:  {
+        __typename: "RaffleOption",
+        availableUsers: Array< string >,
+        optionName: string,
+      },
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -459,6 +495,7 @@ export type FetchMyUserMastQuery = {
     name: string,
     records?: Array< string > | null,
     role: string,
+    selectedOption?: Array< string > | null,
     updatedAt: number,
     userID: string,
   } | null,
@@ -494,6 +531,11 @@ export type FetchRaffleObjectQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
+      optionItem:  {
+        __typename: "RaffleOption",
+        availableUsers: Array< string >,
+        optionName: string,
+      },
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -534,6 +576,11 @@ export type FetchRafflesByGroupIDQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
+      optionItem:  {
+        __typename: "RaffleOption",
+        availableUsers: Array< string >,
+        optionName: string,
+      },
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -565,6 +612,7 @@ export type FetchTaskMasterObjectQuery = {
       deletedAt?: number | null,
       groupID: string,
       headCount: number,
+      optionItem: string,
       taskID: string,
       taskName: string,
       taskStatus: TaskStatus,
@@ -588,6 +636,7 @@ export type FetchUserMastByUserIDQuery = {
     name: string,
     records?: Array< string > | null,
     role: string,
+    selectedOption?: Array< string > | null,
     updatedAt: number,
     userID: string,
   } | null,

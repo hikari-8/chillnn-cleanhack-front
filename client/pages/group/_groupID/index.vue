@@ -114,6 +114,7 @@ export default class Top extends Vue {
                 return null
             } else {
                 await this.lastRaffle.register()
+                await this.userModel?.register()
                 this.isAlreadyJoined = true
                 this.$emit('registered')
                 alert(
