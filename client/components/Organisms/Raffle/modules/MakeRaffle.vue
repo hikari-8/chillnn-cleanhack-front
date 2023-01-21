@@ -4,7 +4,7 @@
         <!-- v-if=""は""の中身がtrueの時に表示される -->
         <!-- <div v-if="isLastRaffleActive || !isLastRaffleNull"> -->
         <div v-if="isLastRaffleActive">
-            <div class="font-semibold text-2xl">くじの発行/削除 🌞</div>
+            <div class="font-semibold text-2xl">くじの実行 🎯</div>
 
             <div class="font-semibold mt-12 mb-10">現在進行中のくじ</div>
             <div>
@@ -70,8 +70,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="flex justify-between mt-14 mb-12">
+            <div class="font-semibold text-2xl mt-14">くじの削除 ❌</div>
+            <div class="flex justify-between mt-6 mb-12">
                 <div class="text-sm text-gray-500 py-2">
                     現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
                 </div>
@@ -465,9 +465,10 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
-        this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
-        await this.lastRaffleItem!.register()
-        this.$emit('registered')
+        // this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+        // await this.lastRaffleItem!.register()
+        // this.$emit('registered')
+        this.$emit('deleteRaffle')
         this.isLastRaffleActive = false
     }
 

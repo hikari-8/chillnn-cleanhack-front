@@ -6,11 +6,13 @@
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            :islastRaffleDone="islastRaffleDone"
             :joinUserModel="joinUserModel"
             :memberList="memberList"
             @registered="registered"
             @joinGroup="joinGroup"
             @registerRaffle="registerRaffle"
+            @deleteRaffle="deleteRaffle"
         />
     </div>
 </template>
@@ -22,6 +24,7 @@ import {
     RaffleObject,
     RaffleJoinUserModel,
     RaffleObjectModel,
+    RaffleStatus,
 } from 'chillnn-cleanhack-abr'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { userInteractor } from '~/api'
@@ -49,6 +52,7 @@ export default class Top extends Vue {
     public memberList: string[] = []
     public isAlreadyJoined: boolean = false
     public joinUserModel: RaffleJoinUserModel | null = null
+    public islastRaffleDone: boolean = false
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
@@ -70,6 +74,7 @@ export default class Top extends Vue {
             if (this.blancLastRaffle) {
                 this.lastRaffle = this.blancLastRaffle
                 //Effectiveかつ、自分もまだ参加していなかったら参加できる
+                this.islastRaffleDoneFunc()
                 //memberの配列を作成
                 this.createMembersArray()
                 const myUserID = this.userModel.userID
@@ -92,6 +97,15 @@ export default class Top extends Vue {
             const memberID = member.userID
             this.memberList.push(memberID)
         }
+    }
+
+    public islastRaffleDoneFunc() {
+        if (this.lastRaffle?.raffleStatus === RaffleStatus.DONE) {
+            this.islastRaffleDone = true
+        } else {
+            this.islastRaffleDone = false
+        }
+        console.log('islastRaffleDone?', this.islastRaffleDone)
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -123,6 +137,7 @@ export default class Top extends Vue {
                 }
                 await this.lastRaffle.register()
                 await this.userModel?.register()
+                this.islastRaffleDoneFunc()
                 this.isAlreadyJoined = true
                 this.$emit('registered')
                 alert(
@@ -157,12 +172,8 @@ export default class Top extends Vue {
                 await this.groupModel.fetchLastRaffleItemByGroupID()
             if (this.blancLastRaffle) {
                 this.lastRaffle = this.blancLastRaffle
-                //Effectiveかつ、自分もまだ参加していなかったら参加できる
-                //memberの配列を作成
-                this.createMembersArray()
-                const myUserID = this.userModel?.userID
-                //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
-                this.isAlreadyJoined = this.memberList.includes(myUserID!)
+                this.islastRaffleDoneFunc()
+                this.isAlreadyJoined = false
                 console.log(this.isAlreadyJoined, 'is already joined?')
                 if (this.isAlreadyJoined) {
                     return
@@ -170,6 +181,30 @@ export default class Top extends Vue {
                     //joinするuserのインスタンス作成
                     this.joinUserModel! = this.userModel!.createRaffleJoinUser()
                 }
+            }
+        }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async deleteRaffle() {
+        console.log('1番上のdeleteRaffleまで通っています')
+        this.lastRaffle!.raffleStatus = RaffleStatus.DONE
+        await this.lastRaffle!.register()
+        if (this.groupModel) {
+            this.blancLastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+                this.islastRaffleDoneFunc()
+                console.log('islastRaffleDone?', this.islastRaffleDone)
+                // this.isAlreadyJoined = true
+                // console.log(this.isAlreadyJoined, 'is already joined?')
+                // if (this.isAlreadyJoined) {
+                //     return
+                // } else {
+                //     //joinするuserのインスタンス作成
+                //     this.joinUserModel! = this.userModel!.createRaffleJoinUser()
+                // }
             }
         }
     }

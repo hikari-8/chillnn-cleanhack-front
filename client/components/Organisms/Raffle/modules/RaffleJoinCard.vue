@@ -22,7 +22,8 @@
         <!-- lastRaffleはある -->
         <!-- くじはeffective、joinしてるかしてないか -->
         <div v-if="lastRaffle && isNameUpdated">
-            <div class="mt-24" v-if="!isLastRaffleDone">
+            <div class="mt-24" v-if="!islastRaffleDone">
+                {{ islastRaffleDone }}
                 <!-- くじはあるが、joinしていない -->
                 <div
                     v-if="!isAlreadyJoined"
@@ -76,7 +77,7 @@
             </div>
             <!--lastraffleはあるが、DONE -->
             <div
-                v-if="isLastRaffleDone"
+                v-if="islastRaffleDone"
                 class="p-6 bg-white border border-gray-200 rounded-lg shadow-md flex justify-between mt-10"
             >
                 <div
@@ -133,7 +134,8 @@ export default class RaffleJoinCard extends Vue {
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
     @Prop({ required: false }) isRaffleNavPushed!: boolean
-    public isLastRaffleDone: boolean = false
+    @Prop({ required: true }) islastRaffleDone!: boolean
+    // public isLastRaffleDone: boolean = false
     public optionNameList: string[] = []
 
     public async created() {
@@ -143,9 +145,9 @@ export default class RaffleJoinCard extends Vue {
         }
         if (this.lastRaffle) {
             if (this.lastRaffle.raffleStatus == RaffleStatus.DONE) {
-                this.isLastRaffleDone = true
+                this.islastRaffleDone = true
             } else {
-                this.isLastRaffleDone = false
+                this.islastRaffleDone = false
             }
         }
     }

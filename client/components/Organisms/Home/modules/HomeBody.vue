@@ -25,6 +25,7 @@
             :groupModel="groupModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            :islastRaffleDone="islastRaffleDone"
             @joinGroup="joinGroup"
             @registered="registered"
         />
@@ -57,6 +58,7 @@ export default class HomeBody extends Vue {
     isNameUpdated: boolean = false
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
+    @Prop({ required: true }) islastRaffleDone!: boolean
     public blancLastraffle: RaffleObjectModel | null = null
     public joinUserModel: RaffleJoinUserModel | null = null
     public blancJoinUserArray: RaffleJoinUser[] = []

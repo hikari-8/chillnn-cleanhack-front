@@ -180,6 +180,7 @@
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
                         :isAlreadyJoined="isAlreadyJoined"
+                        :islastRaffleDone="islastRaffleDone"
                         @joinGroup="joinGroup"
                     />
                     <app-user-edit
@@ -204,6 +205,7 @@
                         :taskMasterObjectModel="taskMasterObjectModel"
                         :groupModel="groupModel"
                         @registerRaffle="registerRaffle"
+                        @deleteRaffle="deleteRaffle"
                     />
                     <join-raffle
                         v-if="show == 'rJoin'"
@@ -211,6 +213,7 @@
                         :groupModel="groupModel"
                         :lastRaffle="lastRaffle"
                         :isAlreadyJoined="isAlreadyJoined"
+                        :islastRaffleDone="islastRaffleDone"
                         @joinGroup="joinGroup"
                     />
                 </div>
@@ -262,6 +265,7 @@ export default class AppHome extends Vue {
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
+    @Prop({ required: true }) islastRaffleDone!: boolean
     @Prop({ required: true }) joinUserModel!: RaffleJoinUserModel
     @Prop({ required: true }) memberList!: string[]
     public showSideMenu: boolean = true
@@ -306,6 +310,11 @@ export default class AppHome extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async registerRaffle() {
         this.$emit('registerRaffle')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async deleteRaffle() {
+        this.$emit('deleteRaffle')
     }
 }
 </script>

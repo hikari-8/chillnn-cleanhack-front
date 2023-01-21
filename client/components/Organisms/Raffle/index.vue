@@ -11,6 +11,7 @@
                     :taskMasterObjectModel="taskMasterObjectModel"
                     :groupModel="groupModel"
                     @registerRaffle="registerRaffle"
+                    @deleteRaffle="deleteRaffle"
                 />
             </div>
         </div>
@@ -59,8 +60,14 @@ export default class AppRaffleEdit extends Vue {
         }
     }
 
+    @AsyncLoadingAndErrorHandle()
     public async registerRaffle() {
         this.$emit('registerRaffle')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async deleteRaffle() {
+        this.$emit('deleteRaffle')
     }
 
     //    @AsyncLoadingAndErrorHandle()
