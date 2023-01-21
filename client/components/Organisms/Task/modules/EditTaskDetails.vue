@@ -101,10 +101,8 @@ export default class EditTaskDetails extends Vue {
     public isInputNull() {
         if (this.copiedTask?.taskName == null) {
             this.isTaskNameNull = true
-            console.log('Task name is null')
         } else if (this.copiedTask?.headCount == null) {
             this.isHeadCountNull = true
-            console.log('Task head count is null')
         } else {
             return
         }

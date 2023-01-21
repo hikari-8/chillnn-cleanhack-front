@@ -71,14 +71,11 @@ export default class DefaultLayout extends Vue {
                     )
                 }
                 await this.userModel.register()
-                console.log(this.userModel, 'update後のuserModel')
-                console.log(this.groupModel, 'update後のgroupModel')
                 this.$router.push({
                     path: '/group/:groupID',
                     params: { groupID: this.groupID },
                 })
             } else {
-                console.log('elseの方のindexに分岐しました')
                 this.$router.push({
                     name: 'index',
                 })

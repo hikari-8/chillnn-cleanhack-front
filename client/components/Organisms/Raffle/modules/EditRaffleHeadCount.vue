@@ -97,10 +97,8 @@ export default class EditRaffleHeadCount extends Vue {
     public isInputNull() {
         if (this.copiedRaffle?.taskName == null) {
             this.isTaskNameNull = true
-            console.log('Task name is null')
         } else if (this.copiedRaffle?.headCount == null) {
             this.isHeadCountNull = true
-            console.log('Task head count is null')
         } else {
             return
         }
@@ -117,8 +115,6 @@ export default class EditRaffleHeadCount extends Vue {
         //掃除場所名と人数がnullならalertを飛ばす
         this.isInputNull()
         if (this.isTaskNameNull || this.isHeadCountNull) {
-            console.log(this.isTaskNameNull, '名前')
-            console.log(this.isHeadCountNull, '人数')
             alert('掃除場所名と割り当てる人数の両方を設定してください 🙇‍♀️')
         } else {
             //コピーしたアイテムをもとに戻す

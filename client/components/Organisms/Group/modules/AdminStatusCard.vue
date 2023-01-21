@@ -96,7 +96,6 @@ export default class AdminStatusCard extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async giveAdminStatus() {
-        console.log('AdminStatusCard')
         await this.userModel.addAdminStatus(this.otherUserModel!)
         this.isAdmin = true
         this.$emit('registerAdmin')

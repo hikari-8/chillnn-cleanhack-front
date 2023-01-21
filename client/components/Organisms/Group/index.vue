@@ -76,7 +76,6 @@ export default class AppGroupEdit extends Vue {
     public async registered() {
         this.isGroupIDNull = false
         this.$emit('registered')
-        console.log('AppGroupEditを通っています')
     }
 }
 </script>

@@ -128,7 +128,6 @@ export default class TaskList extends Vue {
         if (this.taskMasterObjectModel) {
             //taskMastを新規作成している
             this.taskMastItem = this.userModel.createTaskMast()
-            console.log('TaskMast作成', this.taskMastItem)
             this.isShowModal = true
         }
     }

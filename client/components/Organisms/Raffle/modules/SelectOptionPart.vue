@@ -63,7 +63,6 @@ export default class SelectOptionPart extends Vue {
         for (const task of this.lastRaffle.tasks) {
             if (task.optionName !== '') {
                 this.optionList.push(task.optionName!)
-                console.log('task.optionName: ', task.optionName)
             }
         }
     }

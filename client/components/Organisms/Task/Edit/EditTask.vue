@@ -80,7 +80,6 @@ export default class EditTask extends Vue {
         this.updatedMasterObjModel =
             await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
         if (this.updatedMasterObjModel) {
-            console.log('アップデートしたものをfetchしてるよ')
             this.taskMasterObjectModel = this.updatedMasterObjModel
         }
     }
@@ -99,15 +98,10 @@ export default class EditTask extends Vue {
             this.updatedMasterObjModel =
                 await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
             if (this.updatedMasterObjModel) {
-                console.log('アップデートしたものをfetchしてるよ')
                 this.taskMasterObjectModel = this.updatedMasterObjModel
             }
         }
         this.$emit('registered')
-        console.log(
-            'registered後のthis.taskMasterObjectModel',
-            this.taskMasterObjectModel
-        )
     }
 }
 </script>

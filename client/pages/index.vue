@@ -75,7 +75,6 @@ export default class Top extends Vue {
                 const myUserID = this.userModel.userID
                 //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
                 this.isAlreadyJoined = this.memberList.includes(myUserID)
-                console.log(this.isAlreadyJoined, 'is already joined?')
                 if (this.isAlreadyJoined) {
                     return
                 } else {
@@ -129,7 +128,7 @@ export default class Top extends Vue {
             this.userModel.userID
         )
         // ここで、groupIDがfetchされてきてない(serverとのラグがあるかも)
-        console.log(blancUserModel, 'どうかな？blanc')
+        // console.log(blancUserModel, 'どうかな？blanc')
         if (!blancUserModel) {
             return
         } else {

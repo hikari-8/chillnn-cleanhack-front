@@ -243,11 +243,9 @@ export default class MakeRaffle extends Vue {
         // userを取得するために自分のuserModelをfetchしてきます
         this.blackUserModel = await userInteractor.fetchMyUserModel()
         this.tbdUserModel = this.blackUserModel
-        console.log(this.lastRaffleItem, 'fetchしてきた時のlastItem')
     }
 
     public async registered() {
-        // console.log
         // await this.lastRaffleItem?.register()
         // this.headCountSumFunc()
         this.$emit('registered')
@@ -268,12 +266,10 @@ export default class MakeRaffle extends Vue {
                     '設定した締切り時間よりも早い時刻ですが、本当にくじを実行しますか？'
                 )
                 if (result) {
-                    console.log(this.lastRaffleItem.tasks, 'raffleに入る前')
                     this.doRaffle()
                     //updateする
                     await this.lastRaffleItem!.register()
                     this.$emit('registered')
-                    console.log(this.lastRaffleItem, '確認')
                     //slackに結果を送る
                     await this.sendToSlackResult()
                     //viewの変更
@@ -289,7 +285,6 @@ export default class MakeRaffle extends Vue {
                 //updateする
                 await this.lastRaffleItem!.register()
                 this.$emit('registered')
-                console.log(this.lastRaffleItem, '確認')
                 //slackに結果を送る
                 await this.sendToSlackResult()
                 //viewの変更
@@ -306,25 +301,13 @@ export default class MakeRaffle extends Vue {
         // まずは、optionを持つくじから割り当てる
         // lastRaffleitemのraffleを配列で作成(raffleOptionObj)
         this.updateLastRaffleItem = this.lastRaffleItem
-        console.log(this.updateLastRaffleItem, 'コピー直後のlastRaffleItem')
-        console.log(
-            this.updateLastRaffleItem?.tasks,
-            'コピー直後のlastRaffleItem.tasks'
-        )
         for (const raffle of this.updateLastRaffleItem!.tasks) {
-            console.log(
-                '対象とするraffle',
-                raffle,
-                'optionName',
-                raffle.optionName
-            )
             //for文で回している時にその大元をいじったら回す数が一つ減るから、消した分回せなくなるっぽい
             //よって、noOptionArray配列に回して、for文で回し終わった後に消す
             if (!raffle.optionName && raffle.optionName === '') {
                 // optionがなければ、noOptionArray配列へ
                 this.noOptionRaffleArray.push(raffle)
             } else {
-                // this.deleteTaskArray.push(raffle)
                 // option付きのraffleからuserの配列を取り出してランダムに並べる
                 // ramdomOptionUserList
                 this.optionAvailableUsers = raffle.optionValidUsers
@@ -346,8 +329,6 @@ export default class MakeRaffle extends Vue {
                         //最初のメンバーを取ってきて、追加したら配列から削除する
                         const firstMember = this.ramdomOptionUserList[0]
                         raffle.joinUserIDArray?.push(firstMember)
-                        // 後で戻すraffleの配列を作成する //deleteTaskArrayでもう作ってる
-                        // this.afterPushRaffles.push(raffle)
                         // firstMember削除
                         this.deleteUserArray.push(firstMember)
                         this.ramdomOptionUserList.shift()
@@ -371,22 +352,22 @@ export default class MakeRaffle extends Vue {
         )
 
         // 削除ユーザーリスト：this.deleteUserArray
-        console.log('削除するthis.deleteUserArray', this.deleteUserArray)
+        // console.log('削除するthis.deleteUserArray', this.deleteUserArray)
         // 削除optionリスト: deleteTaskArray
-        console.log('deleteTaskArray', this.deleteTaskArray)
+        // console.log('deleteTaskArray', this.deleteTaskArray)
 
         // //memberの配列を作成
         for (const member of this.lastRaffleItem!.activeMembers) {
             const memberID = member.userID
             this.memberList.push(memberID)
         }
-        console.log('削除前のthis.memberList', this.memberList)
+        // console.log('削除前のthis.memberList', this.memberList)
         // 上で作ったdelete用の配列を削除する
         for (const deleteMember of this.deleteUserArray) {
             let index = this.memberList.indexOf(deleteMember)
             this.memberList.splice(index, 1)
         }
-        console.log('削除後のthis.memberList', this.memberList)
+        // console.log('削除後のthis.memberList', this.memberList)
         //memberの配列をシャッフルする
         while (this.memberList.length > 0) {
             //ランダムな数字rumdumNumを求める
@@ -396,27 +377,25 @@ export default class MakeRaffle extends Vue {
             this.ramdumMemberList.push(this.memberList[randumNum])
             this.memberList.splice(randumNum, 1)
         }
-        console.log(this.ramdumMemberList, 'ramdomにしたmemberlistです')
         // taskの配列の中でthis.ramdumMemberListをheadCount分回しながら、idを持たせていく
         // lastRaffleItemからoptionありの配列deleteTaskArrayのtaskを削除する
         //noOptionArray配列の中のtaskで作成する
-        console.log(this.noOptionRaffleArray, 'optionがないraffleの配列です')
+        // console.log(this.noOptionRaffleArray, 'optionがないraffleの配列です')
         for (const task of this.noOptionRaffleArray!) {
             this.ramdumMemberListCopy = this.ramdumMemberList
             if (task.headCount > 0) {
                 // joinUserIDArrayに値が何故か入っている時があるので、削除
                 task.joinUserIDArray = []
-                console.log(task.joinUserIDArray, '一旦初期化する')
                 //headCountの数だけ回す
                 for (var i = 0; i < task.headCount; i++) {
                     //最初のメンバーを取ってきて、追加したら配列から削除する
                     const firstMember = this.ramdumMemberListCopy[0]
                     task.joinUserIDArray?.push(firstMember)
-                    console.log(firstMember, 'ramdumMemberListの最初のメンバー')
+                    // console.log(firstMember, 'ramdumMemberListの最初のメンバー')
                     this.ramdumMemberListCopy.shift()
-                    console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
+                    // console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
                 }
-                console.log(task.joinUserIDArray, 'push後')
+                // console.log(task.joinUserIDArray, 'push後')
             }
         }
         //this.updateLastRaffleItem.tasksに最初に削除したraffleをpushして、元のtasksに戻す
@@ -426,7 +405,6 @@ export default class MakeRaffle extends Vue {
         if (this.updateLastRaffleItem) {
             this.lastRaffleItem = this.updateLastRaffleItem
         }
-        console.log(this.lastRaffleItem, '登録するraffle')
         //statusを変更する
         this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
     }
@@ -451,7 +429,6 @@ export default class MakeRaffle extends Vue {
             this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
             !this.lastRaffleItem
         ) {
-            console.log(this.raffleObjectModel, 'this.raffleObjectModel')
             await this.raffleObjectModel.register()
             await this.sendRemindToSlack()
             await this.sendToSlackRemindRunRaffle()
@@ -538,7 +515,6 @@ export default class MakeRaffle extends Vue {
                 if (task.headCount > 0) {
                     //taskName: userIDからfetchした名前
                     for (const userID of task.joinUserIDArray) {
-                        console.log(userID, 'userID')
                         const userModel =
                             await this.blackUserModel!.fetchUserDataByUserID(
                                 userID

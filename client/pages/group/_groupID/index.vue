@@ -80,7 +80,6 @@ export default class Top extends Vue {
                 const myUserID = this.userModel.userID
                 //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
                 this.isAlreadyJoined = this.memberList.includes(myUserID)
-                console.log(this.isAlreadyJoined, 'is already joined?')
                 if (this.isAlreadyJoined) {
                     return
                 } else {
@@ -105,7 +104,7 @@ export default class Top extends Vue {
         } else {
             this.islastRaffleDone = false
         }
-        console.log('islastRaffleDone?', this.islastRaffleDone)
+        // console.log('islastRaffleDone?', this.islastRaffleDone)
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -153,7 +152,7 @@ export default class Top extends Vue {
             this.userModel.userID
         )
         // ここで、groupIDがfetchされてきてない(serverとのラグがあるかも)
-        console.log(blancUserModel, 'どうかな？blanc')
+        // console.log(blancUserModel, 'どうかな？blanc')
         if (!blancUserModel) {
             return
         } else {
@@ -174,7 +173,6 @@ export default class Top extends Vue {
                 this.lastRaffle = this.blancLastRaffle
                 this.islastRaffleDoneFunc()
                 this.isAlreadyJoined = false
-                console.log(this.isAlreadyJoined, 'is already joined?')
                 if (this.isAlreadyJoined) {
                     return
                 } else {
@@ -187,7 +185,6 @@ export default class Top extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
-        console.log('1番上のdeleteRaffleまで通っています')
         this.lastRaffle!.raffleStatus = RaffleStatus.DONE
         await this.lastRaffle!.register()
         if (this.groupModel) {
@@ -196,15 +193,6 @@ export default class Top extends Vue {
             if (this.blancLastRaffle) {
                 this.lastRaffle = this.blancLastRaffle
                 this.islastRaffleDoneFunc()
-                console.log('islastRaffleDone?', this.islastRaffleDone)
-                // this.isAlreadyJoined = true
-                // console.log(this.isAlreadyJoined, 'is already joined?')
-                // if (this.isAlreadyJoined) {
-                //     return
-                // } else {
-                //     //joinするuserのインスタンス作成
-                //     this.joinUserModel! = this.userModel!.createRaffleJoinUser()
-                // }
             }
         }
     }
