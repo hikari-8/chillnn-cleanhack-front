@@ -70,33 +70,21 @@ export default class SignInPage extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async signIn() {
         await authInteractor.signIn(this.email, this.password)
-        // console.log((this.email, this.password))
-        console.log(this.groupID, 'push前のgourpID')
         if (this.groupID === '' || this.groupID == undefined) {
-            console.log('indexに分岐しました')
             this.$router.push({
                 name: 'index',
             })
         } else {
-            console.log('groupIDに分岐しました')
             this.$router.push({
                 name: 'group-groupID',
                 params: { groupID: this.groupID },
             })
         }
-        // console.log((this.email, this.password))
     }
 
     public created() {
-        console.log('signin.vueです')
-        console.log(
-            'signin内のthis.$route.query.groupID',
-            this.$route.query.groupID
-        )
         const groupID = this.$route.query.groupID
-        console.log('signin内のgroupID', groupID)
         this.groupID = (typeof groupID === 'string' && groupID) || ''
-        console.log('signin内のthis.groupID', this.groupID)
     }
 }
 </script>

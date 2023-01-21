@@ -42,10 +42,10 @@
                 >
                     <!-- optionマーク -->
                     <span
-                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
                     >
                         <span
-                            class="w-2 h-2 mr-1 bg-green-500 rounded-full"
+                            class="w-2 h-2 mr-1 bg-blue-500 rounded-full"
                         ></span>
                         Option
                     </span>
@@ -54,7 +54,7 @@
                     class="text-sm font-medium text-gray-900 mt-3 mb-3 flex-grow-0 align-center"
                 >
                     <span>
-                        {{ raffle.optionItem.optionName }}
+                        {{ raffle.optionName }}
                     </span>
                 </div>
             </div>
@@ -98,7 +98,7 @@ export default class EffectiveRaffleItem extends Vue {
     public isOptionView: boolean = false
 
     public created() {
-        if (this.raffle.optionItem.optionName !== '') {
+        if (this.raffle.optionName !== '') {
             this.isOptionView = true
         }
     }

@@ -59,14 +59,15 @@
             <div v-if="isOptionView" class="flex">
                 <div class="w-[15%] flex-grow-0"></div>
                 <div
+                    v-if="task.optionItem"
                     class="font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-shrink-0 align-center"
                 >
                     <!-- optionマーク -->
                     <span
-                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
                     >
                         <span
-                            class="w-2 h-2 mr-1 bg-green-500 rounded-full"
+                            class="w-2 h-2 mr-1 bg-blue-500 rounded-full"
                         ></span>
                         Option
                     </span>
@@ -81,6 +82,7 @@
             </div>
             <!-- モーダルの中身 -->
             <div v-if="isShowOptionModal" class="flex">
+                <div class="w-[15%] flex-grow-0"></div>
                 <div
                     class="text-sm font-medium text-gray-900 mt-2 mb-2 w-[10%] flex-grow-0 align-center"
                 >
@@ -89,14 +91,14 @@
 
                 <app-base-input
                     v-model="task.optionItem"
-                    class="input_option w-[70%]"
+                    class="input_option w-[60%]"
                 ></app-base-input>
                 <div class="w-[10%] flex-grow-0">
                     <div class="flex justify-center">
                         <!-- 追加ボタン -->
                         <span title="追加">
                             <table-button
-                                :disabled="!task"
+                                :disabled="!task.optionItem"
                                 @click="registerOption"
                             >
                                 <img

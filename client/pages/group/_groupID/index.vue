@@ -10,6 +10,7 @@
             :memberList="memberList"
             @registered="registered"
             @joinGroup="joinGroup"
+            @registerRaffle="registerRaffle"
         />
     </div>
 </template>
@@ -62,7 +63,6 @@ export default class Top extends Vue {
                 await this.userModel.fetchTaskMasterDataObjByGroupID(
                     this.userModel.groupID!
                 )
-            // console.log('Attention', this.taskMasterObjectModel)
         }
         if (this.groupModel) {
             this.blancLastRaffle =
@@ -104,15 +104,23 @@ export default class Top extends Vue {
                 await this.joinUserModel!.raffleJoinUserModelToMast()
             if (this.lastRaffle) {
                 this.lastRaffle.activeMembers.push(mastOfJoinUser)
-                // this.lastRaffle.activeMembers.push(mastOfJoinUser)
-                // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-                //     this.lastRaffle.activeMembers.shift()
-                // }
             }
             //updateする
             if (!this.lastRaffle) {
                 return null
             } else {
+                for (const task of this.lastRaffle.tasks) {
+                    if (task.optionName !== '') {
+                        // userModelのoptionに入っている名前と同じなら、task.optionValidUsersに入れる
+                        for (const option of this.userModel!.selectedOption) {
+                            if (task.optionName == option) {
+                                task.optionValidUsers.push(
+                                    this.userModel!.userID
+                                )
+                            }
+                        }
+                    }
+                }
                 await this.lastRaffle.register()
                 await this.userModel?.register()
                 this.isAlreadyJoined = true
@@ -140,6 +148,30 @@ export default class Top extends Vue {
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
         }
         this.$emit('registered')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerRaffle() {
+        if (this.groupModel) {
+            this.blancLastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+                //Effectiveかつ、自分もまだ参加していなかったら参加できる
+                //memberの配列を作成
+                this.createMembersArray()
+                const myUserID = this.userModel?.userID
+                //lastRaffleのmemberの配列に自分のuserIDがあるかどうか
+                this.isAlreadyJoined = this.memberList.includes(myUserID!)
+                console.log(this.isAlreadyJoined, 'is already joined?')
+                if (this.isAlreadyJoined) {
+                    return
+                } else {
+                    //joinするuserのインスタンス作成
+                    this.joinUserModel! = this.userModel!.createRaffleJoinUser()
+                }
+            }
+        }
     }
 }
 </script>

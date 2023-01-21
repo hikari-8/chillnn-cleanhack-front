@@ -5,13 +5,13 @@
                 <input
                     v-model="userModel.selectedOption"
                     type="checkbox"
-                    :value="option.optionName"
+                    :value="option"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
                 <label
-                    :for="option.optionName"
+                    :for="option"
                     class="ml-2 text-sm font-medium text-gray-900"
-                    >{{ option.optionName }}</label
+                    >{{ option }}</label
                 >
             </div>
         </div>
@@ -25,11 +25,7 @@ import ButtonBase from '@/components/Atom/Button/button_base.vue'
 import ButtonBaseSub from '@/components/Atom/Button/button_base_sub.vue'
 import AppBaseInput from '@/components/Atom/Input/AppBaseInput.vue'
 import TableButton from '@/components/Atom/Button/TableButton.vue'
-import {
-    RaffleObjectModel,
-    UserModel,
-    RaffleOptionInput,
-} from 'chillnn-cleanhack-abr'
+import { RaffleObjectModel, UserModel } from 'chillnn-cleanhack-abr'
 import EditRaffleHeadCount from '@/components/Organisms/Raffle/modules/EditRaffleHeadCount.vue'
 import AddItemArea from '@/components/Organisms/Common/AddItemArea/index.vue'
 import qs from 'qs'
@@ -59,18 +55,15 @@ export default class SelectOptionPart extends Vue {
     public isShowModal: boolean = false
     public isShowOptionModal: boolean = false
     public isOptionView: boolean = false
-    public optionList: RaffleOptionInput[] = []
     public selectedOption: string[] = []
-
-    // public editRaffle() {
-    //     this.$emit('registered')
-    // }
+    public optionList: string[] = []
 
     public created() {
         //配列で回す
         for (const task of this.lastRaffle.tasks) {
-            if (task.optionItem.optionName !== '') {
-                this.optionList.push(task.optionItem)
+            if (task.optionName !== '') {
+                this.optionList.push(task.optionName!)
+                console.log('task.optionName: ', task.optionName)
             }
         }
     }

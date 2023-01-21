@@ -10,6 +10,7 @@
                     :raffleObjectModel="raffleObjectModel"
                     :taskMasterObjectModel="taskMasterObjectModel"
                     :groupModel="groupModel"
+                    @registerRaffle="registerRaffle"
                 />
             </div>
         </div>
@@ -56,6 +57,10 @@ export default class AppRaffleEdit extends Vue {
             this.raffleObjectModel =
                 await this.taskMasterObjectModel.getRaffleModel()
         }
+    }
+
+    public async registerRaffle() {
+        this.$emit('registerRaffle')
     }
 
     //    @AsyncLoadingAndErrorHandle()

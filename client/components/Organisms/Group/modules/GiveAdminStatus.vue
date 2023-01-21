@@ -50,9 +50,7 @@ export default class GiveAdminStatus extends Vue {
     public memberIDArray: string[] = []
 
     public created() {
-        console.log(this.groupModel.members)
         this.memberIDArray = this.groupModel.members
-        console.log(this.memberIDArray, 'this.memberIDArray')
     }
 
     get groupName() {

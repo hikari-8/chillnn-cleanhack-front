@@ -134,6 +134,7 @@ export default class RaffleJoinCard extends Vue {
     @Prop({ required: true }) isAlreadyJoined!: boolean
     @Prop({ required: false }) isRaffleNavPushed!: boolean
     public isLastRaffleDone: boolean = false
+    public optionNameList: string[] = []
 
     public async created() {
         //名前を登録してあるかどうか

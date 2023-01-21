@@ -89,7 +89,7 @@ export default class RaffleLimitTime extends Vue {
     ]
     public limitTimesList: { key: string; value: string }[] = [
         // テスト用↓
-        { key: '7:42', value: '42 7' },
+        { key: '23:45', value: '45 23' },
         { key: '10:00', value: '0 10' },
         { key: '10:30', value: '30 10' },
         { key: '11:00', value: '0 11' },
@@ -199,7 +199,7 @@ export default class RaffleLimitTime extends Vue {
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = {
-            text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
+            text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時 ${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
 
         //時間指定 (分、時、日、月、曜日)

@@ -203,6 +203,7 @@
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
                         :groupModel="groupModel"
+                        @registerRaffle="registerRaffle"
                     />
                     <join-raffle
                         v-if="show == 'rJoin'"
@@ -300,7 +301,11 @@ export default class AppHome extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         this.$emit('registered')
-        console.log('AppHomeを通っています')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerRaffle() {
+        this.$emit('registerRaffle')
     }
 }
 </script>

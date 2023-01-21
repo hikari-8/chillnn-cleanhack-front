@@ -55,10 +55,8 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
-        optionItem {
-          availableUsers
-          optionName
-        }
+        optionName
+        optionValidUsers
         raffleID
         raffleItemID
         taskID
@@ -109,10 +107,8 @@ export const fetchRaffleObject = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
-        optionItem {
-          availableUsers
-          optionName
-        }
+        optionName
+        optionValidUsers
         raffleID
         raffleItemID
         taskID
@@ -147,10 +143,8 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
-        optionItem {
-          availableUsers
-          optionName
-        }
+        optionName
+        optionValidUsers
         raffleID
         raffleItemID
         taskID

@@ -58,17 +58,13 @@ export type RaffleMastInput = {
   groupID: string,
   headCount: number,
   joinUserIDArray: Array< string >,
-  optionItem: RaffleOptionInput,
+  optionName?: string | null,
+  optionValidUsers: Array< string >,
   raffleID?: string | null,
   raffleItemID: string,
   taskID: string,
   taskName: string,
   updatedAt: number,
-};
-
-export type RaffleOptionInput = {
-  availableUsers: Array< string >,
-  optionName: string,
 };
 
 export type RaffleObject = {
@@ -102,18 +98,13 @@ export type RaffleMast = {
   groupID: string,
   headCount: number,
   joinUserIDArray: Array< string >,
-  optionItem: RaffleOption,
+  optionName?: string | null,
+  optionValidUsers: Array< string >,
   raffleID?: string | null,
   raffleItemID: string,
   taskID: string,
   taskName: string,
   updatedAt: number,
-};
-
-export type RaffleOption = {
-  __typename: "RaffleOption",
-  availableUsers: Array< string >,
-  optionName: string,
 };
 
 export type TaskMasterObjectInput = {
@@ -248,11 +239,8 @@ export type AddRaffleObjectMutation = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
-      optionItem:  {
-        __typename: "RaffleOption",
-        availableUsers: Array< string >,
-        optionName: string,
-      },
+      optionName?: string | null,
+      optionValidUsers: Array< string >,
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -341,11 +329,8 @@ export type UpdateRaffleObjectMutation = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
-      optionItem:  {
-        __typename: "RaffleOption",
-        availableUsers: Array< string >,
-        optionName: string,
-      },
+      optionName?: string | null,
+      optionValidUsers: Array< string >,
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -470,11 +455,8 @@ export type FetchLastRaffleByGroupIDQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
-      optionItem:  {
-        __typename: "RaffleOption",
-        availableUsers: Array< string >,
-        optionName: string,
-      },
+      optionName?: string | null,
+      optionValidUsers: Array< string >,
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -531,11 +513,8 @@ export type FetchRaffleObjectQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
-      optionItem:  {
-        __typename: "RaffleOption",
-        availableUsers: Array< string >,
-        optionName: string,
-      },
+      optionName?: string | null,
+      optionValidUsers: Array< string >,
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,
@@ -576,11 +555,8 @@ export type FetchRafflesByGroupIDQuery = {
       groupID: string,
       headCount: number,
       joinUserIDArray: Array< string >,
-      optionItem:  {
-        __typename: "RaffleOption",
-        availableUsers: Array< string >,
-        optionName: string,
-      },
+      optionName?: string | null,
+      optionValidUsers: Array< string >,
       raffleID?: string | null,
       raffleItemID: string,
       taskID: string,

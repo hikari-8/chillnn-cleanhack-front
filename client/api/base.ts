@@ -10,8 +10,6 @@ import { ChillnnTrainingError, ErrorCode } from 'chillnn-cleanhack-abr'
  */
 export async function callApi<U, T>(query: any, variables: T): Promise<U> {
     let res: U
-    // console.log('Query', query)
-    // console.log('Variables', variables)
     // queryの内容は、fetchMyUserMastになっているが、 variablesには不特定のJSプリミティブオブジェクトがそのまま入っている
     try {
         const response = (await API.graphql(
@@ -25,6 +23,5 @@ export async function callApi<U, T>(query: any, variables: T): Promise<U> {
         const errorCode = (err as any)?.errors?.[0].message as ErrorCode
         throw new ChillnnTrainingError(errorCode)
     }
-    // console.log(res) //APIのres確認
     return res
 }

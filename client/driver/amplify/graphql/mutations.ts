@@ -39,10 +39,8 @@ export const addRaffleObject = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
-        optionItem {
-          availableUsers
-          optionName
-        }
+        optionName
+        optionValidUsers
         raffleID
         raffleItemID
         taskID
@@ -116,10 +114,8 @@ export const updateRaffleObject = /* GraphQL */ `
         groupID
         headCount
         joinUserIDArray
-        optionItem {
-          availableUsers
-          optionName
-        }
+        optionName
+        optionValidUsers
         raffleID
         raffleItemID
         taskID

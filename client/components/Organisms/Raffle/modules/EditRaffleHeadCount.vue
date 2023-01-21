@@ -23,7 +23,6 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                         v-model="copiedRaffle.headCount"
                     >
-                        <option disabled selected value=""></option>
                         <option
                             v-for="selectedHeadCount in headCountList"
                             :value="selectedHeadCount.value"
@@ -79,6 +78,7 @@ export default class EditRaffleHeadCount extends Vue {
     public isTaskNameNull: boolean = false
     public isHeadCountNull: boolean = false
     public headCountList: { key: number; value: number }[] = [
+        { key: 0, value: 0 },
         { key: 1, value: 1 },
         { key: 2, value: 2 },
         { key: 3, value: 3 },

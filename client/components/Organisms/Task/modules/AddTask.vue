@@ -69,7 +69,10 @@
             <div class="flex justify-center gap-[10px]">
                 <!-- 追加ボタン -->
                 <span title="追加">
-                    <table-button :disabled="!taskMastItem" @click="registered">
+                    <table-button
+                        :disabled="taskMastItem.optionItem"
+                        @click="registered"
+                    >
                         <img
                             class="w-5"
                             src="@/assets/img/icon/plus-edit.svg"
