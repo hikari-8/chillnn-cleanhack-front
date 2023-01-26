@@ -29,7 +29,7 @@
 
         <!-- マスターデータ: リマインド時間の編集 -->
         <div class="font-semibold mb-8 text-2xl mt-14">
-            くじ引きリマインド時間設定 ⏰
+            くじ引きリマインド設定 ⏰
         </div>
         <slack-remind-time
             :user-model="userModel"

@@ -6,10 +6,15 @@
             :taskMasterObjectModel="taskMasterObjectModel"
             :lastRaffle="lastRaffle"
             :isAlreadyJoined="isAlreadyJoined"
+            :islastRaffleDone="islastRaffleDone"
             :joinUserModel="joinUserModel"
             :memberList="memberList"
+            :isGroupIDNull="isGroupIDNull"
             @registered="registered"
             @joinGroup="joinGroup"
+            @registerRaffle="registerRaffle"
+            @deleteRaffle="deleteRaffle"
+            @registerGroup="registerGroup"
         />
     </div>
 </template>
@@ -21,6 +26,7 @@ import {
     RaffleObject,
     RaffleJoinUserModel,
     RaffleObjectModel,
+    RaffleStatus,
 } from 'chillnn-cleanhack-abr'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { userInteractor } from '~/api'
@@ -48,12 +54,16 @@ export default class Top extends Vue {
     public memberList: string[] = []
     public isAlreadyJoined: boolean = false
     public joinUserModel: RaffleJoinUserModel | null = null
+    public islastRaffleDone: boolean = false
+    public isGroupIDNull: boolean = false
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
         if (this.userModel.groupID) {
+            this.isGroupIDNull = false
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
         } else {
+            this.isGroupIDNull = true
             this.groupModel = this.userModel.createNewGroup()
         }
         //taskMasterObjectModelをgroupIDでfetchしてくる
@@ -62,7 +72,6 @@ export default class Top extends Vue {
                 await this.userModel.fetchTaskMasterDataObjByGroupID(
                     this.userModel.groupID!
                 )
-            // console.log('Attention', this.taskMasterObjectModel)
         }
         if (this.groupModel) {
             this.blancLastRaffle =
@@ -70,6 +79,7 @@ export default class Top extends Vue {
             if (this.blancLastRaffle) {
                 this.lastRaffle = this.blancLastRaffle
                 //Effectiveかつ、自分もまだ参加していなかったら参加できる
+                this.islastRaffleDoneFunc()
                 //memberの配列を作成
                 this.createMembersArray()
                 const myUserID = this.userModel.userID
@@ -93,6 +103,15 @@ export default class Top extends Vue {
         }
     }
 
+    public islastRaffleDoneFunc() {
+        if (this.lastRaffle?.raffleStatus === RaffleStatus.DONE) {
+            this.islastRaffleDone = true
+        } else {
+            this.islastRaffleDone = false
+        }
+        // console.log('islastRaffleDone?', this.islastRaffleDone)
+    }
+
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
         if (this.isAlreadyJoined) {
@@ -103,16 +122,26 @@ export default class Top extends Vue {
                 await this.joinUserModel!.raffleJoinUserModelToMast()
             if (this.lastRaffle) {
                 this.lastRaffle.activeMembers.push(mastOfJoinUser)
-                // this.lastRaffle.activeMembers.push(mastOfJoinUser)
-                // if (this.lastRaffle.activeMembers[0].userID === 'blank') {
-                //     this.lastRaffle.activeMembers.shift()
-                // }
             }
             //updateする
             if (!this.lastRaffle) {
                 return null
             } else {
+                for (const task of this.lastRaffle.tasks) {
+                    if (task.optionName !== '') {
+                        // userModelのoptionに入っている名前と同じなら、task.optionValidUsersに入れる
+                        for (const option of this.userModel!.selectedOption) {
+                            if (task.optionName == option) {
+                                task.optionValidUsers.push(
+                                    this.userModel!.userID
+                                )
+                            }
+                        }
+                    }
+                }
                 await this.lastRaffle.register()
+                await this.userModel?.register()
+                this.islastRaffleDoneFunc()
                 this.isAlreadyJoined = true
                 this.$emit('registered')
                 alert(
@@ -120,6 +149,25 @@ export default class Top extends Vue {
                 )
             }
         }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        console.log('_groupの方を通っています もしかしてこっち？')
+        this.isGroupIDNull = false
+        this.userModel = await userInteractor.fetchMyUserModel()
+        if (this.userModel.groupID) {
+            this.isGroupIDNull = false
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        }
+        // taskMasterObjをfetchしてくる
+        if (this.userModel) {
+            this.taskMasterObjectModel =
+                await this.userModel.fetchTaskMasterDataObjByGroupID(
+                    this.userModel.groupID!
+                )
+        }
+        // this.$emit('registerGroup')
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -138,6 +186,39 @@ export default class Top extends Vue {
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
         }
         this.$emit('registered')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerRaffle() {
+        if (this.groupModel) {
+            this.blancLastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+                this.islastRaffleDoneFunc()
+                this.isAlreadyJoined = false
+                if (this.isAlreadyJoined) {
+                    return
+                } else {
+                    //joinするuserのインスタンス作成
+                    this.joinUserModel! = this.userModel!.createRaffleJoinUser()
+                }
+            }
+        }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async deleteRaffle() {
+        this.lastRaffle!.raffleStatus = RaffleStatus.DONE
+        await this.lastRaffle!.register()
+        if (this.groupModel) {
+            this.blancLastRaffle =
+                await this.groupModel.fetchLastRaffleItemByGroupID()
+            if (this.blancLastRaffle) {
+                this.lastRaffle = this.blancLastRaffle
+                this.islastRaffleDoneFunc()
+            }
+        }
     }
 }
 </script>

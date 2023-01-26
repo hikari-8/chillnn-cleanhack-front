@@ -27,7 +27,7 @@
                                     ></span>
                                     Active
                                 </span>
-                                {{ week }}曜日{{ hh }} 時{{ mm }} 分<span
+                                本日{{ hh }} 時{{ mm }} 分<span
                                     class="text-sm font-medium ml-2"
                                     >締切り</span
                                 >
@@ -164,7 +164,6 @@ export default class MakeRaffle extends Vue {
     public headCountSum: number = 0
     public isEarlierThanLimitTime: boolean = false
     public slackURL: string = ''
-    public raffleOptionObj: RaffleMast[] = []
     public blancList: string[] = []
     public userModelList: UserModel[] = []
     public optionUserModelList: UserModel[] = []
@@ -176,39 +175,11 @@ export default class MakeRaffle extends Vue {
     public afterPushRaffles: RaffleMast[] = []
     public noOptionRaffleArray: RaffleMast[] = []
     public updateLastRaffleItem: RaffleObjectModel | null = null
+    public remindAdminTime: number = 0
 
     //created
     @AsyncLoadingAndErrorHandle()
     public async created() {
-        this.slackURL = this.raffleObjectModel.slackURL
-        const weekValue = this.raffleObjectModel.remindSlackWeek
-        switch (weekValue) {
-            case '0':
-                this.week = '日'
-                break
-            case '1':
-                this.week = '月'
-                break
-            case '2':
-                this.week = '火'
-                break
-            case '3':
-                this.week = '水'
-                break
-            case '4':
-                this.week = '木'
-                break
-            case '5':
-                this.week = '金'
-                break
-            case '6':
-                this.week = '土'
-                break
-            case '':
-                this.week = ''
-                break
-        }
-        this.getMyGroupURL()
         //テスト/lastraffleをfetchして、statusを調べる
         this.lastRaffleItem =
             await this.raffleObjectModel.fetchLastRaffleItemByGroupID()
@@ -218,21 +189,7 @@ export default class MakeRaffle extends Vue {
         } else if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
             this.isLastRaffleActive = true
             this.isLastRaffleNull = false
-            const timeValue = this.lastRaffleItem.limitTime
-            //○○時0分の時→4桁
-            if (timeValue.length == 4) {
-                this.hh = timeValue.substr(2, 4)
-                this.mm = timeValue.substr(0, 1)
-                if (this.mm == '0') {
-                    this.mm = ' 00' //見やすくするため空白開ける
-                }
-            } else {
-                this.hh = timeValue.substr(3, 5)
-                this.mm = timeValue.substr(0, 2)
-                if (this.mm == '0') {
-                    this.mm = '00'
-                }
-            }
+            this.getSelectedTime()
         }
         console.log(
             this.isLastRaffleActive,
@@ -243,11 +200,11 @@ export default class MakeRaffle extends Vue {
         // userを取得するために自分のuserModelをfetchしてきます
         this.blackUserModel = await userInteractor.fetchMyUserModel()
         this.tbdUserModel = this.blackUserModel
+        this.getTime()
+        console.log(this.raffleObjectModel, 'raffleObjectModel')
     }
 
     public async registered() {
-        // await this.lastRaffleItem?.register()
-        // this.headCountSumFunc()
         this.$emit('registered')
     }
 
@@ -279,6 +236,8 @@ export default class MakeRaffle extends Vue {
                         this.isLastRaffleActive = false
                         this.isLastRaffleNull = false
                     }
+                    //前回localstrageに保存した予約した通知を削除する
+                    // this.deleteNotification()
                 } else return
             } else {
                 this.doRaffle()
@@ -292,6 +251,8 @@ export default class MakeRaffle extends Vue {
                     this.isLastRaffleActive = false
                     this.isLastRaffleNull = false
                 }
+                //前回localstrageに保存した予約した通知を削除する
+                // this.deleteNotification()
             }
         }
     }
@@ -299,7 +260,6 @@ export default class MakeRaffle extends Vue {
     //くじロジック
     public async doRaffle() {
         // まずは、optionを持つくじから割り当てる
-        // lastRaffleitemのraffleを配列で作成(raffleOptionObj)
         this.updateLastRaffleItem = this.lastRaffleItem
         for (const raffle of this.updateLastRaffleItem!.tasks) {
             //for文で回している時にその大元をいじったら回す数が一つ減るから、消した分回せなくなるっぽい
@@ -414,24 +374,31 @@ export default class MakeRaffle extends Vue {
         //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
         if (!this.raffleObjectModel.tasks.length) {
             alert('掃除場所を一つ以上登録してください!')
-        } else if (!this.raffleObjectModel.limitTime) {
+        } else if (
+            !this.raffleObjectModel.limitHour ||
+            !this.raffleObjectModel.limitMin
+        ) {
             alert('制限時間を登録してください!')
         } else if (
-            this.raffleObjectModel.remindSlackWeek === 'blanc' ||
-            this.raffleObjectModel.remindSlackTime === 'blanc'
+            this.raffleObjectModel.remindSlackHour === 0 ||
+            this.raffleObjectModel.remindSlackMin === 0
         ) {
             alert('くじの設定から、くじ引きリマインド時間を登録してください!')
-        } else if (this.raffleObjectModel.slackURL === '') {
+        } else if (!this.raffleObjectModel.channelID) {
             alert(
-                'くじの設定から、送信するslackのWebhookURLを登録してください!'
+                'くじの設定から、送信するslackのチャンネルIDを登録してください!'
             )
         } else if (
             this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
             !this.lastRaffleItem
         ) {
+            this.timeToUnix()
+            this.raffleObjectModel.limitTimeUnix = this.remindAdminTime
             await this.raffleObjectModel.register()
-            await this.sendRemindToSlack()
-            await this.sendToSlackRemindRunRaffle()
+            this.getSelectedTime()
+            //アラート
+            alert(`全員へのリマインドがスケジュールされました`)
+            alert(`管理者へのリマインドがスケジュールされました`)
             this.$emit('registerRaffle')
             this.isLastRaffleNull = false
             this.isLastRaffleActive = true
@@ -442,72 +409,49 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
-        // this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
-        // await this.lastRaffleItem!.register()
-        // this.$emit('registered')
+        //localstrageに保存した予約した通知を削除する
+        // this.deleteNotification()
         this.$emit('deleteRaffle')
         this.isLastRaffleActive = false
     }
 
-    @AsyncLoadingAndErrorHandle()
-    public async sendRemindToSlack() {
-        this.cronToLng()
-        await this.sendToSlack()
+    public getTime() {
+        // 時間を設定
+        const now = new Date()
+        const specificYear = now.getFullYear()
+        const specificMonth = now.getMonth() //表示させる時は、＋1する必要がある
+        const specificDate = now.getDate()
+        const groupRemindHour = this.lastRaffleItem?.remindSlackHour
+        const groupRemindMin = this.lastRaffleItem?.remindSlackMin
+        const adminRimindHour = this.lastRaffleItem?.limitHour
+        const adminRimindMin = this.lastRaffleItem?.limitMin
+        console.log(
+            'groupRemindHour:',
+            groupRemindHour,
+            'groupRemindMin',
+            groupRemindMin,
+            'adminRimindHour',
+            adminRimindHour,
+            'adminRimindMin',
+            adminRimindMin
+        )
+
+        //UNIXを作成: groupへのリマインド通知 remindGroupTime
+        let remindGroupDate = new Date(
+            specificYear,
+            specificMonth,
+            specificDate,
+            groupRemindHour,
+            groupRemindMin
+        )
+        console.log('remindGroupDateです:', remindGroupDate)
+        let remindGroupMM = remindGroupDate.getTime()
+        console.log('remindGroupMMです:', remindGroupMM)
+        let remindGroupTime = Math.floor(remindGroupMM / 1000)
+        console.log('remind時間を生成したもの:', remindGroupTime)
     }
 
-    public getMyGroupURL() {
-        const myGroupID = this.raffleObjectModel.groupID
-        // this.myGroupURL = `https://localhost:3000/group/${myGroupID}`
-        this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
-        console.log(this.myGroupURL)
-    }
-
-    //cronで保存されている値を、日本語に直してslackに送ります。
-    public cronToLng() {
-        const weekValue = this.raffleObjectModel.remindSlackWeek
-        switch (weekValue) {
-            case '0':
-                this.ww = '日'
-                break
-            case '1':
-                this.ww = '月'
-                break
-            case '2':
-                this.ww = '火'
-                break
-            case '3':
-                this.ww = '水'
-                break
-            case '4':
-                this.ww = '木'
-                break
-            case '5':
-                this.ww = '金'
-                break
-            case '6':
-                this.ww = '土'
-                break
-            case '':
-                this.ww = ''
-                break
-        }
-        const timeValue = this.raffleObjectModel.limitTime
-        //○○時0分の時→4桁
-        if (timeValue.length == 4) {
-            this.hh = timeValue.substr(2, 4)
-            this.mm = timeValue.substr(0, 1)
-            if (this.mm == '0') {
-                this.mm = ' 00' //見やすくするため空白開ける
-            }
-        } else {
-            this.hh = timeValue.substr(3, 5)
-            this.mm = timeValue.substr(0, 2)
-            if (this.mm == '0') {
-                this.mm = '00'
-            }
-        }
-    }
-
+    //結果へのslackの通知は即時なのでsfrontに残す
     @AsyncLoadingAndErrorHandle()
     public async makeMessage() {
         if (this.lastRaffleItem) {
@@ -533,64 +477,74 @@ export default class MakeRaffle extends Vue {
     }
 
     ///////////////////////////////////////////////////////////////////
-    //salckに通知を送るメソッド
+    //slackに通知を送るメソッド
     ///////////////////////////////////////////////////////////////////
 
-    //リマインドを全員に送信
-    @AsyncLoadingAndErrorHandle()
-    public async sendToSlack() {
-        let params = new URLSearchParams()
-        let message = {
-            text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時 ${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
-        }
+    /////////////////////リマインドを全員に送信
+    // @AsyncLoadingAndErrorHandle()
+    // public async sendRemindToSlack() {
+    //     this.cronToLng()
+    //     await this.sendToSlack()
+    // }
 
-        //時間指定 (分、時、日、月、曜日)
-        const setTime = `${this.raffleObjectModel.remindSlackTime} * * ${this.raffleObjectModel.remindSlackWeek}`
-        console.log('時間指定→', setTime)
+    // @AsyncLoadingAndErrorHandle()
+    // public async sendToSlack() {
+    //     let params = new URLSearchParams()
+    //     let message = {
+    //         text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時 ${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
+    //     }
 
-        const sendAtSchedule = schedule.scheduleJob(setTime, () => {
-            params.append('payload', JSON.stringify(message))
-            const res = axios
-                .post(this.slackURL, params)
-                .then((res: any) => {
-                    console.log(res)
-                })
-                .catch((err: any) => {
-                    console.log(err)
-                })
-        })
-        //アラート
-        alert(`全員へのリマインドがスケジュールされました`)
-    }
+    //     //時間指定 (分、時、日、月、曜日)
+    //     const setTime = `${this.raffleObjectModel.remindSlackTime} * * ${this.raffleObjectModel.remindSlackWeek}`
+    //     console.log('時間指定→', setTime)
 
-    //制限時間になったら、管理者にリマインドを送信
-    @AsyncLoadingAndErrorHandle()
-    public async sendToSlackRemindRunRaffle() {
-        let params = new URLSearchParams()
-        let message = {
-            text: `${this.hh} 時${this.mm} 分になりました！\n管理者の方は下記のリンク、またはアプリから掃除場所の人数を調整し、くじを実行してください！\n${this.myGroupURL}`,
-        }
+    //     const sendGroupRemind = schedule.scheduleJob(setTime, () => {
+    //         params.append('payload', JSON.stringify(message))
+    //         const res = axios
+    //             .post(this.slackURL, params)
+    //             .then((res: any) => {
+    //                 console.log(res)
+    //             })
+    //             .catch((err: any) => {
+    //                 console.log(err)
+    //             })
+    //     })
+    //     //ローカルストレージに値を保存する
+    //     localStorage.setItem('sendGroupRemind', sendGroupRemind)
+    //     //アラート
+    //     alert(`全員へのリマインドがスケジュールされました`)
+    // }
 
-        //時間指定 (分、時、日、月、曜日)
-        const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
-        console.log('時間指定→', setTime)
+    ////////////////////制限時間になったら、管理者にリマインドを送信
+    // @AsyncLoadingAndErrorHandle()
+    // public async sendToSlackRemindRunRaffle() {
+    //     let params = new URLSearchParams()
+    //     let message = {
+    //         text: `${this.hh} 時${this.mm} 分になりました！\n管理者の方は下記のリンク、またはアプリから掃除場所の人数を調整し、くじを実行してください！\n${this.myGroupURL}`,
+    //     }
 
-        const sendAtSchedule = schedule.scheduleJob(setTime, () => {
-            params.append('payload', JSON.stringify(message))
-            const res = axios
-                .post(this.slackURL, params)
-                .then((res: any) => {
-                    console.log(res)
-                })
-                .catch((err: any) => {
-                    console.log(err)
-                })
-        })
-        //アラート
-        alert(`管理者へのリマインドがスケジュールされました`)
-    }
+    //     //時間指定 (分、時、日、月、曜日)
+    //     const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
+    //     console.log('時間指定→', setTime)
 
-    //結果を送信
+    //     const sendAdminRemind = schedule.scheduleJob(setTime, () => {
+    //         params.append('payload', JSON.stringify(message))
+    //         const res = axios
+    //             .post(this.slackURL, params)
+    //             .then((res: any) => {
+    //                 console.log(res)
+    //             })
+    //             .catch((err: any) => {
+    //                 console.log(err)
+    //             })
+    //     })
+    //     //ローカルストレージに値を保存する
+    //     // localStorage.setItem('sendAdminRemind', sendAdminRemind)
+    //     //アラート
+    //     alert(`管理者へのリマインドがスケジュールされました`)
+    // }
+
+    ///////////////////////////結果を送信//残す
     @AsyncLoadingAndErrorHandle()
     public async sendToSlackResult() {
         let params = new URLSearchParams()
@@ -644,6 +598,57 @@ export default class MakeRaffle extends Vue {
         } else {
             this.isEarlierThanLimitTime = false
         }
+    }
+
+    //制限時間をstringに直して、0を00に変換する (文章用)
+    public getSelectedTime() {
+        if (this.lastRaffleItem) {
+            this.hh = String(this.lastRaffleItem.limitHour)
+            if (this.hh == '0') {
+                this.hh = '00'
+            }
+
+            this.mm = String(this.lastRaffleItem.limitMin)
+            if (this.mm == '0') {
+                this.mm = '00'
+            }
+        }
+    }
+
+    //通知する時刻をUNIXに変換する
+    public timeToUnix() {
+        // 現在の時間
+        const now = new Date()
+        // UNIXタイムスタンプを所得する(ミリ秒単位)
+        const nowUNIXMM = now.getTime()
+        //タイムスタンプを取得
+        const nowUNIX = Math.floor(nowUNIXMM / 1000)
+        console.log(nowUNIX, '現在のUNIX時間です')
+
+        // 時間を設定
+        const specificYear = now.getFullYear()
+        const specificMonth = now.getMonth() //表示させる時は、＋1する必要がある
+        const specificDate = now.getDate()
+        const adminRimindHour = this.raffleObjectModel.limitHour
+        const adminRimindMin = this.raffleObjectModel.limitMin
+        console.log(
+            'adminRimindHour',
+            adminRimindHour,
+            'adminRimindMin',
+            adminRimindMin
+        )
+
+        //UNIXを作成: Adminへのリマインド通知 remindAdminTime
+        let remindAdminDate = new Date(
+            specificYear,
+            specificMonth,
+            specificDate,
+            adminRimindHour,
+            adminRimindMin
+        )
+        let remindAdminMM = remindAdminDate.getTime()
+        this.remindAdminTime = Math.floor(remindAdminMM / 1000)
+        console.log('Adminへの通知時間を生成したもの:', this.remindAdminTime)
     }
 }
 </script>

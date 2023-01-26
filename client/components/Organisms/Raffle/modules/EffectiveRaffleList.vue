@@ -45,6 +45,7 @@
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import {
     RaffleObjectModel,
+    RaffleStatus,
     TaskMastModel,
     UserModel,
 } from 'chillnn-cleanhack-abr'
@@ -88,6 +89,7 @@ export default class EffectiveRaffleList extends Vue {
     }
 
     public async registered() {
+        this.raffleObjectModel.raffleStatus = RaffleStatus.EFFECTIVE_AND_FIXED
         await this.raffleObjectModel?.register()
         this.headCountSumFunc
         this.$emit('registered')

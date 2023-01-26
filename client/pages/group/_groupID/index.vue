@@ -9,10 +9,12 @@
             :islastRaffleDone="islastRaffleDone"
             :joinUserModel="joinUserModel"
             :memberList="memberList"
+            :isGroupIDNull="isGroupIDNull"
             @registered="registered"
             @joinGroup="joinGroup"
             @registerRaffle="registerRaffle"
             @deleteRaffle="deleteRaffle"
+            @registerGroup="registerGroup"
         />
     </div>
 </template>
@@ -53,12 +55,15 @@ export default class Top extends Vue {
     public isAlreadyJoined: boolean = false
     public joinUserModel: RaffleJoinUserModel | null = null
     public islastRaffleDone: boolean = false
+    public isGroupIDNull: boolean = false
 
     public async created() {
         this.userModel = await userInteractor.fetchMyUserModel()
         if (this.userModel.groupID) {
+            this.isGroupIDNull = false
             this.groupModel = await this.userModel.fetchGroupDataByGroupID()
         } else {
+            this.isGroupIDNull = true
             this.groupModel = this.userModel.createNewGroup()
         }
         //taskMasterObjectModelをgroupIDでfetchしてくる
@@ -144,6 +149,25 @@ export default class Top extends Vue {
                 )
             }
         }
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        console.log('_groupの方を通っています もしかしてこっち？')
+        this.isGroupIDNull = false
+        this.userModel = await userInteractor.fetchMyUserModel()
+        if (this.userModel.groupID) {
+            this.isGroupIDNull = false
+            this.groupModel = await this.userModel.fetchGroupDataByGroupID()
+        }
+        // taskMasterObjをfetchしてくる
+        if (this.userModel) {
+            this.taskMasterObjectModel =
+                await this.userModel.fetchTaskMasterDataObjByGroupID(
+                    this.userModel.groupID!
+                )
+        }
+        // this.$emit('registerGroup')
     }
 
     @AsyncLoadingAndErrorHandle()

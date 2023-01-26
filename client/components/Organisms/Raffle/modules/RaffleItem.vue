@@ -73,7 +73,6 @@ import TableButton from '@/components/Atom/Button/TableButton.vue'
 import { RaffleMastModel } from 'chillnn-cleanhack-abr'
 import EditRaffleHeadCount from '@/components/Organisms/Raffle/modules/EditRaffleHeadCount.vue'
 import AddItemArea from '@/components/Organisms/Common/AddItemArea/index.vue'
-import qs from 'qs'
 
 @Component({
     components: {

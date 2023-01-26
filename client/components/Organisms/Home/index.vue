@@ -191,7 +191,8 @@
                         v-if="show == 'group'"
                         :groupModel="groupModel"
                         :userModel="userModel"
-                        @registered="registered"
+                        :isGroupIDNull="isGroupIDNull"
+                        @registerGroup="registerGroup"
                     />
                     <app-task-edit
                         v-if="show == 'rSettings'"
@@ -268,6 +269,7 @@ export default class AppHome extends Vue {
     @Prop({ required: true }) islastRaffleDone!: boolean
     @Prop({ required: true }) joinUserModel!: RaffleJoinUserModel
     @Prop({ required: true }) memberList!: string[]
+    @Prop({ required: true }) isGroupIDNull!: boolean
     public showSideMenu: boolean = true
     public isHome: boolean = true
     public loaded: boolean = false
@@ -305,6 +307,11 @@ export default class AppHome extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         this.$emit('registered')
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async registerGroup() {
+        this.$emit('registerGroup')
     }
 
     @AsyncLoadingAndErrorHandle()

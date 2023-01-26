@@ -19,7 +19,9 @@
             </div>
             <div>
                 <div class="button_container mb-2">
-                    <app-button :disabled="disabled" @click="authSignUp"
+                    <app-button
+                        :disabled="disabled"
+                        @click="auhtSignUpAndConfirmAlreadySignup"
                         >新規登録</app-button
                     >
                 </div>
@@ -82,6 +84,15 @@ export default class SignUpPage extends Vue {
                 groupID: this.groupID,
             },
         })
+    }
+
+    @AsyncLoadingAndErrorHandle()
+    public async auhtSignUpAndConfirmAlreadySignup() {
+        await this.authSignUp().catch(() =>
+            window.alert(
+                'すでに登録済みのアカウントです。アカウントをお持ちの方は"こちら"をクリックして、ログインページからログインしてください！'
+            )
+        )
     }
 
     public created() {

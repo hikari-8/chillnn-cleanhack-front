@@ -40,15 +40,18 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
         joinAt
         userID
       }
+      channelID
       createdAt
       deletedAt
       groupID
-      limitTime
+      limitHour
+      limitMin
+      limitTimeUnix
       raffleID
       raffleStatus
-      remindSlackTime
-      remindSlackWeek
-      slackURL
+      remindSlackHour
+      remindSlackMin
+      remindTimeUnix
       tasks {
         createdAt
         deletedAt
@@ -92,15 +95,18 @@ export const fetchRaffleObject = /* GraphQL */ `
         joinAt
         userID
       }
+      channelID
       createdAt
       deletedAt
       groupID
-      limitTime
+      limitHour
+      limitMin
+      limitTimeUnix
       raffleID
       raffleStatus
-      remindSlackTime
-      remindSlackWeek
-      slackURL
+      remindSlackHour
+      remindSlackMin
+      remindTimeUnix
       tasks {
         createdAt
         deletedAt
@@ -128,15 +134,18 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
         joinAt
         userID
       }
+      channelID
       createdAt
       deletedAt
       groupID
-      limitTime
+      limitHour
+      limitMin
+      limitTimeUnix
       raffleID
       raffleStatus
-      remindSlackTime
-      remindSlackWeek
-      slackURL
+      remindSlackHour
+      remindSlackMin
+      remindTimeUnix
       tasks {
         createdAt
         deletedAt
@@ -158,13 +167,16 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
 export const fetchTaskMasterObject = /* GraphQL */ `
   query FetchTaskMasterObject($groupID: ID!) {
     fetchTaskMasterObject(groupID: $groupID) {
+      channelID
       createdAt
       deletedAt
       groupID
-      limitTime
-      remindSlackTime
-      remindSlackWeek
-      slackURL
+      limitHour
+      limitMin
+      limitTimeUnix
+      remindSlackHour
+      remindSlackMin
+      remindTimeUnix
       taskMasterObjectID
       tasks {
         createdAt

@@ -23,7 +23,6 @@
         <!-- くじはeffective、joinしてるかしてないか -->
         <div v-if="lastRaffle && isNameUpdated">
             <div class="mt-24" v-if="!islastRaffleDone">
-                {{ islastRaffleDone }}
                 <!-- くじはあるが、joinしていない -->
                 <div
                     v-if="!isAlreadyJoined"
@@ -130,7 +129,7 @@ import SelectOptionPart from '@/components/Organisms/Raffle/modules/SelectOption
 export default class RaffleJoinCard extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
-    isNameUpdated: boolean = false
+    public isNameUpdated: boolean = false
     @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     @Prop({ required: true }) isAlreadyJoined!: boolean
     @Prop({ required: false }) isRaffleNavPushed!: boolean
@@ -143,17 +142,18 @@ export default class RaffleJoinCard extends Vue {
         if (this.userModel.name !== '名無し') {
             this.isNameUpdated = true
         }
-        if (this.lastRaffle) {
-            if (this.lastRaffle.raffleStatus == RaffleStatus.DONE) {
-                this.islastRaffleDone = true
-            } else {
-                this.islastRaffleDone = false
-            }
-        }
+        // if (this.lastRaffle) {
+        //     if (this.lastRaffle.raffleStatus == RaffleStatus.DONE) {
+        //         this.islastRaffleDone = true
+        //     } else {
+        //         this.islastRaffleDone = false
+        //     }
+        // }
     }
 
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
+        this.lastRaffle.raffleStatus = RaffleStatus.EFFECTIVE_AND_FIXED
         this.$emit('joinGroup')
     }
 }

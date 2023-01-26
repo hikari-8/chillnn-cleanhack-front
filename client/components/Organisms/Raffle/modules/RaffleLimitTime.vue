@@ -3,36 +3,39 @@
         <div>
             <!-- 時間設定と、ボタンのコンテナ -->
             <div class="flex mt-8 gap-x-3">
+                <!-- セレクトボックス -->
                 <div
-                    class="weekday flex text-center items-center gap-x-2 justify-center flex-shrink-0"
+                    class="inline-flex p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3"
                 >
-                    <!-- 曜日 -->
-                    <div
-                        v-if="isWeekBlank"
-                        class="text-sm font-medium text-gray-900 w-18"
-                    >
-                        {{ week }}曜日の
-                    </div>
-                    <!-- セレクトボックス -->
                     <select
-                        id="time"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-2.5"
-                        v-model="raffleObjectModel.limitTime"
+                        name=""
+                        id=""
+                        class="px-2 outline-none appearance-none bg-transparent"
+                        v-model="raffleObjectModel.limitHour"
                     >
+                        <option disabled selected value="">時</option>
                         <option
-                            disabled
-                            selected
-                            class="text-gray-600"
-                            value=""
+                            v-for="selectedHour in hoursList"
+                            :value="selectedHour.value"
+                            :key="selectedHour.id"
                         >
-                            時間
+                            {{ selectedHour.key }}
                         </option>
+                    </select>
+                    <span class="">:</span>
+                    <select
+                        name=""
+                        id=""
+                        class="px-2 outline-none appearance-none bg-transparent"
+                        v-model="raffleObjectModel.limitMin"
+                    >
+                        <option disabled selected value="">分</option>
                         <option
-                            v-for="selectedTime in limitTimesList"
-                            :value="selectedTime.value"
-                            :key="selectedTime.id"
+                            v-for="selectedMin in minList"
+                            :value="selectedMin.value"
+                            :key="selectedMin.id"
                         >
-                            {{ selectedTime.key }}
+                            {{ selectedMin.key }}
                         </option>
                     </select>
                 </div>
@@ -41,7 +44,7 @@
                     class="flex items-center gap-x-3 justify-center flex-shrink-0"
                 >
                     <div class="text-sm font-medium text-gray-900 w-48">
-                        にくじの参加を締め切る
+                        分にくじの参加を締め切る
                     </div>
                 </div>
             </div>
@@ -78,72 +81,50 @@ export default class RaffleLimitTime extends Vue {
     public hh: string = ''
     public mm: string = ''
     public slackURL: string = ''
-    public limitWeekdaysList: { key: string; value: number }[] = [
-        { key: '日', value: 0 },
-        { key: '月', value: 1 },
-        { key: '火', value: 2 },
-        { key: '水', value: 3 },
-        { key: '木', value: 4 },
-        { key: '金', value: 5 },
-        { key: '土', value: 6 },
-    ]
-    public limitTimesList: { key: string; value: string }[] = [
-        // テスト用↓
-        { key: '09:40', value: '40 9' },
-        { key: '10:00', value: '0 10' },
-        { key: '10:30', value: '30 10' },
-        { key: '11:00', value: '0 11' },
-        { key: '11:30', value: '30 11' },
-        { key: '12:00', value: '0 12' },
-        { key: '12:30', value: '30 12' },
-        { key: '13:00', value: '0 13' },
-        { key: '13:30', value: '30 13' },
-        { key: '14:00', value: '0 14' },
-        { key: '14:30', value: '30 14' },
-        { key: '15:00', value: '0 15' },
-        { key: '15:30', value: '30 15' },
-        { key: '16:00', value: '0 16' },
-        { key: '16:30', value: '30 16' },
-        { key: '17:00', value: '0 17' },
-        { key: '17:15', value: '15 17' },
-        { key: '17:30', value: '30 17' },
-        { key: '18:00', value: '0 18' },
-        { key: '18:30', value: '30 18' },
-        { key: '19:00', value: '0 19' },
-        { key: '19:30', value: '30 19' },
-        { key: '20:00', value: '0 20' },
-        { key: '20:30', value: '30 20' },
-    ]
 
+    public hoursList: { key: string; value: number }[] = [
+        { key: '00', value: 0 }, // テスト
+        { key: '01', value: 1 }, // テスト
+        { key: '02', value: 2 }, // テスト
+        { key: '03', value: 3 }, // テスト
+        { key: '04', value: 4 }, // テスト
+        { key: '05', value: 5 }, // テスト
+        { key: '06', value: 6 }, // テスト
+        { key: '10', value: 10 },
+        { key: '11', value: 11 },
+        { key: '12', value: 12 },
+        { key: '13', value: 13 },
+        { key: '14', value: 14 },
+        { key: '15', value: 15 },
+        { key: '16', value: 16 },
+        { key: '17', value: 17 },
+        { key: '18', value: 18 },
+        { key: '19', value: 19 },
+        { key: '20', value: 20 },
+        { key: '21', value: 21 },
+        { key: '22', value: 22 },
+        { key: '23', value: 23 },
+    ]
+    public minList: {
+        key: string
+        value: number
+    }[] = [
+        // テスト用↓
+        { key: '00', value: 0 },
+        { key: '05', value: 5 },
+        { key: '10', value: 10 },
+        { key: '15', value: 15 },
+        { key: '20', value: 20 },
+        { key: '25', value: 25 },
+        { key: '30', value: 30 },
+        { key: '35', value: 35 },
+        { key: '40', value: 40 },
+        { key: '45', value: 45 },
+        { key: '50', value: 50 },
+        { key: '55', value: 55 },
+    ]
     public created() {
-        this.slackURL = this.raffleObjectModel.slackURL
-        const weekValue = this.raffleObjectModel.remindSlackWeek
-        switch (weekValue) {
-            case '0':
-                this.week = '日'
-                break
-            case '1':
-                this.week = '月'
-                break
-            case '2':
-                this.week = '火'
-                break
-            case '3':
-                this.week = '水'
-                break
-            case '4':
-                this.week = '木'
-                break
-            case '5':
-                this.week = '金'
-                break
-            case '6':
-                this.week = '土'
-                break
-            case '':
-                this.week = ''
-                break
-        }
+        this.slackURL = this.raffleObjectModel.channelID
         this.getMyGroupURL()
     }
 
@@ -160,65 +141,12 @@ export default class RaffleLimitTime extends Vue {
         this.myGroupURL = `https://dev-front.chillnn-training.chillnn-cleanhack.link/group/${myGroupID}`
     }
 
-    public cronToLng() {
-        //cronで保存されている値を、日本語に直してslackに送ります。
-        const weekValue = this.raffleObjectModel.remindSlackWeek
-        switch (weekValue) {
-            case '0':
-                this.ww = '日'
-                break
-            case '1':
-                this.ww = '月'
-                break
-            case '2':
-                this.ww = '火'
-                break
-            case '3':
-                this.ww = '水'
-                break
-            case '4':
-                this.ww = '木'
-                break
-            case '5':
-                this.ww = '金'
-                break
-            case '6':
-                this.ww = '土'
-                break
-            case '':
-                this.ww = ''
-                break
-        }
-        //後で、ここをlimittimeに変更する
-        const timeValue = this.raffleObjectModel.limitTime
-        this.hh = timeValue.substr(3, 5)
-        this.mm = timeValue.substr(0, 2)
-    }
-
     @AsyncLoadingAndErrorHandle()
     public async sendToSlack() {
         let params = new URLSearchParams()
         let message = {
             text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時 ${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
         }
-
-        //時間指定 (分、時、日、月、曜日)
-        const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
-        console.log('時間指定→', setTime)
-
-        const sendAtSchedule = schedule.scheduleJob(setTime, () => {
-            params.append('payload', JSON.stringify(message))
-            const res = axios
-                .post(this.slackURL, params)
-                .then((res: any) => {
-                    console.log(res)
-                })
-                .catch((err: any) => {
-                    console.log(err)
-                })
-        })
-        //アラート
-        alert(`通知がスケジュールされました`)
     }
 }
 </script>

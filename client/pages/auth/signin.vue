@@ -82,6 +82,15 @@ export default class SignInPage extends Vue {
         }
     }
 
+    @AsyncLoadingAndErrorHandle()
+    public async auhtSignInAndErrorNotification() {
+        await this.signIn().catch(() =>
+            window.alert(
+                '入力内容に不備があるか、アカウントを作成していない可能性があります。'
+            )
+        )
+    }
+
     public created() {
         const groupID = this.$route.query.groupID
         this.groupID = (typeof groupID === 'string' && groupID) || ''

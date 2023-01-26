@@ -1,10 +1,10 @@
 <template>
-    <div v-if="groupModel && userModel">
-        <div
-            class="name_input_container"
-            v-if="!userModel.groupID && groupModel"
-        >
-            <div class="label font-semibold mb-4">{{ label }}</div>
+    <div>
+        <div class="name_input_container" v-if="groupModel">
+            <div v-if="isGroupIDNull" class="label font-semibold mb-4">
+                グループ追加
+            </div>
+            <div v-else class="label font-semibold mb-4">グループ名</div>
             <div class="flex">
                 <div>
                     <!-- name -->
@@ -18,12 +18,20 @@
                 <div>
                     <div class="">
                         <!-- button -->
-                        <app-button @click="registerGroup">作成</app-button>
+                        <app-button v-if="isGroupIDNull" @click="registerGroup"
+                            >作成</app-button
+                        >
+                        <app-button v-else @click="registerGroup"
+                            >更新</app-button
+                        >
                     </div>
                 </div>
             </div>
-            <div class="mt-2 text-sm text-gray-500" v-if="description">
+            <div v-if="isGroupIDNull" class="mt-2 text-sm text-gray-500">
                 ＊くじを作成するには、グループ名を設定してグループを作成してください。
+            </div>
+            <div v-else class="mt-2 text-sm text-gray-500">
+                ＊くじを割り当てるメンバーが所属するグループの名前です。
             </div>
         </div>
     </div>
@@ -43,11 +51,10 @@ import AppButton from '@/components/Atom/Button/AppButton.vue'
     },
 })
 export default class AddGroup extends Vue {
-    @Prop({ required: true }) label!: string | number
-    //ユーザー名の説明をつけるかどうか(ここ、注意文言の赤文字に設定し直してもいいかも ex.)ユーザー名は必須です)
     @Prop({ required: false }) public description!: boolean
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) isGroupIDNull!: boolean
     public blancGroupModel: GroupModel | null = null
 
     @AsyncLoadingAndErrorHandle()
@@ -58,7 +65,10 @@ export default class AddGroup extends Vue {
             )
         } else {
             await this.groupModel.register()
-            this.$emit('registered')
+            await this.userModel.addGroupIDToUserModel(this.groupModel.groupID)
+            // await this.userModel.fetchGroupDataByGroupID()
+            // this.$emit('registered')
+            this.$emit('registerGroup')
         }
     }
 }
