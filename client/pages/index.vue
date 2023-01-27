@@ -174,8 +174,6 @@ export default class Top extends Vue {
         const blancUserModel = await this.userModel?.fetchUserDataByUserID(
             this.userModel.userID
         )
-        // ここで、groupIDがfetchされてきてない(serverとのラグがあるかも)
-        // console.log(blancUserModel, 'どうかな？blanc')
         if (!blancUserModel) {
             return
         } else {

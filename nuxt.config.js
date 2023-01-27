@@ -50,7 +50,7 @@ export default {
             {
                 hid: 'og:image',
                 property: 'og:image',
-                content: '/thumbnail.jpg',
+                content: '/icon.png',
             },
             {
                 hid: 'twitter:card',
