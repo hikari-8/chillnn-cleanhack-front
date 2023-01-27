@@ -16,7 +16,7 @@ export async function callApi<U, T>(query: any, variables: T): Promise<U> {
             graphqlOperation(query, variables)
         )) as GraphQLResult<U>
         res = response.data!
-        console.log('callAPI内のresponse', response)
+        // console.log('callAPI内のresponse', response)
         // await statusUpdate(options) // アプリケーションステータスの更新
     } catch (err) {
         console.error(err)
