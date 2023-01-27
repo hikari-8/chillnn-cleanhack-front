@@ -247,10 +247,6 @@ export default class MakeRaffle extends Vue {
                     //slackへの結果をアップデート
                     await this.makeResultMessage()
                     this.lastRaffleItem!.resultMessage = this.message
-                    console.log(
-                        this.lastRaffleItem?.resultMessage,
-                        '入っている？'
-                    )
                     //updateする
                     await this.lastRaffleItem!.register()
                     this.$emit('registered')
@@ -266,9 +262,7 @@ export default class MakeRaffle extends Vue {
                 await this.doRaffle()
                 //slackへの結果をアップデート
                 await this.makeResultMessage()
-
                 this.lastRaffleItem!.resultMessage = this.message
-                console.log(this.lastRaffleItem?.resultMessage, '入っている？')
                 //statusを変更する
                 this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
                 //updateする
@@ -348,7 +342,6 @@ export default class MakeRaffle extends Vue {
                 }
                 this.userNameArray = ''
             }
-            console.log(this.resultMessage, 'resultMessageです')
         }
     }
 
@@ -382,13 +375,11 @@ export default class MakeRaffle extends Vue {
             if (nowmm == parseInt(this.mm)) {
                 this.isEarlierThanLimitTime = false
             } else if (nowmm < parseInt(this.mm)) {
-                console.log(this.mm, nowmm)
                 this.isEarlierThanLimitTime = true
             } else {
                 this.isEarlierThanLimitTime = false
             }
         } else if (nowhh < parseInt(this.hh)) {
-            console.log(this.hh, nowhh)
             this.isEarlierThanLimitTime = true
         } else {
             this.isEarlierThanLimitTime = false

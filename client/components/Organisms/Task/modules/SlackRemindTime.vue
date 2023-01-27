@@ -207,7 +207,6 @@ export default class SlackRemindTime extends Vue {
         const nowUNIXMM = now.getTime()
         //タイムスタンプを取得
         const nowUNIX = Math.floor(nowUNIXMM / 1000)
-        console.log(nowUNIX, '現在のUNIX時間です')
 
         // 時間を設定
         const specificYear = now.getFullYear()
@@ -215,12 +214,6 @@ export default class SlackRemindTime extends Vue {
         const specificDate = now.getDate()
         const groupRemindHour = this.taskMasterObjectModel.remindSlackHour
         const groupRemindMin = this.taskMasterObjectModel.remindSlackMin
-        console.log(
-            'groupRemindHour:',
-            groupRemindHour,
-            'groupRemindMin',
-            groupRemindMin
-        )
 
         //UNIXを作成: groupへのリマインド通知 remindGroupTime
         let remindGroupDate = new Date(
@@ -230,11 +223,8 @@ export default class SlackRemindTime extends Vue {
             groupRemindHour,
             groupRemindMin
         )
-        console.log('remindGroupDateです:', remindGroupDate)
         let remindGroupMM = remindGroupDate.getTime()
-        console.log('remindGroupMMです:', remindGroupMM)
         this.remindGroupTime = Math.floor(remindGroupMM / 1000)
-        console.log('remind時間を生成したもの:', this.remindGroupTime)
     }
 
     @AsyncLoadingAndErrorHandle()

@@ -47,21 +47,6 @@ export default class AppGroupEdit extends Vue {
     @Prop({ required: true }) isGroupIDNull!: boolean
     public blancGroupModel: GroupModel | null = null
 
-    public async created() {
-        console.log(this.userModel)
-        console.log('groupIDisNull?', this.isGroupIDNull)
-        // console.log('userModel', this.userModel)
-        // console.log('groupModel', this.groupModel)
-        //動的に登録後、表示を分岐させるにはここの分岐を変更する必要がありそう
-        // if (!this.userModel.groupID) {
-        //     this.isGroupIDNull = true
-        //     //ここで、そのままgorupModelに突っ込んだら怒られる(Avoid mutating prop)
-        //     this.blancGroupModel = this.userModel.createNewGroup()
-        // } else {
-        //     this.isGroupIDNull = false
-        // }
-    }
-
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
         this.$emit('registerGroup')

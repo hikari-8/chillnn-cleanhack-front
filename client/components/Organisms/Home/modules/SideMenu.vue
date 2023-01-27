@@ -211,7 +211,6 @@ export default class SideMenu extends Vue {
         if (this.userModel) {
             const myUserID = this.userModel.userID
             this.userPageLink = 'user' + myUserID
-            console.log(this.userPageLink)
             return this.userPageLink
         }
     }

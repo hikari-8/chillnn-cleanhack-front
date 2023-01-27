@@ -279,7 +279,6 @@ export default class AppHome extends Vue {
 
     public created() {
         this.isAdminFunc()
-        console.log(this.isAdmin, 'adminですか？')
     }
 
     public isAdminFunc() {

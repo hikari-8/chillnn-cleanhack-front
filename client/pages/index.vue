@@ -153,7 +153,6 @@ export default class Top extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async registerGroup() {
-        console.log('_groupの方を通っています もしかしてこっち？')
         this.isGroupIDNull = false
         this.userModel = await userInteractor.fetchMyUserModel()
         if (this.userModel.groupID) {
