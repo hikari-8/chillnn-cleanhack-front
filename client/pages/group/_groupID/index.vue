@@ -169,6 +169,7 @@ export default class Top extends Vue {
         // this.$emit('registerGroup')
     }
 
+    // userとgroupのアップデート
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         const blancUserModel = await this.userModel?.fetchUserDataByUserID(
