@@ -1,8 +1,6 @@
 <template>
     <div class="slack_rimind_edit_container h-full mb-8 mt-20">
         <!-- くじが作成できない場合 -->
-        <!-- v-if=""は""の中身がtrueの時に表示される -->
-        <!-- <div v-if="isLastRaffleActive || !isLastRaffleNull"> -->
         <div v-if="isLastRaffleActive">
             <div class="font-semibold text-2xl">くじの実行 🎯</div>
 
@@ -112,7 +110,6 @@ import {
     TaskMasterObjectModel,
     GroupModel,
     RaffleStatus,
-    RaffleMastModel,
     RaffleMast,
 } from 'chillnn-cleanhack-abr'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
@@ -125,8 +122,6 @@ import AppButton from '@/components/Atom/Button/AppButton.vue'
 import AppTitle from '@/components/Atom/Text/AppTitle.vue'
 import AppText from '@/components/Atom/Text/AppText.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
-import axios from 'axios'
-const schedule = require('node-schedule')
 
 @Component({
     components: {
@@ -144,13 +139,9 @@ export default class MakeRaffle extends Vue {
     @Prop({ required: true }) groupModel!: GroupModel
     public blancRaffleObj: RaffleObjectModel | null = null
     public raffles: RaffleObjectModel[] | null = null
-    public myGroupURL: string = ''
-    public ww: string = ''
     public hh: string = ''
     public mm: string = ''
-    public week: string = ''
     public lastRaffleItem: RaffleObjectModel | null = null
-    public blancRaffleItem: RaffleObjectModel | null = null
     public isLastRaffleActive: boolean = false
     public isLastRaffleNull: boolean = false
     public memberList: string[] = []
@@ -159,20 +150,12 @@ export default class MakeRaffle extends Vue {
     public taskList: string[] = []
     public resultMessage: string = ''
     public blancUserModel: UserModel | null = null
-    public tbdUserModel: UserModel | null = null
     public userNameArray: string = ''
     public headCountSum: number = 0
     public isEarlierThanLimitTime: boolean = false
-    public slackURL: string = ''
-    public blancList: string[] = []
-    public userModelList: UserModel[] = []
-    public optionUserModelList: UserModel[] = []
-    public ramdomOptionUserModelList: UserModel[] = []
     public deleteUserArray: string[] = []
     public optionAvailableUsers: string[] = []
     public ramdomOptionUserList: string[] = []
-    public deleteTaskArray: RaffleMast[] = []
-    public afterPushRaffles: RaffleMast[] = []
     public noOptionRaffleArray: RaffleMast[] = []
     public updateLastRaffleItem: RaffleObjectModel | null = null
     public remindAdminTime: number = 0
@@ -193,24 +176,53 @@ export default class MakeRaffle extends Vue {
             this.isLastRaffleNull = false
             this.getSelectedTime()
         }
-        console.log(
-            this.isLastRaffleActive,
-            'isLastRaffleActive',
-            this.isLastRaffleNull,
-            'isLastRaffleNull'
-        )
         // userを取得するために自分のuserModelをfetchしてきます
         this.blancUserModel = await userInteractor.fetchMyUserModel()
-        this.tbdUserModel = this.blancUserModel
         this.getTime()
-        console.log(this.raffleObjectModel, 'raffleObjectModel')
-        // テスト
-        // const test = await this.lastRaffleItem?.fetchUserModelToGetBlanc()
-        // console.log(test, 'testです')
     }
 
+    // プロパティの更新用
     public async registered() {
         this.$emit('registered')
+    }
+
+    // くじを作成する
+    @AsyncLoadingAndErrorHandle()
+    public async createRaffle() {
+        //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
+        if (!this.raffleObjectModel.tasks.length) {
+            alert('掃除場所を一つ以上登録してください!')
+        } else if (
+            !this.raffleObjectModel.limitHour ||
+            !this.raffleObjectModel.limitMin
+        ) {
+            alert('制限時間を登録してください!')
+        } else if (
+            !this.raffleObjectModel.remindSlackHour ||
+            !this.raffleObjectModel.remindSlackMin
+        ) {
+            alert('くじの設定から、くじ引きリマインド時間を登録してください!')
+        } else if (!this.raffleObjectModel.channelID) {
+            alert(
+                'くじの設定から、送信するslackのチャンネルIDを登録してください!'
+            )
+        } else if (
+            this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
+            !this.lastRaffleItem
+        ) {
+            this.timeToUnix()
+            this.raffleObjectModel.limitTimeUnix = this.remindAdminTime
+            await this.raffleObjectModel.register()
+            this.getSelectedTime()
+            //アラート
+            alert(`全員へのリマインドがスケジュールされました`)
+            alert(`管理者へのリマインドがスケジュールされました`)
+            this.$emit('registerRaffle')
+            this.isLastRaffleNull = false
+            this.isLastRaffleActive = true
+        } else {
+            alert('実行中のくじがあります。')
+        }
     }
 
     //くじを実行する
@@ -273,159 +285,6 @@ export default class MakeRaffle extends Vue {
         }
     }
 
-    //くじロジック
-    public async doRaffle() {
-        // まずは、optionを持つくじから割り当てる
-        this.updateLastRaffleItem = this.lastRaffleItem
-        for (const raffle of this.updateLastRaffleItem!.tasks) {
-            //for文で回している時にその大元をいじったら回す数が一つ減るから、消した分回せなくなるっぽい
-            //よって、noOptionArray配列に回して、for文で回し終わった後に消す
-            if (!raffle.optionName && raffle.optionName === '') {
-                // optionがなければ、noOptionArray配列へ
-                this.noOptionRaffleArray.push(raffle)
-            } else {
-                // option付きのraffleからuserの配列を取り出してランダムに並べる
-                // ramdomOptionUserList
-                this.optionAvailableUsers = raffle.optionValidUsers
-                while (this.optionAvailableUsers.length > 0) {
-                    //ランダムな数字randumNumを求める
-                    const arrayLength = this.optionAvailableUsers.length
-                    const ramdumNum = Math.floor(Math.random() * arrayLength)
-                    //残っている数字から、ramdumNumの数字を削除、別の場所にその数字を書き出す
-                    this.ramdomOptionUserList.push(
-                        this.optionAvailableUsers[ramdumNum]
-                    )
-                    this.optionAvailableUsers.splice(ramdumNum, 1)
-                }
-
-                // 要素の1番目からraffleに割り当てて、削除配列へ、またblanc用パラメーターは初期化する
-                if (raffle.headCount > 0) {
-                    //headCountの数だけ回す
-                    for (var i = 0; i < raffle.headCount; i++) {
-                        //最初のメンバーを取ってきて、追加したら配列から削除する
-                        const firstMember = this.ramdomOptionUserList[0]
-                        if (!firstMember) {
-                            console.log('firstMember is empty')
-                            return null
-                        } else {
-                            raffle.joinUserIDArray?.push(firstMember)
-                        }
-                        // firstMember削除
-                        this.deleteUserArray.push(firstMember)
-                        this.ramdomOptionUserList.shift()
-                    }
-                }
-                //初期化
-                this.optionAvailableUsers = []
-                this.ramdomOptionUserList = []
-            }
-        }
-
-        // updateLastRaffleItem.tasksからnoOptionRaffleArrayを一旦削除して、後でpushする
-        for (const noOptionRaffle of this.noOptionRaffleArray) {
-            let index = this.updateLastRaffleItem!.tasks.indexOf(noOptionRaffle)
-            this.updateLastRaffleItem?.tasks.splice(index, 1)
-            console.log(this.updateLastRaffleItem, '削除した後のlastItemコピペ')
-        }
-        console.log(
-            this.updateLastRaffleItem,
-            'noOptionraffleを削除した後のlastItemコピペ'
-        )
-
-        // 削除ユーザーリスト：this.deleteUserArray
-        // console.log('削除するthis.deleteUserArray', this.deleteUserArray)
-        // 削除optionリスト: deleteTaskArray
-        // console.log('deleteTaskArray', this.deleteTaskArray)
-
-        // //memberの配列を作成
-        for (const member of this.lastRaffleItem!.activeMembers) {
-            const memberID = member.userID
-            this.memberList.push(memberID)
-        }
-        // console.log('削除前のthis.memberList', this.memberList)
-        // 上で作ったdelete用の配列を削除する
-        for (const deleteMember of this.deleteUserArray) {
-            let index = this.memberList.indexOf(deleteMember)
-            this.memberList.splice(index, 1)
-        }
-        // console.log('削除後のthis.memberList', this.memberList)
-        //memberの配列をシャッフルする
-        while (this.memberList.length > 0) {
-            //ランダムな数字rumdumNumを求める
-            const arrayLength = this.memberList.length
-            const randumNum = Math.floor(Math.random() * arrayLength)
-            //残っている数字から、ramdumNumの数字を削除、別の場所にその数字を書き出す
-            this.ramdumMemberList.push(this.memberList[randumNum])
-            this.memberList.splice(randumNum, 1)
-        }
-        // taskの配列の中でthis.ramdumMemberListをheadCount分回しながら、idを持たせていく
-        // lastRaffleItemからoptionありの配列deleteTaskArrayのtaskを削除する
-        //noOptionArray配列の中のtaskで作成する
-        // console.log(this.noOptionRaffleArray, 'optionがないraffleの配列です')
-        for (const task of this.noOptionRaffleArray!) {
-            this.ramdumMemberListCopy = this.ramdumMemberList
-            if (task.headCount > 0) {
-                // joinUserIDArrayに値が何故か入っている時があるので、削除
-                task.joinUserIDArray = []
-                //headCountの数だけ回す
-                for (var i = 0; i < task.headCount; i++) {
-                    //最初のメンバーを取ってきて、追加したら配列から削除する
-                    const firstMember = this.ramdumMemberListCopy[0]
-                    task.joinUserIDArray?.push(firstMember)
-                    // console.log(firstMember, 'ramdumMemberListの最初のメンバー')
-                    this.ramdumMemberListCopy.shift()
-                    // console.log(this.ramdumMemberListCopy, '削除後ListCopyです')
-                }
-                // console.log(task.joinUserIDArray, 'push後')
-            }
-        }
-        //this.updateLastRaffleItem.tasksに最初に削除したraffleをpushして、元のtasksに戻す
-        for (const raffle of this.noOptionRaffleArray) {
-            this.updateLastRaffleItem!.tasks.push(raffle)
-        }
-        if (this.updateLastRaffleItem) {
-            this.lastRaffleItem = this.updateLastRaffleItem
-        }
-    }
-
-    @AsyncLoadingAndErrorHandle()
-    public async createRaffle() {
-        //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
-        if (!this.raffleObjectModel.tasks.length) {
-            alert('掃除場所を一つ以上登録してください!')
-        } else if (
-            !this.raffleObjectModel.limitHour ||
-            !this.raffleObjectModel.limitMin
-        ) {
-            alert('制限時間を登録してください!')
-        } else if (
-            !this.raffleObjectModel.remindSlackHour ||
-            !this.raffleObjectModel.remindSlackMin
-        ) {
-            alert('くじの設定から、くじ引きリマインド時間を登録してください!')
-        } else if (!this.raffleObjectModel.channelID) {
-            alert(
-                'くじの設定から、送信するslackのチャンネルIDを登録してください!'
-            )
-        } else if (
-            this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
-            !this.lastRaffleItem
-        ) {
-            this.timeToUnix()
-            this.raffleObjectModel.limitTimeUnix = this.remindAdminTime
-            await this.raffleObjectModel.register()
-            this.getSelectedTime()
-            //アラート
-            alert(`全員へのリマインドがスケジュールされました`)
-            alert(`管理者へのリマインドがスケジュールされました`)
-            this.$emit('registerRaffle')
-            this.isLastRaffleNull = false
-            this.isLastRaffleActive = true
-        } else {
-            alert('実行中のくじがあります。')
-        }
-    }
-
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
         //localstrageに保存した予約した通知を削除する
@@ -444,16 +303,6 @@ export default class MakeRaffle extends Vue {
         const groupRemindMin = this.lastRaffleItem?.remindSlackMin
         const adminRimindHour = this.lastRaffleItem?.limitHour
         const adminRimindMin = this.lastRaffleItem?.limitMin
-        console.log(
-            'groupRemindHour:',
-            groupRemindHour,
-            'groupRemindMin',
-            groupRemindMin,
-            'adminRimindHour',
-            adminRimindHour,
-            'adminRimindMin',
-            adminRimindMin
-        )
 
         //UNIXを作成: groupへのリマインド通知 remindGroupTime
         let remindGroupDate = new Date(
@@ -463,21 +312,21 @@ export default class MakeRaffle extends Vue {
             groupRemindHour,
             groupRemindMin
         )
-        console.log('remindGroupDateです:', remindGroupDate)
         let remindGroupMM = remindGroupDate.getTime()
-        console.log('remindGroupMMです:', remindGroupMM)
         let remindGroupTime = Math.floor(remindGroupMM / 1000)
-        console.log('remind時間を生成したもの:', remindGroupTime)
     }
 
     public async setUser(userID: string) {
         this.setUserModel = await this.blancUserModel!.fetchUserDataByUserID(
             userID
         )
-        console.log(this.setUserModel, 'userModel')
     }
 
-    //結果へのslackの通知は即時なのでsfrontに残す
+    // ============================================
+    // slackへの結果通知
+    // ============================================
+
+    //くじの結果部分
     @AsyncLoadingAndErrorHandle()
     public async makeMessage() {
         if (this.lastRaffleItem) {
@@ -503,84 +352,16 @@ export default class MakeRaffle extends Vue {
         }
     }
 
-    ///////////////////////////////////////////////////////////////////
-    //slackに通知を送るメソッド
-    ///////////////////////////////////////////////////////////////////
-
-    /////////////////////リマインドを全員に送信
-    // @AsyncLoadingAndErrorHandle()
-    // public async sendRemindToSlack() {
-    //     this.cronToLng()
-    //     await this.sendToSlack()
-    // }
-
-    // @AsyncLoadingAndErrorHandle()
-    // public async sendToSlack() {
-    //     let params = new URLSearchParams()
-    //     let message = {
-    //         text: `${this.ww}曜日は終業後お掃除があります！🧼 🧹\n参加できる方は、${this.hh} 時 ${this.mm} 分までに下記のリンクからくじに参加してください！\n${this.myGroupURL}`,
-    //     }
-
-    //     //時間指定 (分、時、日、月、曜日)
-    //     const setTime = `${this.raffleObjectModel.remindSlackTime} * * ${this.raffleObjectModel.remindSlackWeek}`
-    //     console.log('時間指定→', setTime)
-
-    //     const sendGroupRemind = schedule.scheduleJob(setTime, () => {
-    //         params.append('payload', JSON.stringify(message))
-    //         const res = axios
-    //             .post(this.slackURL, params)
-    //             .then((res: any) => {
-    //                 console.log(res)
-    //             })
-    //             .catch((err: any) => {
-    //                 console.log(err)
-    //             })
-    //     })
-    //     //ローカルストレージに値を保存する
-    //     localStorage.setItem('sendGroupRemind', sendGroupRemind)
-    //     //アラート
-    //     alert(`全員へのリマインドがスケジュールされました`)
-    // }
-
-    ////////////////////制限時間になったら、管理者にリマインドを送信
-    // @AsyncLoadingAndErrorHandle()
-    // public async sendToSlackRemindRunRaffle() {
-    //     let params = new URLSearchParams()
-    //     let message = {
-    //         text: `${this.hh} 時${this.mm} 分になりました！\n管理者の方は下記のリンク、またはアプリから掃除場所の人数を調整し、くじを実行してください！\n${this.myGroupURL}`,
-    //     }
-
-    //     //時間指定 (分、時、日、月、曜日)
-    //     const setTime = `${this.raffleObjectModel.limitTime} * * ${this.raffleObjectModel.remindSlackWeek}`
-    //     console.log('時間指定→', setTime)
-
-    //     const sendAdminRemind = schedule.scheduleJob(setTime, () => {
-    //         params.append('payload', JSON.stringify(message))
-    //         const res = axios
-    //             .post(this.slackURL, params)
-    //             .then((res: any) => {
-    //                 console.log(res)
-    //             })
-    //             .catch((err: any) => {
-    //                 console.log(err)
-    //             })
-    //     })
-    //     //ローカルストレージに値を保存する
-    //     // localStorage.setItem('sendAdminRemind', sendAdminRemind)
-    //     //アラート
-    //     alert(`管理者へのリマインドがスケジュールされました`)
-    // }
-
-    ///////////////////////////結果のメッセージを作成する
+    //結果のメッセージ(全体)
     @AsyncLoadingAndErrorHandle()
     public async makeResultMessage() {
         await this.makeMessage()
         this.message = `本日のお掃除場所担当が決定しました！🎉\n参加できる方は各自、清掃をよろしくお願いします！🛀 🧼 \n\n${this.resultMessage}`
     }
 
-    ///////////////////////////////////////////////////////////////////
-    //単純な計算
-    ///////////////////////////////////////////////////////////////////
+    // ============================================
+    // 単純な計算
+    // ============================================
 
     //人数を計算するメソッド
     public headCountSumFunc() {
@@ -637,7 +418,6 @@ export default class MakeRaffle extends Vue {
         const nowUNIXMM = now.getTime()
         //タイムスタンプを取得
         const nowUNIX = Math.floor(nowUNIXMM / 1000)
-        console.log(nowUNIX, '現在のUNIX時間です')
 
         // 時間を設定
         const specificYear = now.getFullYear()
@@ -645,12 +425,6 @@ export default class MakeRaffle extends Vue {
         const specificDate = now.getDate()
         const adminRimindHour = this.raffleObjectModel.limitHour
         const adminRimindMin = this.raffleObjectModel.limitMin
-        console.log(
-            'adminRimindHour',
-            adminRimindHour,
-            'adminRimindMin',
-            adminRimindMin
-        )
 
         //UNIXを作成: Adminへのリマインド通知 remindAdminTime
         let remindAdminDate = new Date(
@@ -662,7 +436,103 @@ export default class MakeRaffle extends Vue {
         )
         let remindAdminMM = remindAdminDate.getTime()
         this.remindAdminTime = Math.floor(remindAdminMM / 1000)
-        console.log('Adminへの通知時間を生成したもの:', this.remindAdminTime)
+    }
+
+    //くじロジック
+    public async doRaffle() {
+        // optionを持つくじから割り当てる
+        this.updateLastRaffleItem = this.lastRaffleItem
+        for (const raffle of this.updateLastRaffleItem!.tasks) {
+            //for文で回している時にその大元をいじったら回す数が一つ減るから、消した分回せなくなるっぽい
+            //よって、noOptionArray配列に回して、for文で回し終わった後に消す
+            if (!raffle.optionName && raffle.optionName === '') {
+                // optionがなければ、noOptionArray配列へ
+                this.noOptionRaffleArray.push(raffle)
+            } else {
+                // option付きのraffleからuserの配列を取り出してランダムに並べる
+                // ramdomOptionUserList
+                this.optionAvailableUsers = raffle.optionValidUsers
+                while (this.optionAvailableUsers.length > 0) {
+                    //ランダムな数字randumNumを求める
+                    const arrayLength = this.optionAvailableUsers.length
+                    const ramdumNum = Math.floor(Math.random() * arrayLength)
+                    //残っている数字から、ramdumNumの数字を削除、別の場所にその数字を書き出す
+                    this.ramdomOptionUserList.push(
+                        this.optionAvailableUsers[ramdumNum]
+                    )
+                    this.optionAvailableUsers.splice(ramdumNum, 1)
+                }
+
+                // 要素の1番目からraffleに割り当てて、削除配列へ、またblanc用パラメーターは初期化する
+                if (raffle.headCount > 0) {
+                    //headCountの数だけ回す
+                    for (var i = 0; i < raffle.headCount; i++) {
+                        //最初のメンバーを取ってきて、追加したら配列から削除する
+                        const firstMember = this.ramdomOptionUserList[0]
+                        if (!firstMember) {
+                            console.log('firstMember is empty')
+                            return null
+                        } else {
+                            raffle.joinUserIDArray?.push(firstMember)
+                        }
+                        // firstMember削除
+                        this.deleteUserArray.push(firstMember)
+                        this.ramdomOptionUserList.shift()
+                    }
+                }
+                //初期化
+                this.optionAvailableUsers = []
+                this.ramdomOptionUserList = []
+            }
+        }
+
+        // updateLastRaffleItem.tasksからnoOptionRaffleArrayを一旦削除して、後でpushする
+        for (const noOptionRaffle of this.noOptionRaffleArray) {
+            let index = this.updateLastRaffleItem!.tasks.indexOf(noOptionRaffle)
+            this.updateLastRaffleItem?.tasks.splice(index, 1)
+        }
+        // //memberの配列を作成
+        for (const member of this.lastRaffleItem!.activeMembers) {
+            const memberID = member.userID
+            this.memberList.push(memberID)
+        }
+        // 上で作ったdelete用の配列を削除する
+        for (const deleteMember of this.deleteUserArray) {
+            let index = this.memberList.indexOf(deleteMember)
+            this.memberList.splice(index, 1)
+        }
+        //memberの配列をシャッフルする
+        while (this.memberList.length > 0) {
+            //ランダムな数字rumdumNumを求める
+            const arrayLength = this.memberList.length
+            const randumNum = Math.floor(Math.random() * arrayLength)
+            //残っている数字から、ramdumNumの数字を削除、別の場所にその数字を書き出す
+            this.ramdumMemberList.push(this.memberList[randumNum])
+            this.memberList.splice(randumNum, 1)
+        }
+        // taskの配列の中でthis.ramdumMemberListをheadCount分回しながら、idを持たせていく
+        //noOptionArray配列の中のtaskで作成する
+        for (const task of this.noOptionRaffleArray!) {
+            this.ramdumMemberListCopy = this.ramdumMemberList
+            if (task.headCount > 0) {
+                // joinUserIDArrayに値が何故か入っている時があるので、削除
+                task.joinUserIDArray = []
+                //headCountの数だけ回す
+                for (var i = 0; i < task.headCount; i++) {
+                    //最初のメンバーを取ってきて、追加したら配列から削除する
+                    const firstMember = this.ramdumMemberListCopy[0]
+                    task.joinUserIDArray?.push(firstMember)
+                    this.ramdumMemberListCopy.shift()
+                }
+            }
+        }
+        //this.updateLastRaffleItem.tasksに最初に削除したraffleをpushして、元のtasksに戻す
+        for (const raffle of this.noOptionRaffleArray) {
+            this.updateLastRaffleItem!.tasks.push(raffle)
+        }
+        if (this.updateLastRaffleItem) {
+            this.lastRaffleItem = this.updateLastRaffleItem
+        }
     }
 }
 </script>
