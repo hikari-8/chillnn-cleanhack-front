@@ -158,7 +158,7 @@ export default class MakeRaffle extends Vue {
     public ramdumMemberListCopy: string[] = []
     public taskList: string[] = []
     public resultMessage: string = ''
-    public blackUserModel: UserModel | null = null
+    public blancUserModel: UserModel | null = null
     public tbdUserModel: UserModel | null = null
     public userNameArray: string = ''
     public headCountSum: number = 0
@@ -176,6 +176,8 @@ export default class MakeRaffle extends Vue {
     public noOptionRaffleArray: RaffleMast[] = []
     public updateLastRaffleItem: RaffleObjectModel | null = null
     public remindAdminTime: number = 0
+    public message: string = ''
+    public setUserModel: UserModel | null = null
 
     //created
     @AsyncLoadingAndErrorHandle()
@@ -198,10 +200,13 @@ export default class MakeRaffle extends Vue {
             'isLastRaffleNull'
         )
         // userを取得するために自分のuserModelをfetchしてきます
-        this.blackUserModel = await userInteractor.fetchMyUserModel()
-        this.tbdUserModel = this.blackUserModel
+        this.blancUserModel = await userInteractor.fetchMyUserModel()
+        this.tbdUserModel = this.blancUserModel
         this.getTime()
         console.log(this.raffleObjectModel, 'raffleObjectModel')
+        // テスト
+        // const test = await this.lastRaffleItem?.fetchUserModelToGetBlanc()
+        // console.log(test, 'testです')
     }
 
     public async registered() {
@@ -223,12 +228,20 @@ export default class MakeRaffle extends Vue {
                     '設定した締切り時間よりも早い時刻ですが、本当にくじを実行しますか？'
                 )
                 if (result) {
-                    this.doRaffle()
+                    await this.doRaffle()
+                    //statusを変更する
+                    this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+
+                    //slackへの結果をアップデート
+                    await this.makeResultMessage()
+                    this.lastRaffleItem!.resultMessage = this.message
+                    console.log(
+                        this.lastRaffleItem?.resultMessage,
+                        '入っている？'
+                    )
                     //updateする
                     await this.lastRaffleItem!.register()
                     this.$emit('registered')
-                    //slackに結果を送る
-                    await this.sendToSlackResult()
                     //viewの変更
                     if (
                         this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE
@@ -236,16 +249,19 @@ export default class MakeRaffle extends Vue {
                         this.isLastRaffleActive = false
                         this.isLastRaffleNull = false
                     }
-                    //前回localstrageに保存した予約した通知を削除する
-                    // this.deleteNotification()
                 } else return
             } else {
-                this.doRaffle()
+                await this.doRaffle()
+                //slackへの結果をアップデート
+                await this.makeResultMessage()
+
+                this.lastRaffleItem!.resultMessage = this.message
+                console.log(this.lastRaffleItem?.resultMessage, '入っている？')
+                //statusを変更する
+                this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
                 //updateする
                 await this.lastRaffleItem!.register()
                 this.$emit('registered')
-                //slackに結果を送る
-                await this.sendToSlackResult()
                 //viewの変更
                 if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
                     this.isLastRaffleActive = false
@@ -288,7 +304,12 @@ export default class MakeRaffle extends Vue {
                     for (var i = 0; i < raffle.headCount; i++) {
                         //最初のメンバーを取ってきて、追加したら配列から削除する
                         const firstMember = this.ramdomOptionUserList[0]
-                        raffle.joinUserIDArray?.push(firstMember)
+                        if (!firstMember) {
+                            console.log('firstMember is empty')
+                            return null
+                        } else {
+                            raffle.joinUserIDArray?.push(firstMember)
+                        }
                         // firstMember削除
                         this.deleteUserArray.push(firstMember)
                         this.ramdomOptionUserList.shift()
@@ -365,8 +386,6 @@ export default class MakeRaffle extends Vue {
         if (this.updateLastRaffleItem) {
             this.lastRaffleItem = this.updateLastRaffleItem
         }
-        //statusを変更する
-        this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
     }
 
     @AsyncLoadingAndErrorHandle()
@@ -380,8 +399,8 @@ export default class MakeRaffle extends Vue {
         ) {
             alert('制限時間を登録してください!')
         } else if (
-            this.raffleObjectModel.remindSlackHour === 0 ||
-            this.raffleObjectModel.remindSlackMin === 0
+            !this.raffleObjectModel.remindSlackHour ||
+            !this.raffleObjectModel.remindSlackMin
         ) {
             alert('くじの設定から、くじ引きリマインド時間を登録してください!')
         } else if (!this.raffleObjectModel.channelID) {
@@ -451,6 +470,13 @@ export default class MakeRaffle extends Vue {
         console.log('remind時間を生成したもの:', remindGroupTime)
     }
 
+    public async setUser(userID: string) {
+        this.setUserModel = await this.blancUserModel!.fetchUserDataByUserID(
+            userID
+        )
+        console.log(this.setUserModel, 'userModel')
+    }
+
     //結果へのslackの通知は即時なのでsfrontに残す
     @AsyncLoadingAndErrorHandle()
     public async makeMessage() {
@@ -458,12 +484,13 @@ export default class MakeRaffle extends Vue {
             for (const task of this.lastRaffleItem!.tasks) {
                 if (task.headCount > 0) {
                     //taskName: userIDからfetchした名前
-                    for (const userID of task.joinUserIDArray) {
-                        const userModel =
-                            await this.blackUserModel!.fetchUserDataByUserID(
+                    for await (const userID of task.joinUserIDArray) {
+                        this.setUserModel =
+                            await this.blancUserModel!.fetchUserDataByUserID(
                                 userID
                             )
-                        const plusHonolific = userModel!.name + 'さん,　'
+                        const plusHonolific =
+                            this.setUserModel?.name + 'さん,　'
                         this.userNameArray += plusHonolific
                     }
 
@@ -544,24 +571,11 @@ export default class MakeRaffle extends Vue {
     //     alert(`管理者へのリマインドがスケジュールされました`)
     // }
 
-    ///////////////////////////結果を送信//残す
+    ///////////////////////////結果のメッセージを作成する
     @AsyncLoadingAndErrorHandle()
-    public async sendToSlackResult() {
-        let params = new URLSearchParams()
+    public async makeResultMessage() {
         await this.makeMessage()
-        let message = {
-            text: `本日のお掃除場所担当が決定しました！🎉\n参加できる方は各自、清掃をよろしくお願いします！🛀 🧼 \n\n${this.resultMessage}`,
-        }
-
-        params.append('payload', JSON.stringify(message))
-        const res = axios
-            .post(this.slackURL, params)
-            .then((res: any) => {
-                console.log(res)
-            })
-            .catch((err: any) => {
-                console.log(err)
-            })
+        this.message = `本日のお掃除場所担当が決定しました！🎉\n参加できる方は各自、清掃をよろしくお願いします！🛀 🧼 \n\n${this.resultMessage}`
     }
 
     ///////////////////////////////////////////////////////////////////

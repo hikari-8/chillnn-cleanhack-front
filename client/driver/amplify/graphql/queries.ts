@@ -52,6 +52,7 @@ export const fetchLastRaffleByGroupID = /* GraphQL */ `
       remindSlackHour
       remindSlackMin
       remindTimeUnix
+      resultMessage
       tasks {
         createdAt
         deletedAt
@@ -107,6 +108,7 @@ export const fetchRaffleObject = /* GraphQL */ `
       remindSlackHour
       remindSlackMin
       remindTimeUnix
+      resultMessage
       tasks {
         createdAt
         deletedAt
@@ -146,6 +148,7 @@ export const fetchRafflesByGroupID = /* GraphQL */ `
       remindSlackHour
       remindSlackMin
       remindTimeUnix
+      resultMessage
       tasks {
         createdAt
         deletedAt

@@ -36,6 +36,7 @@ export const addRaffleObject = /* GraphQL */ `
       remindSlackHour
       remindSlackMin
       remindTimeUnix
+      resultMessage
       tasks {
         createdAt
         deletedAt
@@ -117,6 +118,7 @@ export const updateRaffleObject = /* GraphQL */ `
       remindSlackHour
       remindSlackMin
       remindTimeUnix
+      resultMessage
       tasks {
         createdAt
         deletedAt

@@ -37,6 +37,7 @@ export type RaffleObjectInput = {
   remindSlackHour: number,
   remindSlackMin: number,
   remindTimeUnix: number,
+  resultMessage?: string | null,
   tasks: Array< RaffleMastInput >,
   updatedAt: number,
 };
@@ -85,6 +86,7 @@ export type RaffleObject = {
   remindSlackHour: number,
   remindSlackMin: number,
   remindTimeUnix: number,
+  resultMessage?: string | null,
   tasks:  Array<RaffleMast >,
   updatedAt: number,
 };
@@ -247,6 +249,7 @@ export type AddRaffleObjectMutation = {
     remindSlackHour: number,
     remindSlackMin: number,
     remindTimeUnix: number,
+    resultMessage?: string | null,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -343,6 +346,7 @@ export type UpdateRaffleObjectMutation = {
     remindSlackHour: number,
     remindSlackMin: number,
     remindTimeUnix: number,
+    resultMessage?: string | null,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -475,6 +479,7 @@ export type FetchLastRaffleByGroupIDQuery = {
     remindSlackHour: number,
     remindSlackMin: number,
     remindTimeUnix: number,
+    resultMessage?: string | null,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -536,6 +541,7 @@ export type FetchRaffleObjectQuery = {
     remindSlackHour: number,
     remindSlackMin: number,
     remindTimeUnix: number,
+    resultMessage?: string | null,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,
@@ -581,6 +587,7 @@ export type FetchRafflesByGroupIDQuery = {
     remindSlackHour: number,
     remindSlackMin: number,
     remindTimeUnix: number,
+    resultMessage?: string | null,
     tasks:  Array< {
       __typename: "RaffleMast",
       createdAt: number,

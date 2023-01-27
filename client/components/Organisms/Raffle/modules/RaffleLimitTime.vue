@@ -83,13 +83,16 @@ export default class RaffleLimitTime extends Vue {
     public slackURL: string = ''
 
     public hoursList: { key: string; value: number }[] = [
-        { key: '00', value: 0 }, // テスト
-        { key: '01', value: 1 }, // テスト
-        { key: '02', value: 2 }, // テスト
-        { key: '03', value: 3 }, // テスト
-        { key: '04', value: 4 }, // テスト
-        { key: '05', value: 5 }, // テスト
-        { key: '06', value: 6 }, // テスト
+        { key: '00', value: 0 },
+        { key: '01', value: 1 },
+        { key: '02', value: 2 },
+        { key: '03', value: 3 },
+        { key: '04', value: 4 },
+        { key: '05', value: 5 },
+        { key: '06', value: 6 },
+        { key: '07', value: 7 },
+        { key: '08', value: 8 },
+        { key: '09', value: 9 },
         { key: '10', value: 10 },
         { key: '11', value: 11 },
         { key: '12', value: 12 },
