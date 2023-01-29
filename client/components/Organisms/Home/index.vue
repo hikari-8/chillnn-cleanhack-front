@@ -134,7 +134,7 @@
                             </div>
 
                             <!-- Signin -->
-                            <div class="content-menu flex">
+                            <div class="content-menu flex" @click="signOut">
                                 <div class="icon mr-2">
                                     <img
                                         class="w-6 h-6 flex-shrink-0"
@@ -142,14 +142,13 @@
                                     />
                                 </div>
                                 <app-side-menu-content
-                                    title="ログイン"
-                                    text="ログイン"
-                                    routeName="auth-signin"
+                                    title="ログアウト"
+                                    text="ログアウト"
                                 />
                             </div>
 
                             <!-- Signup -->
-                            <div class="content-menu flex">
+                            <!-- <div class="content-menu flex">
                                 <div class="icon mr-2">
                                     <img
                                         class="w-6 h-6 flex-shrink-0"
@@ -161,7 +160,7 @@
                                     text="新規登録"
                                     routeName="auth-signup"
                                 />
-                            </div>
+                            </div> -->
                         </template>
                     </side-menu-template>
                 </div>
@@ -244,6 +243,7 @@ import AppTaskEdit from '@/components/Organisms/Task/index.vue'
 import AppRaffleEdit from '@/components/Organisms/Raffle/index.vue'
 import JoinRaffle from '@/components/Organisms/Raffle/JoinRaffle.vue'
 import { AsyncLoadingAndErrorHandle } from '~/util/decorator/baseDecorator'
+import { authInteractor } from '~/driver/amplify/auth'
 import { userInteractor } from '~/api'
 @Component({
     components: {
@@ -298,6 +298,15 @@ export default class AppHome extends Vue {
     public showBody(num: string) {
         this.show = num
     }
+
+    @AsyncLoadingAndErrorHandle()
+    public async signOut() {
+        await authInteractor.signOut()
+        this.$router.push({
+            name: 'auth-signin',
+        })
+    }
+
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
         this.$emit('joinGroup')

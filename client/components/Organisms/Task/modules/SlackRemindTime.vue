@@ -45,37 +45,6 @@
                     </select>
                 </div>
 
-                <!-- <select
-                    id="week"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-18 p-2.5"
-                    v-model="taskMasterObjectModel.remindSlackWeek"
-                >
-                    <option disabled selected value=""></option>
-                    <option
-                        v-for="selectedWeekday in limitWeekdaysList"
-                        :value="selectedWeekday.value"
-                        :key="selectedWeekday.id"
-                    >
-                        {{ selectedWeekday.key }}
-                    </option>
-                </select> -->
-
-                <!-- <div class="text-sm font-medium text-gray-900 w-12">曜日の</div> -->
-                <!-- セレクトボックス -->
-                <!-- <select
-                    id="time"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-2.5"
-                    v-model="taskMasterObjectModel.remindSlackTime"
-                >
-                    <option disabled selected value="">時間</option>
-                    <option
-                        v-for="selectedTime in limitTimesList"
-                        :value="selectedTime.value"
-                        :key="selectedTime.id"
-                    >
-                        {{ selectedTime.key }}
-                    </option>
-                </select> -->
                 <div
                     class="flex items-center gap-x-3 justify-center flex-shrink-0"
                 >
@@ -103,8 +72,17 @@
 
         <!-- マスターデータ: リマインド時間の編集 -->
 
-        <div class="mb-8 text-sm text-gray-500 mt-2">
+        <div class="mb-8 text-sm text-gray-500 mt-8">
             ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackチャンネルに届きます。<br />
+            <div class="mt-2">
+                ＊メンバーは添付されたURLをクリックすることで、くじに参加できます。<br />
+                　👉 slackのチャンネルIDの取得方法は<a
+                    href="https://zenn.dev/dashi296/articles/4324507780a3cf"
+                    target="_blank"
+                    class="border-b-2 hover:text-blue-500 text-bold"
+                    >こちら</a
+                >
+            </div>
         </div>
     </div>
 </template>
