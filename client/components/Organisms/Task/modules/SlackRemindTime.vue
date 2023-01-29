@@ -69,19 +69,28 @@
                 class="input_taskname w-60 ml-3"
             ></app-base-input>
         </div>
+        <div class="mb-4 text-sm text-gray-500 mt-8">
+            　👇 slackのチャンネルIDはチャンネル情報から確認できます
+            <img
+                class="mb-4 w-96 ml-4 mt-4"
+                src="@/assets/img/howto/howto-channel-id.png"
+            />
+        </div>
+        <div class="mb-8 text-sm text-gray-500">
+            　チャンネルIDが上記で取得できない場合は<a
+                href="https://zenn.dev/dashi296/articles/4324507780a3cf"
+                target="_blank"
+                class="border-b-2 hover:text-blue-500 text-bold"
+                >こちら</a
+            >
+        </div>
 
         <!-- マスターデータ: リマインド時間の編集 -->
 
         <div class="mb-8 text-sm text-gray-500 mt-8">
             ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackチャンネルに届きます。<br />
             <div class="mt-2">
-                ＊メンバーは添付されたURLをクリックすることで、くじに参加できます。<br />
-                　👉 slackのチャンネルIDの取得方法は<a
-                    href="https://zenn.dev/dashi296/articles/4324507780a3cf"
-                    target="_blank"
-                    class="border-b-2 hover:text-blue-500 text-bold"
-                    >こちら</a
-                >
+                ＊メンバーは添付されたURLをクリックすることで、くじに参加できます。
             </div>
         </div>
     </div>
@@ -207,15 +216,22 @@ export default class SlackRemindTime extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async registered() {
-        this.timeToUnix()
-        this.taskMasterObjectModel.remindTimeUnix = this.remindGroupTime
-        await this.taskMasterObjectModel.updateTaskMasterObj()
-        const groupID = this.userModel.groupID
-        if (groupID) {
-            await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+        if (
+            !this.taskMasterObjectModel.channelID ||
+            this.taskMasterObjectModel.channelID === ''
+        ) {
+            window.alert('slackのチャンネルIDを設定してください')
+        } else {
+            this.timeToUnix()
+            this.taskMasterObjectModel.remindTimeUnix = this.remindGroupTime
+            await this.taskMasterObjectModel.updateTaskMasterObj()
+            const groupID = this.userModel.groupID
+            if (groupID) {
+                await this.userModel.fetchTaskMasterDataObjByGroupID(groupID)
+            }
+            this.unixToLng()
+            //ここでは、slackのリマインド時間を設定するだけ
         }
-        this.unixToLng()
-        //ここでは、slackのリマインド時間を設定するだけ
     }
 }
 </script>
