@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="isOptionView" class="flex">
+            <div v-if="isOptionView && !isModalOpen" class="flex">
                 <div class="w-[15%] flex-grow-0"></div>
                 <div
                     v-if="task.optionItem"
@@ -75,11 +75,37 @@
             </div>
             <!-- モーダルの中身 -->
             <div v-if="isShowOptionModal" class="flex">
-                <div class="w-[15%] flex-grow-0"></div>
                 <div
-                    class="text-sm font-medium text-gray-900 mt-2 mb-2 w-[10%] flex-grow-0 align-center"
+                    class="w-[8%] flex-grow-0 items-center justify-center mt-1"
                 >
-                    <span>option</span>
+                    <!-- モーダルを閉じる -->
+                    <button
+                        type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                        @click="closeOptionModal"
+                    >
+                        <svg
+                            aria-hidden="true"
+                            class="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"
+                            ></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <div
+                    class="text-sm font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-grow-0 align-center"
+                >
+                    <!-- optionマーク  -->
+                    <admin-status-mark />
+                    <!-- <span>option</span> -->
                 </div>
 
                 <app-base-input
@@ -152,6 +178,7 @@ export default class TaskItem extends Vue {
     public isShowModal: boolean = false
     public isShowOptionModal: boolean = false
     public isOptionView: boolean = false
+    public isModalOpen: boolean = false
 
     public created() {
         if (this.task.optionItem) {
@@ -175,7 +202,26 @@ export default class TaskItem extends Vue {
     public openOptionModal() {
         if (this.task) {
             this.isShowOptionModal = true
-            this.isOptionView = false
+            this.isModalOpen = true
+        }
+    }
+
+    public closeOptionModal() {
+        if (this.task) {
+            this.isShowOptionModal = !this.isShowOptionModal
+            // this.isModalOpen = !this.isModalOpen
+            if (!this.task.optionItem || this.task.optionItem === '') {
+                this.isModalOpen = !this.isModalOpen
+            } else {
+                const result = window.confirm(
+                    'Optionを追加・更新する場合は、＋ボタンを押してください。このまま実行するとOptionが削除されますがよろしいですか？'
+                )
+                if (result) {
+                    this.task.optionItem = ''
+                } else {
+                    this.isShowOptionModal = !this.isShowOptionModal
+                }
+            }
         }
     }
 
@@ -189,9 +235,14 @@ export default class TaskItem extends Vue {
     }
 
     public registerOption() {
-        this.isShowOptionModal = false
-        this.isOptionView = true
-        this.$emit('registered')
+        if (!this.task.optionItem || this.task.optionItem === '') {
+            window.alert('オプションを追加する場合は、オプション名が必須です')
+        } else {
+            this.isShowOptionModal = false
+            this.isOptionView = true
+            this.isModalOpen = false
+            this.$emit('registered')
+        }
     }
 
     public async deleteRaffle() {
