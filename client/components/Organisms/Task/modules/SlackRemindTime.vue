@@ -1,74 +1,85 @@
 <template>
     <div v-if="taskMasterObjectModel" class="user_edit_container h-full mb-8">
         <!-- 時間設定と、ボタンのコンテナ -->
-        <div class="flex mt-8 gap-x-3 justify-between">
-            <div
-                class="app_select_weekday flex text-center items-center gap-x-2"
-            >
-                <!-- 週の予定 -->
-                <!-- <div class="text-sm font-medium text-gray-900 w-10">毎週</div> -->
-                <div class="text-sm font-medium text-gray-900 w-10">本日</div>
-                <!-- セレクトボックス -->
+        <div
+            class="px-12 py-4 bg-white border border-gray-200 rounded-lg shadow-md"
+        >
+            <div class="flex mt-4 gap-x-3 justify-between">
                 <div
-                    class="inline-flex p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3"
+                    class="app_select_weekday flex text-center items-center gap-x-2"
                 >
-                    <select
-                        name=""
-                        id=""
-                        class="px-2 outline-none appearance-none bg-transparent"
-                        v-model="taskMasterObjectModel.remindSlackHour"
+                    <!-- 週の予定 -->
+                    <!-- <div class="text-sm font-medium text-gray-900 w-10">毎週</div> -->
+                    <div class="text-sm font-medium text-gray-900 w-10">
+                        本日
+                    </div>
+                    <!-- セレクトボックス -->
+                    <div
+                        class="inline-flex p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3"
                     >
-                        <option disabled selected value="">時</option>
-                        <option
-                            v-for="selectedHour in hoursList"
-                            :value="selectedHour.value"
-                            :key="selectedHour.id"
+                        <select
+                            name=""
+                            id=""
+                            class="px-2 outline-none appearance-none bg-transparent"
+                            v-model="taskMasterObjectModel.remindSlackHour"
                         >
-                            {{ selectedHour.key }}
-                        </option>
-                    </select>
-                    <span class="">:</span>
-                    <select
-                        name=""
-                        id=""
-                        class="px-2 outline-none appearance-none bg-transparent"
-                        v-model="taskMasterObjectModel.remindSlackMin"
+                            <option disabled selected value="">時</option>
+                            <option
+                                v-for="selectedHour in hoursList"
+                                :value="selectedHour.value"
+                                :key="selectedHour.id"
+                            >
+                                {{ selectedHour.key }}
+                            </option>
+                        </select>
+                        <span class="">:</span>
+                        <select
+                            name=""
+                            id=""
+                            class="px-2 outline-none appearance-none bg-transparent"
+                            v-model="taskMasterObjectModel.remindSlackMin"
+                        >
+                            <option disabled selected value="">分</option>
+                            <option
+                                v-for="selectedMin in minList"
+                                :value="selectedMin.value"
+                                :key="selectedMin.id"
+                            >
+                                {{ selectedMin.key }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-x-3 justify-center flex-shrink-0"
                     >
-                        <option disabled selected value="">分</option>
-                        <option
-                            v-for="selectedMin in minList"
-                            :value="selectedMin.value"
-                            :key="selectedMin.id"
-                        >
-                            {{ selectedMin.key }}
-                        </option>
-                    </select>
+                        <div class="text-sm font-medium text-gray-900">
+                            分にくじの参加URLをSlackに通知する
+                        </div>
+                    </div>
                 </div>
 
-                <div
-                    class="flex items-center gap-x-3 justify-center flex-shrink-0"
-                >
-                    <div class="text-sm font-medium text-gray-900">
-                        分にくじの参加URLをSlackに通知する
+                <div class="flex flex-end items-center gap-x-3 flex-shrink-0">
+                    <div class="button">
+                        <app-button @click="registered">更新</app-button>
                     </div>
                 </div>
             </div>
+            <div
+                class="flex text-sm font-medium text-gray-900 mt-4 mb-2 text-center items-center"
+            >
+                <span>SlackのチャンネルID</span>
+                <app-base-input
+                    v-model="taskMasterObjectModel.channelID"
+                    class="input_taskname w-60 ml-3"
+                ></app-base-input>
+            </div>
 
-            <div class="flex flex-end items-center gap-x-3 flex-shrink-0">
-                <div class="button">
-                    <app-button @click="registered">更新</app-button>
-                </div>
+            <div class="mb-8 text-sm text-gray-500 mt-8">
+                ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackチャンネルに届きます。<br />　メンバーは添付されたURLからくじに参加できます。
             </div>
         </div>
-        <div
-            class="flex text-sm font-medium text-gray-900 mt-4 mb-2 text-center items-center"
-        >
-            <span>SlackのチャンネルID</span>
-            <app-base-input
-                v-model="taskMasterObjectModel.channelID"
-                class="input_taskname w-60 ml-3"
-            ></app-base-input>
-        </div>
+
         <div class="mb-4 text-sm text-gray-500 mt-8">
             　👇 slackのチャンネルIDはチャンネル情報から確認できます
             <img
@@ -86,13 +97,6 @@
         </div>
 
         <!-- マスターデータ: リマインド時間の編集 -->
-
-        <div class="mb-8 text-sm text-gray-500 mt-8">
-            ＊くじを発行すると、この時間に自動的にくじ引きのURLが添付された通知が<br />　指定されたSlackチャンネルに届きます。<br />
-            <div class="mt-2">
-                ＊メンバーは添付されたURLをクリックすることで、くじに参加できます。
-            </div>
-        </div>
     </div>
 </template>
 <script lang="ts">

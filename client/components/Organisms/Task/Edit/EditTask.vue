@@ -31,11 +31,13 @@
         <div class="font-semibold mb-8 text-2xl mt-14">
             くじ引きリマインド設定 ⏰
         </div>
-        <slack-remind-time
-            :user-model="userModel"
-            :taskMasterObjectModel="taskMasterObjectModel"
-            :groupModel="groupModel"
-        />
+        <div>
+            <slack-remind-time
+                :user-model="userModel"
+                :taskMasterObjectModel="taskMasterObjectModel"
+                :groupModel="groupModel"
+            />
+        </div>
     </div>
 </template>
 <script lang="ts">
