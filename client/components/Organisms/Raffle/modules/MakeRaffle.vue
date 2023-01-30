@@ -263,7 +263,7 @@ export default class MakeRaffle extends Vue {
                     this.$emit('registered')
                     //viewの変更
                     if (
-                        this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE
+                        this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE
                     ) {
                         this.isLastRaffleActive = false
                         this.isLastRaffleNull = false
@@ -400,6 +400,9 @@ export default class MakeRaffle extends Vue {
 
     //制限時間をstringに直して、0を00に変換する (文章用)
     public getSelectedTime(input: RaffleObjectModel) {
+        // 一回初期化
+        this.hh = ''
+        this.mm = ''
         if (input) {
             this.hh = String(input.limitHour)
             if (this.hh == '0') {

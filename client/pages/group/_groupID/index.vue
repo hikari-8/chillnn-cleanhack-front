@@ -117,6 +117,14 @@ export default class Top extends Vue {
         if (this.isAlreadyJoined) {
             alert('すでに参加済みのくじです！リロードしてください！')
         } else {
+            // lastRaffleをupdateする(参加者が参加した後で、参加したりする場合に有効)
+            if (this.groupModel) {
+                this.blancLastRaffle =
+                    await this.groupModel.fetchLastRaffleItemByGroupID()
+                if (this.blancLastRaffle) {
+                    this.lastRaffle = this.blancLastRaffle
+                }
+            }
             //Modelからmastへ変更
             const mastOfJoinUser =
                 await this.joinUserModel!.raffleJoinUserModelToMast()
