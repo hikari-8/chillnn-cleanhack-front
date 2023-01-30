@@ -45,7 +45,7 @@ export default {
                 hid: 'og:description',
                 name: 'og:description',
                 content:
-                    'CHILLNNの基本的な技術スタックを利用したサンプルアプリケーション',
+                    'CHILLNNの基本的な技術スタックを利用したお掃除くじアプリケーション',
             },
             {
                 hid: 'og:image',

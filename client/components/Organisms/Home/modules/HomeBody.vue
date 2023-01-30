@@ -140,7 +140,6 @@ export default class HomeBody extends Vue {
         }
     }
     public changeAccodionView() {
-        console.log('押されてる')
         this.isAccodionOpen = !this.isAccodionOpen
     }
     public changeMemberAccodionView() {

@@ -49,29 +49,29 @@ export default class DefaultLayout extends Vue {
             this.userModel = await userInteractor.fetchMyUserModel()
             //グループID持ってたら、グループページに誘導
             if (this.userModel.groupID) {
-                console.log('groupPageに入る', this.userModel.groupID)
+                // console.log('groupPageに入る', this.userModel.groupID)
                 this.$router.push({
                     path: '/group/:groupID',
                     params: { groupID: this.groupID },
                 })
             } else if (!this.userModel.groupID && this.groupID === ':groupID') {
-                console.log('index', this.userModel)
+                // console.log('index', this.userModel)
                 //groupIDを持ってない、かつparamsにもgroupidがなかったとき
                 this.$router.push({
                     name: 'index',
                 })
             } else if (!this.userModel.groupID && !this.groupID) {
-                console.log('index', this.userModel)
+                // console.log('index', this.userModel)
                 //groupIDを持ってない、かつparamsにもgroupidがなかったとき(nullの時あり)
                 this.$router.push({
                     name: 'index',
                 })
             } else if (!this.userModel.groupID && this.groupID !== ':groupID') {
-                console.log(
-                    'groupIDがparamsにあった場合',
-                    this.userModel,
-                    this.groupID
-                )
+                // console.log(
+                //     'groupIDがparamsにあった場合',
+                //     this.userModel,
+                //     this.groupID
+                // )
                 //groupIDを持ってない、かつparamsにgroupidがあった時
                 //groupIDをuserに持たせて、userのアップデートをかける
 
