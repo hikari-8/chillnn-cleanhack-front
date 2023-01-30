@@ -183,7 +183,7 @@ export default class MakeRaffle extends Vue {
         } else if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
             this.isLastRaffleActive = true
             this.isLastRaffleNull = false
-            this.getSelectedTime()
+            this.getSelectedTime(this.lastRaffleItem)
         }
         // userを取得するために自分のuserModelをfetchしてきます
         this.blancUserModel = await userInteractor.fetchMyUserModel()
@@ -222,7 +222,7 @@ export default class MakeRaffle extends Vue {
             this.timeToUnix()
             this.raffleObjectModel.limitTimeUnix = this.remindAdminTime
             await this.raffleObjectModel.register()
-            this.getSelectedTime()
+            this.getSelectedTime(this.raffleObjectModel)
             //アラート
             alert(`全員へのリマインドがスケジュールされました`)
             alert(`管理者へのリマインドがスケジュールされました`)
@@ -292,8 +292,9 @@ export default class MakeRaffle extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
-        //localstrageに保存した予約した通知を削除する
-        // this.deleteNotification()
+        // テスト-初期化してみる
+        this.hh = ''
+        this.mm = ''
         this.$emit('deleteRaffle')
         this.isLastRaffleActive = false
     }
@@ -398,14 +399,14 @@ export default class MakeRaffle extends Vue {
     }
 
     //制限時間をstringに直して、0を00に変換する (文章用)
-    public getSelectedTime() {
-        if (this.lastRaffleItem) {
-            this.hh = String(this.lastRaffleItem.limitHour)
+    public getSelectedTime(input: RaffleObjectModel) {
+        if (input) {
+            this.hh = String(input.limitHour)
             if (this.hh == '0') {
                 this.hh = '00'
             }
 
-            this.mm = String(this.lastRaffleItem.limitMin)
+            this.mm = String(input.limitMin)
             if (this.mm == '0') {
                 this.mm = '00'
             }
