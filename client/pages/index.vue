@@ -117,6 +117,15 @@ export default class Top extends Vue {
         if (this.isAlreadyJoined) {
             alert('すでに参加済みのくじです！リロードしてください！')
         } else {
+            // まずlastRaffleをupdateする(キャッシュが残っている場合がある)
+            if (this.groupModel) {
+                this.blancLastRaffle =
+                    await this.groupModel.fetchLastRaffleItemByGroupID()
+                if (this.blancLastRaffle) {
+                    this.lastRaffle = this.blancLastRaffle
+                }
+            }
+            this.lastRaffle!.raffleStatus = RaffleStatus.EFFECTIVE_AND_FIXED
             //Modelからmastへ変更
             const mastOfJoinUser =
                 await this.joinUserModel!.raffleJoinUserModelToMast()
@@ -169,6 +178,7 @@ export default class Top extends Vue {
         // this.$emit('registerGroup')
     }
 
+    // userとgroupのアップデート
     @AsyncLoadingAndErrorHandle()
     public async registered() {
         const blancUserModel = await this.userModel?.fetchUserDataByUserID(

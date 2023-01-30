@@ -204,6 +204,8 @@
                         :userModel="userModel"
                         :taskMasterObjectModel="taskMasterObjectModel"
                         :groupModel="groupModel"
+                        :islastRaffleDone="islastRaffleDone"
+                        :lastRaffle="lastRaffle"
                         @registerRaffle="registerRaffle"
                         @deleteRaffle="deleteRaffle"
                     />

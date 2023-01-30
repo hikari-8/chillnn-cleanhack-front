@@ -10,6 +10,8 @@
                     :raffleObjectModel="raffleObjectModel"
                     :taskMasterObjectModel="taskMasterObjectModel"
                     :groupModel="groupModel"
+                    :islastRaffleDone="islastRaffleDone"
+                    :lastRaffle="lastRaffle"
                     @registerRaffle="registerRaffle"
                     @deleteRaffle="deleteRaffle"
                 />
@@ -47,6 +49,8 @@ export default class AppRaffleEdit extends Vue {
     @Prop({ required: true }) userModel!: UserModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) islastRaffleDone!: boolean
+    @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     public raffleObjectModel: RaffleObjectModel | null = null
 
     public get isShowLink() {

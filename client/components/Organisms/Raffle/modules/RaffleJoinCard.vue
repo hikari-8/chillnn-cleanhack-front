@@ -153,7 +153,6 @@ export default class RaffleJoinCard extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async joinGroup() {
-        this.lastRaffle.raffleStatus = RaffleStatus.EFFECTIVE_AND_FIXED
         this.$emit('joinGroup')
     }
 }

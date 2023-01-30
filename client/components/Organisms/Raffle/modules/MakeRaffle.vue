@@ -40,22 +40,25 @@
                         </div>
                     </div>
                     <!-- 発行したくじの内容 -->
-                    <div v-if="lastRaffleItem">
+                    <div v-if="lastRaffle">
                         <div
-                            v-if="lastRaffleItem.tasks"
+                            v-if="lastRaffle.tasks"
                             class="flex justify-between"
                         >
                             <div class="label font-semibold">
                                 発行したくじの内容
                             </div>
-                            <div class="mb-8 mt-8">
+                            <div
+                                v-if="lastRaffle.activeMembers"
+                                class="mb-8 mt-8"
+                            >
                                 <span class="text-sm font-medium">
                                     現在の参加人数
                                 </span>
                                 <span
                                     class="text-pink-600 text-lg font-semibold"
                                 >
-                                    {{ lastRaffleItem.activeMembers.length }}
+                                    {{ lastRaffle.activeMembers.length }}
                                 </span>
                                 <span class="text-sm font-medium"> 人</span>
                             </div>
@@ -64,7 +67,7 @@
                         <div class="task_edit_container">
                             <!-- task edit -->
                             <effective-raffle-list
-                                :raffleObjectModel="lastRaffleItem"
+                                :raffleObjectModel="lastRaffle"
                                 @registered="registered"
                             />
                         </div>
@@ -146,11 +149,13 @@ export default class MakeRaffle extends Vue {
     @Prop({ required: true }) raffleObjectModel!: RaffleObjectModel
     @Prop({ required: true }) taskMasterObjectModel!: TaskMasterObjectModel
     @Prop({ required: true }) groupModel!: GroupModel
+    @Prop({ required: true }) islastRaffleDone!: boolean
+    @Prop({ required: true }) lastRaffle!: RaffleObjectModel
     public blancRaffleObj: RaffleObjectModel | null = null
     public raffles: RaffleObjectModel[] | null = null
     public hh: string = ''
     public mm: string = ''
-    public lastRaffleItem: RaffleObjectModel | null = null
+    // public lastRaffle: RaffleObjectModel | null = null
     public isLastRaffleActive: boolean = false
     public isLastRaffleNull: boolean = false
     public memberList: string[] = []
@@ -166,7 +171,7 @@ export default class MakeRaffle extends Vue {
     public optionAvailableUsers: string[] = []
     public ramdomOptionUserList: string[] = []
     public noOptionRaffleArray: RaffleMast[] = []
-    public updateLastRaffleItem: RaffleObjectModel | null = null
+    public updatelastRaffle: RaffleObjectModel | null = null
     public remindAdminTime: number = 0
     public message: string = ''
     public setUserModel: UserModel | null = null
@@ -175,15 +180,15 @@ export default class MakeRaffle extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async created() {
         //テスト/lastraffleをfetchして、statusを調べる
-        this.lastRaffleItem =
-            await this.raffleObjectModel.fetchLastRaffleItemByGroupID()
+        // this.lastRaffle =
+        //     await this.raffleObjectModel.fetchlastRaffleByGroupID()
 
-        if (!this.lastRaffleItem) {
+        if (!this.lastRaffle) {
             this.isLastRaffleNull = true
-        } else if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
+        } else if (this.lastRaffle?.raffleStatus !== RaffleStatus.DONE) {
             this.isLastRaffleActive = true
             this.isLastRaffleNull = false
-            this.getSelectedTime(this.lastRaffleItem)
+            this.getSelectedTime(this.lastRaffle)
         }
         // userを取得するために自分のuserModelをfetchしてきます
         this.blancUserModel = await userInteractor.fetchMyUserModel()
@@ -198,7 +203,7 @@ export default class MakeRaffle extends Vue {
     // くじを作成する
     @AsyncLoadingAndErrorHandle()
     public async createRaffle() {
-        //lastRaffleItemのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
+        //lastRaffleのstatusがDONEな場合、raffleを作成するのが初めてでない限り、追加できない
         if (!this.raffleObjectModel.tasks.length) {
             alert('掃除場所を一つ以上登録してください!')
         } else if (
@@ -216,8 +221,8 @@ export default class MakeRaffle extends Vue {
                 'くじの設定から、送信するslackのチャンネルIDを登録してください!'
             )
         } else if (
-            this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE ||
-            !this.lastRaffleItem
+            this.lastRaffle?.raffleStatus === RaffleStatus.DONE ||
+            !this.lastRaffle
         ) {
             this.timeToUnix()
             this.raffleObjectModel.limitTimeUnix = this.remindAdminTime
@@ -240,7 +245,7 @@ export default class MakeRaffle extends Vue {
     @AsyncLoadingAndErrorHandle()
     public async runRaffle() {
         this.headCountSumFunc()
-        if (this.lastRaffleItem?.activeMembers.length !== this.headCountSum) {
+        if (this.lastRaffle?.activeMembers.length !== this.headCountSum) {
             alert(
                 '掃除場所に割り当てた合計人数とくじの参加人数を同じにしてください !'
             )
@@ -253,39 +258,31 @@ export default class MakeRaffle extends Vue {
                 if (result) {
                     await this.doRaffle()
                     //statusを変更する
-                    this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+                    this.lastRaffle!.raffleStatus = RaffleStatus.DONE
 
                     //slackへの結果をアップデート
                     await this.makeResultMessage()
-                    this.lastRaffleItem!.resultMessage = this.message
+                    this.lastRaffle!.resultMessage = this.message
                     //updateする
-                    await this.lastRaffleItem!.register()
+                    await this.lastRaffle!.register()
                     this.$emit('registered')
                     //viewの変更
-                    if (
-                        this.lastRaffleItem?.raffleStatus === RaffleStatus.DONE
-                    ) {
-                        this.isLastRaffleActive = false
-                        this.isLastRaffleNull = false
-                    }
+                    this.isLastRaffleActive = false
+                    this.isLastRaffleNull = false
                 } else return
             } else {
                 await this.doRaffle()
                 //slackへの結果をアップデート
                 await this.makeResultMessage()
-                this.lastRaffleItem!.resultMessage = this.message
+                this.lastRaffle!.resultMessage = this.message
                 //statusを変更する
-                this.lastRaffleItem!.raffleStatus = RaffleStatus.DONE
+                this.lastRaffle!.raffleStatus = RaffleStatus.DONE
                 //updateする
-                await this.lastRaffleItem!.register()
+                await this.lastRaffle!.register()
                 this.$emit('registered')
                 //viewの変更
-                if (this.lastRaffleItem?.raffleStatus !== RaffleStatus.DONE) {
-                    this.isLastRaffleActive = false
-                    this.isLastRaffleNull = false
-                }
-                //前回localstrageに保存した予約した通知を削除する
-                // this.deleteNotification()
+                this.isLastRaffleActive = false
+                this.isLastRaffleNull = false
             }
         }
     }
@@ -305,10 +302,10 @@ export default class MakeRaffle extends Vue {
         const specificYear = now.getFullYear()
         const specificMonth = now.getMonth() //表示させる時は、＋1する必要がある
         const specificDate = now.getDate()
-        const groupRemindHour = this.lastRaffleItem?.remindSlackHour
-        const groupRemindMin = this.lastRaffleItem?.remindSlackMin
-        const adminRimindHour = this.lastRaffleItem?.limitHour
-        const adminRimindMin = this.lastRaffleItem?.limitMin
+        const groupRemindHour = this.lastRaffle?.remindSlackHour
+        const groupRemindMin = this.lastRaffle?.remindSlackMin
+        const adminRimindHour = this.lastRaffle?.limitHour
+        const adminRimindMin = this.lastRaffle?.limitMin
 
         //UNIXを作成: groupへのリマインド通知 remindGroupTime
         let remindGroupDate = new Date(
@@ -335,8 +332,8 @@ export default class MakeRaffle extends Vue {
     //くじの結果部分
     @AsyncLoadingAndErrorHandle()
     public async makeMessage() {
-        if (this.lastRaffleItem) {
-            for (const task of this.lastRaffleItem!.tasks) {
+        if (this.lastRaffle) {
+            for (const task of this.lastRaffle!.tasks) {
                 if (task.headCount > 0) {
                     //taskName: userIDからfetchした名前
                     for await (const userID of task.joinUserIDArray) {
@@ -371,7 +368,7 @@ export default class MakeRaffle extends Vue {
     //人数を計算するメソッド
     public headCountSumFunc() {
         this.headCountSum = 0
-        for (const task of this.lastRaffleItem?.tasks!) {
+        for (const task of this.lastRaffle?.tasks!) {
             this.headCountSum += task.headCount
         }
         return this.headCountSum
@@ -447,8 +444,8 @@ export default class MakeRaffle extends Vue {
     //くじロジック
     public async doRaffle() {
         // optionを持つくじから割り当てる
-        this.updateLastRaffleItem = this.lastRaffleItem
-        for (const raffle of this.updateLastRaffleItem!.tasks) {
+        this.updatelastRaffle = this.lastRaffle
+        for (const raffle of this.updatelastRaffle!.tasks) {
             //for文で回している時にその大元をいじったら回す数が一つ減るから、消した分回せなくなるっぽい
             //よって、noOptionArray配列に回して、for文で回し終わった後に消す
             if (!raffle.optionName && raffle.optionName === '') {
@@ -492,13 +489,13 @@ export default class MakeRaffle extends Vue {
             }
         }
 
-        // updateLastRaffleItem.tasksからnoOptionRaffleArrayを一旦削除して、後でpushする
+        // updatelastRaffle.tasksからnoOptionRaffleArrayを一旦削除して、後でpushする
         for (const noOptionRaffle of this.noOptionRaffleArray) {
-            let index = this.updateLastRaffleItem!.tasks.indexOf(noOptionRaffle)
-            this.updateLastRaffleItem?.tasks.splice(index, 1)
+            let index = this.updatelastRaffle!.tasks.indexOf(noOptionRaffle)
+            this.updatelastRaffle?.tasks.splice(index, 1)
         }
         // //memberの配列を作成
-        for (const member of this.lastRaffleItem!.activeMembers) {
+        for (const member of this.lastRaffle!.activeMembers) {
             const memberID = member.userID
             this.memberList.push(memberID)
         }
@@ -532,12 +529,12 @@ export default class MakeRaffle extends Vue {
                 }
             }
         }
-        //this.updateLastRaffleItem.tasksに最初に削除したraffleをpushして、元のtasksに戻す
+        //this.updatelastRaffle.tasksに最初に削除したraffleをpushして、元のtasksに戻す
         for (const raffle of this.noOptionRaffleArray) {
-            this.updateLastRaffleItem!.tasks.push(raffle)
+            this.updatelastRaffle!.tasks.push(raffle)
         }
-        if (this.updateLastRaffleItem) {
-            this.lastRaffleItem = this.updateLastRaffleItem
+        if (this.updatelastRaffle) {
+            this.lastRaffle = this.updatelastRaffle
         }
     }
 }
