@@ -72,17 +72,22 @@ export default class VerifyPage extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async verifyAndSignIn() {
-        await authInteractor.signUpConfirmed(this.email, this.verifyCode)
-        await authInteractor.signIn(this.email, this.password)
-        if (this.groupID === '') {
-            this.$router.push({
-                name: 'index',
-            })
-        } else {
-            this.$router.push({
-                name: 'group',
-                params: { groupID: this.groupID },
-            })
+        try {
+            await authInteractor.signUpConfirmed(this.email, this.verifyCode)
+            await authInteractor.signIn(this.email, this.password)
+            if (this.groupID === '') {
+                this.$router.push({
+                    name: 'index',
+                })
+            } else {
+                this.$router.push({
+                    name: 'group',
+                    params: { groupID: this.groupID },
+                })
+            }
+        } catch (err) {
+            //認証コードエラー
+            window.alert('認証コードが間違っている可能性があります')
         }
     }
 
