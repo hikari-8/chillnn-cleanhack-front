@@ -41,7 +41,10 @@
                     </div>
                     <!-- 発行したくじの内容 -->
                     <div v-if="lastRaffleItem">
-                        <div class="flex justify-between">
+                        <div
+                            v-if="lastRaffleItem.tasks"
+                            class="flex justify-between"
+                        >
                             <div class="label font-semibold">
                                 発行したくじの内容
                             </div>
@@ -227,7 +230,9 @@ export default class MakeRaffle extends Vue {
             this.isLastRaffleNull = false
             this.isLastRaffleActive = true
         } else {
-            alert('実行中のくじがあります。')
+            alert(
+                'キャッシュが残っている可能性があります。お手数ですが、一度リロードしてください'
+            )
         }
     }
 

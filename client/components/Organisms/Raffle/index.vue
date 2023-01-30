@@ -67,6 +67,10 @@ export default class AppRaffleEdit extends Vue {
 
     @AsyncLoadingAndErrorHandle()
     public async deleteRaffle() {
+        if (this.taskMasterObjectModel) {
+            this.raffleObjectModel =
+                await this.taskMasterObjectModel.getRaffleModel()
+        }
         this.$emit('deleteRaffle')
     }
 
