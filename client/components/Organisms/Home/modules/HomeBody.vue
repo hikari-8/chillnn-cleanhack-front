@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="mt-8" v-if="isAccodionOpen">
-                    <div class=""><how-to-use /></div>
+                    <div class="mx-3"><how-to-use /></div>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="mt-8" v-if="isMemberAccodionOpen">
-                    <div class="mt-10"><how-to-use-member /></div>
+                    <div class="mt-10 mx-3"><how-to-use-member /></div>
                 </div>
             </div>
         </div>

@@ -46,7 +46,7 @@
                             src="@/assets/img/step/step2.png"
                         />
                         <!-- 説明エリア -->
-                        <div class="my-auto h-40">
+                        <div class="my-auto">
                             <div class="font-semibold text-lg mb-4 p-1">
                                 グループを作成する
                             </div>
@@ -72,7 +72,7 @@
                     <div class="flex text-sm font-normal">
                         <!-- イメージエリア -->
                         <img
-                            class="w-[60%]"
+                            class="w-[60%] py-6"
                             src="@/assets/img/step/step3.png"
                         />
                         <!-- 説明エリア -->
@@ -103,14 +103,14 @@
                         <!-- イメージエリア -->
                         <div class="">
                             <img
-                                class="h-28 px-4 mb-4"
+                                class="h-24 px-4 mb-4"
                                 src="@/assets/img/step/slack1.png"
                             />
                             <img class="" src="@/assets/img/step/step4.png" />
                         </div>
 
                         <!-- 説明エリア -->
-                        <div class="my-auto">
+                        <div class="my-auto w-[35%]">
                             <div class="font-semibold text-lg mb-4 p-1 w-44">
                                 くじを発行する
                             </div>

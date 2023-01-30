@@ -69,11 +69,17 @@
                 </div>
             </div>
             <div class="font-semibold text-2xl mt-14">くじの削除 ❌</div>
-            <div class="flex justify-between mt-6 mb-12">
+            <div
+                class="flex mt-6 mb-12 pl-5 pr-4 py-4 bg-white border border-gray-200 rounded-lg shadow-md justify-between"
+            >
                 <div class="text-sm text-gray-500 py-2">
-                    現在進行中のくじがあります。<br />新しいくじを実行したい場合は、現在進行中のくじを削除してください。
+                    現在進行中のくじがあります。<br />新しいくじを作成したい場合は、現在進行中のくじを削除してください。
                 </div>
-                <app-button class="" @click="deleteRaffle">削除する</app-button>
+                <div class="py-2">
+                    <app-button class="h-12 px-2" @click="deleteRaffle"
+                        >削除</app-button
+                    >
+                </div>
             </div>
         </div>
         <div v-if="isLastRaffleNull || !isLastRaffleActive">
@@ -193,7 +199,7 @@ export default class MakeRaffle extends Vue {
         if (!this.raffleObjectModel.tasks.length) {
             alert('掃除場所を一つ以上登録してください!')
         } else if (
-            !this.raffleObjectModel.limitHour ||
+            !this.raffleObjectModel.limitHour &&
             !this.raffleObjectModel.limitMin
         ) {
             alert('制限時間を登録してください!')
@@ -531,8 +537,8 @@ export default class MakeRaffle extends Vue {
 .user_edit_container {
     .button_container {
         padding-top: 10px;
-        display: flex;
-        justify-content: center;
+        // display: flex;
+        // justify-content: center;
     }
 }
 </style>
