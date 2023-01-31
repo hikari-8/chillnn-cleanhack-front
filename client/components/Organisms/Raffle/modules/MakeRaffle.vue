@@ -263,6 +263,7 @@ export default class MakeRaffle extends Vue {
                     //slackへの結果をアップデート
                     await this.makeResultMessage()
                     this.lastRaffle!.resultMessage = this.message
+                    // console.log(this.message)
                     //updateする
                     await this.lastRaffle!.register()
                     this.$emit('registered')
@@ -275,6 +276,7 @@ export default class MakeRaffle extends Vue {
                 //slackへの結果をアップデート
                 await this.makeResultMessage()
                 this.lastRaffle!.resultMessage = this.message
+                // console.log(this.message)
                 //statusを変更する
                 this.lastRaffle!.raffleStatus = RaffleStatus.DONE
                 //updateする
@@ -476,10 +478,15 @@ export default class MakeRaffle extends Vue {
                             console.log('firstMember is empty')
                             return null
                         } else {
-                            raffle.joinUserIDArray?.push(firstMember)
+                            // もし、削除配列にすでに入っているuserなら、ここで省く
+                            const isAlreadyJoinOptionTask =
+                                this.deleteUserArray.includes(firstMember, 0)
+                            if (!isAlreadyJoinOptionTask) {
+                                raffle.joinUserIDArray?.push(firstMember)
+                                this.deleteUserArray.push(firstMember)
+                            }
                         }
                         // firstMember削除
-                        this.deleteUserArray.push(firstMember)
                         this.ramdomOptionUserList.shift()
                     }
                 }

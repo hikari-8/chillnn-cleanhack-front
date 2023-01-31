@@ -1,5 +1,5 @@
 <template>
-    <div v-if="task">
+    <div v-if="task" class="border-b border-solid border-chillnn-border-base">
         <add-item-area v-model="isShowModal" class="" v-if="task">
             <edit-task-details
                 :task="task"
@@ -8,10 +8,7 @@
                 @undoRegister="undoRegister"
             />
         </add-item-area>
-        <div
-            v-if="!isShowModal"
-            class="border-b border-solid border-chillnn-border-base py-[15px]"
-        >
+        <div v-if="!isShowModal" class="">
             <div class="flex items-center py-[15px]">
                 <!-- ポチ -->
                 <div class="w-[15%] text-center flex-grow-0">
@@ -56,77 +53,75 @@
                     </div>
                 </div>
             </div>
-            <div v-if="isOptionView && !isModalOpen" class="flex">
-                <div class="w-[15%] flex-grow-0"></div>
-                <div
-                    v-if="task.optionItem"
-                    class="font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-shrink-0 align-center"
-                >
-                    <!-- optionマーク -->
-                    <admin-status-mark />
-                </div>
-                <div
-                    class="text-sm font-medium text-gray-900 mt-3 mb-3 flex-grow-0 align-center"
-                >
-                    <span>
-                        {{ task.optionItem }}
-                    </span>
-                </div>
+        </div>
+        <div v-if="isOptionView && !isModalOpen" class="flex mb-2">
+            <div class="w-[15%] flex-grow-0"></div>
+            <div
+                v-if="task.optionItem"
+                class="font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-shrink-0 align-center"
+            >
+                <!-- optionマーク -->
+                <admin-status-mark />
             </div>
-            <!-- モーダルの中身 -->
-            <div v-if="isShowOptionModal" class="flex">
-                <div
-                    class="w-[8%] flex-grow-0 items-center justify-center mt-1"
+            <div
+                class="text-sm font-medium text-gray-900 mt-3 mb-3 flex-grow-0 align-center"
+            >
+                <span>
+                    {{ task.optionItem }}
+                </span>
+            </div>
+        </div>
+        <!-- モーダルの中身 -->
+        <div v-if="isShowOptionModal" class="flex mb-2">
+            <div class="w-[8%] flex-grow-0 items-center justify-center mt-1">
+                <!-- モーダルを閉じる -->
+                <button
+                    type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                    @click="closeOptionModal"
                 >
-                    <!-- モーダルを閉じる -->
-                    <button
-                        type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                        @click="closeOptionModal"
+                    <svg
+                        aria-hidden="true"
+                        class="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
                     >
-                        <svg
-                            aria-hidden="true"
-                            class="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"
-                            ></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <div
-                    class="text-sm font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-grow-0 align-center"
-                >
-                    <!-- optionマーク  -->
-                    <admin-status-mark />
-                    <!-- <span>option</span> -->
-                </div>
+                        <path
+                            fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"
+                        ></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div
+                class="text-sm font-medium text-gray-900 mt-2 mb-2 w-[15%] flex-grow-0 align-center"
+            >
+                <!-- optionマーク  -->
+                <admin-status-mark />
+                <!-- <span>option</span> -->
+            </div>
 
-                <app-base-input
-                    v-model="task.optionItem"
-                    class="input_option w-[60%]"
-                ></app-base-input>
-                <div class="w-[10%] flex-grow-0">
-                    <div class="flex justify-center">
-                        <!-- 追加ボタン -->
-                        <span title="追加">
-                            <table-button
-                                :disabled="!task.optionItem"
-                                @click="registerOption"
-                            >
-                                <img
-                                    class="w-5"
-                                    src="@/assets/img/icon/plus-edit.svg"
-                                />
-                            </table-button>
-                        </span>
-                    </div>
+            <app-base-input
+                v-model="task.optionItem"
+                class="input_option w-[60%]"
+            ></app-base-input>
+            <div class="w-[10%] flex-grow-0">
+                <div class="flex justify-center">
+                    <!-- 追加ボタン -->
+                    <span title="追加">
+                        <table-button
+                            :disabled="!task.optionItem"
+                            @click="registerOption"
+                        >
+                            <img
+                                class="w-5"
+                                src="@/assets/img/icon/plus-edit.svg"
+                            />
+                        </table-button>
+                    </span>
                 </div>
             </div>
         </div>
