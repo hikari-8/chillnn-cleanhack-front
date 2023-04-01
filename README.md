@@ -1,5 +1,11 @@
 # chillnn-cleanhack-front
 
+## 株式会社 CHILLNN から記事を出していただきました！🎉
+
+### こちらからご覧ください 👇
+
+https://note.com/suisei_inc/n/na81ba734fd46
+
 ## Build Setup
 
 ```bash
@@ -66,5 +72,3 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
-
-【優先度 ★★★】
